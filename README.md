@@ -1,4 +1,3 @@
-```jsx
 #include <allegro.h>
 #include <time.h>
 void initialisation_allegro();
@@ -111,7 +110,7 @@ void afficherSprite (float x, float y, int numero_sprite) {
 		 image=load_bitmap("../lara_tir_arme3_2.bmp",NULL);
 		 break;	
 	case 36 :
-		 image=load_bitmap("../lara_tir_arme_3.bmp",NULL);
+		 image=load_bitmap("../lara_tir_arme3_3.bmp",NULL);
 		 break;	
 	case 37 :
 		 image=load_bitmap("../lara_debout_arme4.bmp",NULL);
@@ -150,40 +149,40 @@ void afficherSprite (float x, float y, int numero_sprite) {
 		 image=load_bitmap("../lara_tir_arme4_3.bmp",NULL);
 		 break;	
 	case 49 :
-		 image=load_bitmap("../lara_debout_arme5.bmp",NULL);
+		 image=load_bitmap("../lara_debout_bazuka.bmp",NULL);
 		 break;
 	case 50 :
-		 image=load_bitmap("../lara_court_a_gauche_arme5_1.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_gauche_bazuka_1.bmp",NULL);
 		 break;
 	case 51 :
-		 image=load_bitmap("../lara_court_a_gauche_arme5_2.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_gauche_bazuka_2.bmp",NULL);
 		 break;
 	case 52 :
-		 image=load_bitmap("../lara_court_a_gauche_arme5_3.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_gauche_bazuka_3.bmp",NULL);
 		 break;
 	case 53 :
-		 image=load_bitmap("../lara_court_a_gauche_arme5_4.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_gauche_bazuka_4.bmp",NULL);
 		 break;
 	case 54 :
-		 image=load_bitmap("../lara_court_a_droite_arme5_1.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_droite_bazuka_1.bmp",NULL);
 		 break;
 	case 55 :
-		 image=load_bitmap("../lara_court_a_droite_arme5_2.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_droite_bazuka_2.bmp",NULL);
 		 break;
 	case 56 :
-		 image=load_bitmap("../lara_court_a_droite_arme5_3.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_droite_bazuka_3.bmp",NULL);
 		 break;
 	case 57 :
-		 image=load_bitmap("../lara_court_a_droite_arme5_4.bmp",NULL);
+		 image=load_bitmap("../lara_court_a_droite_bazuka_4.bmp",NULL);
 		 break; 
 	case 58 :
-		 image=load_bitmap("../lara_tir_arme5_1.bmp",NULL);
+		 image=load_bitmap("../lara_tir_bazuka_1.bmp",NULL);
 		 break;	
 	case 59 :
-		 image=load_bitmap("../lara_tir_arme5_2.bmp",NULL);
+		 image=load_bitmap("../lara_tir_bazuka_2.bmp",NULL);
 		 break;	
 	case 60 :
-		 image=load_bitmap("../lara_tir_arme5_3.bmp",NULL);
+		 image=load_bitmap("../lara_tir_bazuka_3.bmp",NULL);
 		 break;	
 	case 61 :
 		 image=load_bitmap("../lara_perd_1.bmp",NULL);
@@ -224,9 +223,6 @@ void afficherSprite (float x, float y, int numero_sprite) {
 	case 73 :
 		 image=load_bitmap("../lara_gagne_7.bmp",NULL);
 		 break;
-    case 74 :
-    	 image=load_bitmap("../arme1.bmp",NULL);
-    	 break;
     case 75 :
     	 image=load_bitmap("../arme2.bmp",NULL);
     	 break;
@@ -240,90 +236,83 @@ void afficherSprite (float x, float y, int numero_sprite) {
     	 image=load_bitmap("../bazuka.bmp",NULL);
     	 break;
     case 79 :
-    	 image=load_bitmap("../obstacle_petit.bmp",NULL);
-    	 break;	
-    case 80 :
-    	 image=load_bitmap("../obstacle_moyen.bmp",NULL);
-    	 break;	
-    case 81 :
-    	 image=load_bitmap("../obstacle_grand.bmp",NULL);
-    	 break;	
-    case 82 :
-    	 image=load_bitmap("../bulle_vide.bmp",NULL);
-    	 break;
-    case 83 :
-    	 image=load_bitmap("../bulle_avec_arme1.bmp",NULL);
-    	 break;
-    case 84 :
-    	 image=load_bitmap("../bulle_avec_arme2.bmp",NULL);
-    	 break;
-    case 85 :
-    	 image=load_bitmap("../bulle_avec_arme3.bmp",NULL);
-    	 break;
-    case 86 :
-    	 image=load_bitmap("../bulle_avec_arme4.bmp",NULL);
-    	 break;
-    case 87 :
-    	 image=load_bitmap("../bulle_avec_arme5.bmp",NULL);
-    	 break;
-    case 88 :
-    	 image=load_bitmap("../bulle_avec_eclair.bmp",NULL);
-    	 break;
-    case 89 :
-    	 image=load_bitmap("../bulle_avec_bonus.bmp",NULL);
-    	 break;
-    case 90 :
-    	 image=load_bitmap("../bulle_avec_malus.bmp",NULL);
-    	 break;
-    case 91 :
-    	 image=load_bitmap("../bulle_aplati_vide.bmp",NULL);
-    	 break;
-    case 92 :
-    	 image=load_bitmap("../bulle_aplati_avec_arme1.bmp",NULL);
-    	 break;
-    case 93 :
-    	 image=load_bitmap("../bulle_aplati_avec_arme2.bmp",NULL);
-    	 break;
-    case 94 :
-    	 image=load_bitmap("../bulle_aplati_avec_arme3.bmp",NULL);
-    	 break;
-    case 95 :
-    	 image=load_bitmap("../bulle_aplati__avec_arme4.bmp",NULL);
-    	 break;
-    case 96 :
-    	 image=load_bitmap("../bulle_aplati_avec_arme5.bmp",NULL);
-    	 break;
-    case 97 :
-    	 image=load_bitmap("../bulle_aplati_avec_eclair.bmp",NULL);
-    	 break;
-    case 98 :
-    	 image=load_bitmap("../bulle_aplati_avec_bonus.bmp",NULL);
-    	 break;
-    case 99 :
-    	 image=load_bitmap("../bulle_aplati_avec_malus.bmp",NULL);
-    	 break;
-    case 100 :
     	 image=load_bitmap("../balle.bmp",NULL);
     	 break;
-    case 101 :
+    case 80 :
     	 image=load_bitmap("../bombe.bmp",NULL);
     	 break;
+    case 81 :
+    	 image=load_bitmap("../obstacle_petit.bmp",NULL);
+    	 break;	
+    case 82 :
+    	 image=load_bitmap("../obstacle_grand.bmp",NULL);
+    	 break;	
+    case 83 :
+    	 image=load_bitmap("../bulle_petite_pleine.bmp",NULL);
+    	 break;
+    case 84 :
+    	 image=load_bitmap("../bulle_petite_aplatie.bmp",NULL);
+    	 break;
+    case 85 :
+    	 image=load_bitmap("../bulle_moyenne_pleine.bmp",NULL);
+    	 break;
+    case 86 :
+    	 image=load_bitmap("../bulle_moyenne_aplatie.bmp",NULL);
+    	 break;
+    case 87 :
+    	 image=load_bitmap("../bulle_grande_pleine.bmp",NULL);
+    	 break;
+    case 88 :
+    	 image=load_bitmap("../bulle_grande_aplatie.bmp",NULL);
+    	 break;
+    case 89 :
+    	 image=load_bitmap("../boss_mouvement_ailes_1.bmp",NULL);
+    	 break;
+    case 90 :
+    	 image=load_bitmap("../boss_mouvement_ailes_2.bmp",NULL);
+    	 break;
+    case 91 :
+    	 image=load_bitmap("../boss_mouvement_ailes_3.bmp",NULL);
+    	 break;
+    case 92 :
+    	 image=load_bitmap("../boss_mouvement_ailes_4.bmp",NULL);
+    	 break;
+    case 93 :
+    	 image=load_bitmap("../boss_mouvement_ailes_5.bmp",NULL);
+    	 break;
+     case 94 :
+    	 image=load_bitmap("../boss_mouvement_ailes_6.bmp",NULL);
+    	 break;
+    case 95 :
+    	 image=load_bitmap("../boss_perd_1.bmp",NULL);
+    	 break;
+    case 96 :
+    	 image=load_bitmap("../boss_perd_2.bmp",NULL);
+    	 break;
+    case 97 :
+    	 image=load_bitmap("../boss_perd_3.bmp",NULL);
+    	 break;	  
+    case 98 :
+    	 image=load_bitmap("../boss_perd_4.bmp",NULL);
+    	 break;
+    case 99 :
+    	 image=load_bitmap("../boule_de_feu_petite_pleine.bmp",NULL);
+    	 break;
+    case 100 :
+    	 image=load_bitmap("../boule_de_feu_petite_aplatie.bmp",NULL);
+    	 break;
+    case 101 :
+    	 image=load_bitmap("../boule_de_feu_moyenne_pleine.bmp",NULL);
+    	 break;
     case 102 :
-    	 image=load_bitmap("../boss1.bmp",NULL);
+    	 image=load_bitmap("../boule_de_feu_moyenne_aplatie.bmp",NULL);
     	 break;
     case 103 :
-    	 image=load_bitmap("../boss2.bmp",NULL);
+    	 image=load_bitmap("../boule_de_feu_grande_pleine.bmp",NULL);
     	 break;
     case 104 :
-    	 image=load_bitmap("../boss3.bmp",NULL);
-    	 break;
-    case 105 :
-    	 image=load_bitmap("../boss4.bmp",NULL);
-    	 break;
-    case 106 :
-    	 image=load_bitmap("../boss5.bmp",NULL);
+    	 image=load_bitmap("../boule_de_feu_grande_aplatie.bmp",NULL);
     	 break;
 	}
 
 }
-```
