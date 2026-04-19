@@ -111,6 +111,7 @@ void gererVictoireNiveau() {
     if (niveau == 5) {
         gererVictoirePartie();
     } else {
+        niveau++;
         afficherVictoireNiveau();
         finNiveau();
     }
