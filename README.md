@@ -18,7 +18,7 @@ char pseudo[MAX_PSEUDO];
 
 /* ================= PERMET DE PASSER LE PARAMETRE NIVEAU A CERTAINES SOUS-PROGRAMMES ================= */
 
-int get_niveau(void) {
+int recupererNiveau() {
     return niveau;
 }
 
