@@ -1,1 +1,2 @@
-# Projet-info-S2
+#include <logiqueJeu.h>
+#include <gestionGraphique.c>
