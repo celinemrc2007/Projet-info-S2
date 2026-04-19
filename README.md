@@ -3,6 +3,9 @@
 #include "gestionGraphique.h"
 void initialisation_allegro();
 
+#DEFINE LARGEUR_ECRAN 1200 
+#DEFINE HAUTEUR_ECRAN 800
+
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
 	switch (numero_sprite) {
