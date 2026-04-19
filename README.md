@@ -1,7 +1,9 @@
+#include <stdio.h>
 #include <allegro.h>
-#include <time.h>
+#include "gestionGraphique.h"
 void initialisation_allegro();
 
+//Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
 	switch (numero_sprite) {
 	case 1 :
