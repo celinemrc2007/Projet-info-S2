@@ -1,0 +1,9 @@
+// les ifndef et endif sont propres à vos fichiers dans CLion, donc on les met pas ici
+
+
+#define FICHIER_SAUVEGARDE "sauvegarde.txt"
+#define MAX_PSEUDO 50
+
+void sauvegarderPartie(const char *pseudo, int niveau);
+int chargerPartie(const char *pseudo, int *niveau);
+int pseudoExiste(const char *pseudo);
