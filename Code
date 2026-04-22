@@ -8,7 +8,7 @@ void initialisation_allegro();
 
 // Tableaux de sprites
 // Pas de sprites bulles aplaties finalement pour faire un effet plus fluide lors du rebond
-BITMAP *images[125];
+BITMAP *image[125];
 
 void chargerSprites () {
 		 image[1]=load_bitmap("../images/lara_debout_arme1.png",NULL);
