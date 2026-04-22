@@ -1,9 +1,9 @@
+#include "gestionGraphique.h"
 #include <stdio.h>
 #include <allegro.h>
-#include "gestionGraphique.h"
 void initialisation_allegro();
 
-#define LARGEUR_ECRAN 1200 
+#define LARGEUR_ECRAN 1200
 #define HAUTEUR_ECRAN 800
 
 // Tableaux de sprites
@@ -117,6 +117,6 @@ void chargerSprites () {
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
-	BITMAP *image = images[numero_sprite];
-	blit(image,screen,0,0, (int)(x - image->w / 2), (int)(y - image->h / 2), image->w, image->h);
+	BITMAP *img = image[numero_sprite];
+	blit(img,screen,0,0, (int)(x - img->w / 2), (int)(y - img->h / 2), img->w, img->h);
 }
