@@ -1,29 +1,64 @@
-#ifndef PROGRAMMES_GESTIONLISTES_H
-#define PROGRAMMES_GESTIONLISTES_H
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
-typedef struct {
-    float x; // en pixels
-    float y; // en pixels
-    float vx; // en pixels/s
-    float vy; // en pixels/s
-    int largeur; // en pixels
-    int hauteur; // en pixels
-    bool actif;
-} Position;
 
-typedef struct bulle {
-    Position position;
-    int rayon;
-    int objet;
-    struct bulle *suivant;
-} Bulle;
+#define PETITE_BULLE 80
+#define MOYENNE_BULLE 112
+#define GRANDE_BULLE 160
 
-typedef struct obstacle {
-    Position position;
-    struct obstacle *suivant;
-} Obstacle;
+//************************ STRUCTURES ************************//
+
+// Structure générale
+typedef struct position
+{
+    int x; // centre de l'objet ( axe x vers la droite)
+    int y; // centre de l'objet (attention axe y est vers le bas!)
+    float vx; //vitesse
+    float vy;
+    int largeur;
+    int hauteur;
+    bool actif; // booleen mis à false pour supprimer l’objet
+}Position;
+
+// Structure Bulle
+typedef struct bulle
+{
+    Position positionBulle; // position de la bulle
+    int rayon; // il y a 3 tailles
+    int objet; // numéro : arme (1 à 5), eclair (6), bonus (7), malus(8) ou rien (0)
+    struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
+}Bulle;
+
+// Structure Objet
+typedef struct objet
+{
+    Position positionObjet; // position de l'objet
+    int type; // arme ou eclair ou rien ?
+    float duree_restante; // durée restante d'activation de l'objet
+    struct objet *suivantObjet; // pointeur vers la structure objet suivante
+}Objet;
+
+// Structure Balle
+typedef struct balle
+{
+    Position positionBalle; // position de la balle
+    struct balle *suivantBalle; // pointeur vers la structure balle suivante
+}Balle;
 
 
+//***************************** FONCTIONS *************************//
 
-#endif
+Bulle *creerBulle();
+Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
+void ajouterBulleAleatoirement(const int *niveau);
+void supprimerBulle( Bulle **tete, Bulle *bulle);
+int supprimerListeBulle(Bulle **tete);
+Balle *creerBalle();
+Balle *ajouterBalle(Balle **tete, Balle *nouveau);
+void supprimerBallesHorsZone(Balle **tete, Balle *balle);
+int supprimerListeBalle(Balle **tete);
+Objet *creerObjet();
+Objet *ajouterObjet(Objet **tete, Objet *nouveau);
+void supprimerObjet(Objet **tete, Objet *objet);
+int supprimerListeObjet(Objet **tete);
+bool listeVide();
