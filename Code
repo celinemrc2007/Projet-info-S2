@@ -1,16 +1,16 @@
 #include<stdbool.h>
 typedef struct {
-float x;
-float y; 
-float vx;
-float vy;
-float largeur; 
-float hauteur;
+float x; // en pixels
+float y; // en pixels
+float vx; // en pixels/s
+float vy; // en pixels/s
+float largeur; // en pixels
+float hauteur; // en pixels
 bool actif;
 } Position;
 
 typedef struct bulle {
-int rayon;
+int rayon; // en pixels
 int objet;
 struct bulle *suivant;
 } Bulle;
