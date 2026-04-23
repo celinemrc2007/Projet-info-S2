@@ -1,14 +1,32 @@
-#include "gestionGraphique.h"
 #include <stdio.h>
 #include <allegro.h>
+#include "gestionGraphique.h"
 void initialisation_allegro();
 
-#define LARGEUR_ECRAN 1200
-#define HAUTEUR_ECRAN 800
+#DEFINE LARGEUR_ECRAN 1200 
+#DEFINE HAUTEUR_ECRAN 800
 
 // Tableaux de sprites
 // Pas de sprites bulles aplaties finalement pour faire un effet plus fluide lors du rebond
-BITMAP *image[125];
+BITMAP *images[125];
+
+void initialisation_allegro() {
+	allegro_init(); // appel obligatoire (var.globales, recup. infos syst me ...)
+	install_keyboard(); //pour utiliser le clavier
+	install_mouse(); //pour utiliser la souris
+	//pour choisir la profondeur de couleurs (8,16,24 ou 32 bits)
+	set_color_depth(desktop_color_depth()); //ici : identique à celle du bureau
+
+	//sélection du mode graphique
+	// avec choix d'un driver+mode+résolution de l'écran
+	/// si échec, le programme s'arrête
+	if(set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
+	{
+		allegro_message("probleme mode graphique");
+		allegro_exit();
+		exit(EXIT_FAILURE);
+	}
+}
 
 void chargerSprites () {
 		 image[1]=load_bitmap("../images/lara_debout_arme1.png",NULL);
@@ -117,6 +135,20 @@ void chargerSprites () {
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
-	BITMAP *img = image[numero_sprite];
-	blit(img,screen,0,0, (int)(x - img->w / 2), (int)(y - img->h / 2), img->w, img->h);
+	BITMAP *image = images[numero_sprite];
+	blit(image,screen,0,0, (int)(x - image->w / 2), (int)(y - image->h / 2), image->w, image->h);
+}
+
+void afficherNiveau(int niveau) {
+	int w, h;
+	/* Utilise la police bitmap par défaut d'Allegro */
+	FONT *ma_police = font;
+
+	while (!key[KEY_ESC]) {
+		BITMAP *tmp = create_bitmap(200, 50);
+		clear_to_color(screen, makecol(0, 0, 0));
+		textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau);
+		stretch_sprite(screen, tmp, 100, 700, 400, 100);
+		rest(120000);
+	}
 }
