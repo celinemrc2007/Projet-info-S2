@@ -3,19 +3,27 @@
 
 #include <stdbool.h>
 typedef struct {
-float x; // en pixels
-float y; // en pixels
-float vx; // en pixels/s
-float vy; // en pixels/s
-float largeur; // en pixels
-float hauteur; // en pixels
-bool actif;
+    float x; // en pixels
+    float y; // en pixels
+    float vx; // en pixels/s
+    float vy; // en pixels/s
+    int largeur; // en pixels
+    int hauteur; // en pixels
+    bool actif;
 } Position;
 
 typedef struct bulle {
-int rayon; // en pixels
-int objet;
-struct bulle *suivant;
+    Position position;
+    int rayon;
+    int objet;
+    struct bulle *suivant;
 } Bulle;
+
+typedef struct obstacle {
+    Position position;
+    struct obstacle *suivant;
+} Obstacle;
+
+
 
 #endif
