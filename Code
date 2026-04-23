@@ -1,4 +1,7 @@
-#include<stdbool.h>
+#ifndef PROGRAMMES_GESTIONLISTES_H
+#define PROGRAMMES_GESTIONLISTES_H
+
+#include <stdbool.h>
 typedef struct {
 float x; // en pixels
 float y; // en pixels
@@ -14,3 +17,5 @@ int rayon; // en pixels
 int objet;
 struct bulle *suivant;
 } Bulle;
+
+#endif
