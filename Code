@@ -24,11 +24,13 @@ Bulle *creerBulle()
         case 3: bulle->positionBulle.largeur = bulle->positionBulle.hauteur = 2*GRANDE_BULLE; // rayon grande bulle : 80 pixel
         break;
     }
-    bulle->positionBulle.x = bulle->rayon + rand()%(1200-bulle->rayon-(bulle->rayon)+1); // position x entre 0+rayon (min) et 1200-rayon (max)
-    bulle->positionBulle.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
-    bulle->positionBulle.vx = ;
-    bulle->positionBulle.vy = ;
-    bulle->suivantBulle = NULL;
+    bulle->position.x = bulle->rayon + rand()%(LARGEUR_ECRAN-2*bulle->rayon); // position x entre 0+rayon (min) et 1200-rayon (max)
+    bulle->position.y = bulle->rayon + rand()%(HAUTEUR_ECRAN-2*bulle->rayon); // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
+    bulle->position.vx = rand() % 150 - 75;
+    bulle->position.vy = rand() % 150 - 75;
+    bulle->position.largeur = 2 * bulle->rayon; // diametre = 2*rayon
+    bulle->position.hauteur = 2 * bulle->rayon;
+    bulle->suivant = NULL;
     return bulle; // on retourne l'adresse de la bulle créée
 }
 
