@@ -126,11 +126,9 @@ void chargerSprites () {
     	 images[95]=load_bitmap("../images/boss_perd_3.png",NULL);
     	 images[96]=load_bitmap("../images/boss_perd_4.png",NULL);
     	 images[97]=load_bitmap("../images/boule_de_feu_petite_pleine.png",NULL);
-    	 images[98]=load_bitmap("../images/boule_de_feu_petite_aplatie.png",NULL);
-    	 images[99]=load_bitmap("../images/boule_de_feu_moyenne_pleine.png",NULL);
-    	 images[100]=load_bitmap("../images/boule_de_feu_moyenne_aplatie.png",NULL);
-    	 images[101]=load_bitmap("../images/boule_de_feu_grande_pleine.png",NULL);
-    	 images[102]=load_bitmap("../images/boule_de_feu_grande_aplatie.png",NULL);
+    	 images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.png",NULL);
+    	 images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.png",NULL);
+    	
 }
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
