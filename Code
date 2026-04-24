@@ -29,6 +29,7 @@ typedef struct bulle
     struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
 }Bulle;
 
+//Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie. 
 // Structure Obstacle
 typedef struct obstacle {
     Position position;
