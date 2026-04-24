@@ -8,6 +8,8 @@
 #define PETITE_BULLE 40
 #define MOYENNE_BULLE 56
 #define GRANDE_BULLE 80 // RAYON
+#define LARGEUR_ECRAN 1800
+#define HAUTEUR_ECRAN 800
 
 //************************ STRUCTURES ************************//
 
