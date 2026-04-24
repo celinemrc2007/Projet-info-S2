@@ -29,6 +29,12 @@ typedef struct bulle
     struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
 }Bulle;
 
+// Structure Obstacle
+typedef struct obstacle {
+    Position position;
+    struct obstacle *suivant;
+} Obstacle;
+
 // Structure Objet
 typedef struct objet
 {
