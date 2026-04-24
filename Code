@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define PETITE_BULLE 40
-#define MOYENNE_BULLE 56
-#define GRANDE_BULLE 80 // RAYONS
+extern int TAILLE_BULLE[]; //Tableau sur la taille des bulles
 
 //************************ STRUCTURES ************************//
 
