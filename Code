@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define PETITE_BULLE 80
-#define MOYENNE_BULLE 112
-#define GRANDE_BULLE 160
+#define PETITE_BULLE 40
+#define MOYENNE_BULLE 56
+#define GRANDE_BULLE 80 // RAYONS
 
 //************************ STRUCTURES ************************//
 
@@ -28,7 +28,7 @@ typedef struct bulle
     struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
 }Bulle;
 
-//Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie. 
+//Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie.
 // Structure Obstacle
 typedef struct obstacle {
     Position position;
