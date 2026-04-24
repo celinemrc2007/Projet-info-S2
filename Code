@@ -14,13 +14,20 @@ Bulle *creerBulle()
         exit(1);
     }
     bulle->objet = 0; // au début il n'y a rien dans la bulle
-    bulle->rayon = rand()%  ; // taille aléatoire entre PETITE_BULLE, MOYENNE_BULLE, GRANDE_BULLE
+    bulle->rayon = 1 + rand()%3 ; // taille aléatoire pour un nombre entre 1, 2, 3
+    switch (bulle->rayon)
+    {
+        case 1: bulle->positionBulle.largeur = bulle->positionBulle.hauteur = 2*PETITE_BULLE; // rayon petite bulle : 40 pixel
+        break;
+        case 2: bulle->positionBulle.largeur = bulle->positionBulle.hauteur = 2*MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
+        break;
+        case 3: bulle->positionBulle.largeur = bulle->positionBulle.hauteur = 2*GRANDE_BULLE; // rayon grande bulle : 80 pixel
+        break;
+    }
     bulle->positionBulle.x = bulle->rayon + rand()%(1200-bulle->rayon-(bulle->rayon)+1); // position x entre 0+rayon (min) et 1200-rayon (max)
     bulle->positionBulle.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
     bulle->positionBulle.vx = ;
     bulle->positionBulle.vy = ;
-    bulle->positionBulle.largeur = bulle->positionBulle.hauteur = 2*(bulle->rayon); // diametre = 2*rayon
-    bulle->positionBulle.actif = ;
     bulle->suivantBulle = NULL;
     return bulle; // on retourne l'adresse de la bulle créée
 }
@@ -76,7 +83,7 @@ void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la l
 
 int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la premiere
 {
-    while (!fileVide()) // tant qu'il y a une liste
+    while (!listeVide()) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Bulle *temporaire = *tete; // pour parcourir la liste
@@ -106,9 +113,8 @@ Balle *creerBalle()
     balle->positionBalle.y =  ;
     balle->positionBalle.vx = ; // c'est la vitesse de tir ?
     balle->positionBalle.vy = ;
-    balle->positionBalle.hauteur = 40;
+    balle->positionBalle.hauteur = 40; // 5% des dimentions de l'ecran
     balle->positionBalle.largeur = 60;
-    balle->positionBalle.actif = TRUE; // on ne supprime pas l'objet
     balle->suivantBalle = NULL;
     return balle; // on retourne l'adresse de la balle créée
 }
@@ -131,9 +137,11 @@ Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
 
 void supprimerBallesHorsZone(Balle **tete, Balle *balle)
 {
-    if (!listeVide()) // il y a au moins un élément
+    if (!listeVide())
+    {
+        // il y a au moins un élément
         Balle *temporaire = *tete; // temporaire qui commence au debut de la liste
-        if (balle->positionBalle.y<(0+40) | balle->positionBalle.x<(0+60) | balle->positionBalle.x>(1200-60) // critere : si la balle dépasse en haut ou sur les cotes de la zone de jeu (en considerant sa taille)
+        if (balle->positionBalle.y<(0+40) | balle->positionBalle.x <(0+60) | balle->positionBalle.x >(1200-60)) // critere : si la balle dépasse en haut ou sur les cotes de la zone de jeu (en considerant sa taille)
         {
             // on supprime la balle
             *tete = temporaire->suivantBalle; // on passe à la balle suivante
@@ -142,13 +150,15 @@ void supprimerBallesHorsZone(Balle **tete, Balle *balle)
         else
         {
             *tete = temporaire->suivantBalle; // on déplace la tete
+
         }
         free(temporaire); //liberation pour pouvoir avancer
+    }
 }
 
 int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la premiere
 {
-    while (!fileVide()) // tant qu'il y a une liste
+    while (!listeVide()) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Balle *temporaire = *tete; // pour parcourir la liste
@@ -180,8 +190,7 @@ Objet *creerObjet()
     objet->positionObjet.vy = ;
     objet->positionObjet.hauteur = 40;
     objet->positionObjet.largeur = 60; // eclair et arme font la meme taille
-    objet->positionObjet.actif = TRUE; // on ne supprime pas l'objet
-    objet->type = ;
+    objet->type = rand()%5; // objet entre 0 et 5
     objet->duree_restante = 10; // ils ne restent que 10 sec à l'ecran
     objet->suivantObjet = NULL;
     return objet; // on retourne l'adresse de l'objet créé
@@ -223,7 +232,7 @@ void supprimerObjet(Objet **tete, Objet *objet)
 
 int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
 {
-    while (!fileVide()) // tant qu'il y a une liste
+    while (!listeVide()) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Objet *temporaire = *tete; // pour parcourir la liste
@@ -240,8 +249,12 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     return 1; // la liste est vide
 }
 
-bool listeVide()
+bool listeVide(void **tete)
 {
-    return TRUE; //liste vide
-    return FALSE; //liste non vide
+    if (*tete == NULL)
+    {
+        return TRUE;
+    }
+    return FALSE;
+    
 }
