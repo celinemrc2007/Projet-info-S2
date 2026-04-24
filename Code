@@ -5,7 +5,7 @@
 #include <windows.h>
 
 
-Bulle *creerBulle()
+Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
 {
     Bulle *bulle = malloc(sizeof(Bulle)); // allocation dynamique
     if (bulle == NULL)
@@ -13,27 +13,47 @@ Bulle *creerBulle()
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    bulle->objet = 0; // au début il n'y a rien dans la bulle
+    switch (niveau)
+    {
+        case 1: bulle->objet = rand () % 2;
+        bulle->position.vx = rand() % 150 - 75;
+        bulle->position.vy = rand() % 150 - 75;
+        break;
+        case 2: bulle->objet = rand () % 3;
+        //plus le niveau augmente, plus la vitesse augmente
+        break;
+        case 3: bulle->objet = rand () % 5;
+        break;
+        case 4: bulle->objet = rand () % 5;
+        break;
+        case 5: bulle->objet = rand () % 7; // inclusion bonus malus
+        break;
+    }
+
     bulle->rayon = 1 + rand()%3 ; // taille aléatoire pour un nombre entre 1, 2, 3
     switch (bulle->rayon)
     {
-        case 1: bulle->position.largeur = 2*PETITE_BULLE; 
-        bulle->position.hauteur = 2*PETITE_BULLE; // rayon petite bulle : 40 pixel
+        case 1: bulle->position.largeur = bulle->position.hauteur = 2*PETITE_BULLE; // rayon petite bulle : 40 pixel
         break;
-        case 2: bulle->position.largeur = 2*MOYENNE_BULLE;
-        bulle->position.hauteur = 2*MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
+        case 2: bulle->position.largeur = bulle->position.hauteur = 2*MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
         break;
-        case 3: bulle->position.largeur = 2*GRANDE_BULLE;
-        bulle->position.hauteur = 2*GRANDE_BULLE; // rayon grande bulle : 80 pixel
+        case 3: bulle->position.largeur = bulle->position.hauteur = 2*GRANDE_BULLE; // rayon grande bulle : 80 pixel
         break;
     }
-    bulle->position.x = bulle->rayon + rand()%(LARGEUR_ECRAN-2*bulle->rayon); // position x entre 0+rayon (min) et 1200-rayon (max)
-    bulle->position.y = bulle->rayon + rand()%(HAUTEUR_ECRAN-2*bulle->rayon); // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
-    bulle->position.vx = rand() % 150 - 75;
-    bulle->position.vy = rand() % 150 - 75;
-    bulle->position.largeur = 2 * bulle->rayon; // diametre = 2*rayon
-    bulle->position.hauteur = 2 * bulle->rayon;
-    bulle->suivant = NULL;
+
+    switch (ApparitionDebutJeu)
+    {
+        case TRUE: // bulles apparaissent partout dans le jeu
+        bulle->position.x = bulle->rayon + rand()%(LARGEUR_ECRAN-bulle->rayon-(bulle->rayon)+1); // position x entre 0+rayon (min) et 1200-rayon (max)
+        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
+        break;
+        case FALSE: // bulles apparaissent que sur les bords
+        bulle->position.x = (bulle->rayon) | (LARGEUR_ECRAN-bulle->rayon); // sur les bors à gauche ou à droite
+        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
+        break;
+    }
+
+    bulle->suivantBulle = NULL;
     return bulle; // on retourne l'adresse de la bulle créée
 }
 
@@ -53,11 +73,11 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
     return nouveau; // on retourne l'adresse de la nouvelle bulle
 }
 
-void ajouterBulleAleatoirement(const int *niveau) // je pense qu'il faut passer le niveau en parametre non ?
+void ajouterBulleAleatoirement(int niveau) // je pense qu'il faut passer le niveau en parametre non ?
 {
     int proba = rand()%100 + 1; // variable aléatoire entre 1 et 100
     // je ne sais pas trop comment faire, il faut avoir une valeur de referance non ? , genre proba = 100  veut dire qu'il y a tant de bulles créées par minutes etc
-    switch (*niveau)
+    switch (niveau)
     {
         case 1:
         case 2:
@@ -73,7 +93,7 @@ void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la l
     if (!listeVide())
     {
         Bulle *temporaire = *tete; // temporaire qui commence au debut de la liste
-        if (temporaire->positionBulle.x == bulle->positionBulle.x && temporaire->positionBulle.y == bulle->positionBulle.y) //critere : si temporaire et bulle sont au meme endroit
+        if (temporaire->position.x == bulle->position.x && temporaire->position.y == bulle->position.y) //critere : si temporaire et bulle sont au meme endroit
         {
             *tete = temporaire->suivantBulle; // on fait pointer la tete sur la bulle suivante
             temporaire = NULL; // on rend l'adresse de la bulle pointée nulle pour supprimer la bulle
@@ -106,7 +126,7 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
 }
 
 
-Balle *creerBalle()
+Balle *creerBalle() // on prend l'arme grise par défault ?
 {
     Balle *balle = malloc(sizeof(Balle)); // allocation dynamique
     if (balle == NULL)
@@ -116,8 +136,8 @@ Balle *creerBalle()
     }
     balle->positionBalle.x =  ;
     balle->positionBalle.y =  ;
-    balle->positionBalle.vx = ; // c'est la vitesse de tir ?
-    balle->positionBalle.vy = ;
+    balle->positionBalle.vx = 0;
+    balle->positionBalle.vy = rand()% ; // balle part verticalement
     balle->positionBalle.hauteur = 40; // 5% des dimentions de l'ecran
     balle->positionBalle.largeur = 60;
     balle->suivantBalle = NULL;
@@ -181,7 +201,7 @@ int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la p
 }
 
 
-Objet *creerObjet()
+Objet *creerObjet(int niveau)
 {
     Objet *objet = malloc(sizeof(Objet)); // allocation dynamique
     if (objet == NULL)
@@ -189,13 +209,35 @@ Objet *creerObjet()
         printf("Erreur allocation memoire.");
         exit(1);
     }
+    switch (niveau)
+    {
+        case 1:
+        objet->type = rand()%2;
+        objet->positionObjet.hauteur = 40;
+        objet->positionObjet.largeur = 60; // taille arme
+        break;
+        case 2: objet->type = rand()%3;
+        objet->positionObjet.hauteur = 40;
+        objet->positionObjet.largeur = 60; // taille arme
+        break;
+        case 3: objet->type = rand()%5;
+        objet->positionObjet.hauteur = 40;
+        objet->positionObjet.largeur = 60; // taille arme et eclair
+        break;
+        case 4: objet->type = rand()%5;
+        objet->positionObjet.hauteur = 40;
+        objet->positionObjet.largeur = 60; // taille arme et eclair
+        break;
+        case 5: objet->type = rand()%7;
+
+        break;
+    }
     objet->positionObjet.x =  ;
     objet->positionObjet.y =  ;
-    objet->positionObjet.vx = ;
-    objet->positionObjet.vy = ;
-    objet->positionObjet.hauteur = 40;
-    objet->positionObjet.largeur = 60; // eclair et arme font la meme taille
-    objet->type = rand()%5; // objet entre 0 et 5
+    objet->positionObjet.vx = 0;
+    objet->positionObjet.vy = rand()% ; // objet descend verticalement
+
+
     objet->duree_restante = 10; // ils ne restent que 10 sec à l'ecran
     objet->suivantObjet = NULL;
     return objet; // on retourne l'adresse de l'objet créé
@@ -261,5 +303,3 @@ bool listeVide(void **tete)
         return TRUE;
     }
     return FALSE;
-    
-}
