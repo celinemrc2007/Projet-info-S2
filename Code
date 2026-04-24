@@ -57,20 +57,19 @@ typedef struct balle
 
 //***************************** FONCTIONS *************************//
 
-Bulle *creerBulle();
+Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
-void ajouterBulleAleatoirement(const int *niveau);
+void ajouterBulleAleatoirement(int niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
 Balle *creerBalle();
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBallesHorsZone(Balle **tete, Balle *balle);
 int supprimerListeBalle(Balle **tete);
-Objet *creerObjet();
+Objet *creerObjet(int niveau);
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
 bool listeVide();
-
 
 #endif
