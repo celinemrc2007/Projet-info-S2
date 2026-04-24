@@ -25,7 +25,7 @@ typedef struct position
 // Structure Bulle
 typedef struct bulle
 {
-    Position positionBulle; // position de la bulle
+    Position position; // position de la bulle
     int rayon; // il y a 3 tailles
     int objet; // numéro :  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
     struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
