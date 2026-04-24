@@ -3,9 +3,6 @@
 #include "gestionGraphique.h"
 void initialisation_allegro();
 
-#define LARGEUR_ECRAN 1200
-#define HAUTEUR_ECRAN 800
-
 // Tableaux de sprites
 // Pas de sprites bulles aplaties finalement pour faire un effet plus fluide lors du rebond
 BITMAP *images[125];
@@ -16,11 +13,10 @@ void initialisation_allegro() {
 	install_mouse(); //pour utiliser la souris
 	//pour choisir la profondeur de couleurs (8,16,24 ou 32 bits)
 	set_color_depth(desktop_color_depth()); //ici : identique à celle du bureau
-
 	//sélection du mode graphique
 	// avec choix d'un driver+mode+résolution de l'écran
 	/// si échec, le programme s'arrête
-	if(set_gfx_mode(GFX_AUTODETECT_WINDOWED,800,600,0,0)!=0)
+	if(set_gfx_mode(GFX_AUTODETECT_WINDOWED, LARGEUR_ECRAN,HAUTEUR_ECRAN,0,0)!=0)
 	{
 		allegro_message("probleme mode graphique");
 		allegro_exit();
@@ -29,114 +25,113 @@ void initialisation_allegro() {
 }
 
 void chargerSprites () {
-		 images[1]=load_bitmap("../images/lara_debout_arme1.png",NULL);
-		 images[2]=load_bitmap("../images/lara_court_a_gauche_arme1_1.png",NULL);
-		 images[3]=load_bitmap("../images/lara_court_a_gauche_arme1_2.png",NULL);
-		 images[4]=load_bitmap("../images/lara_court_a_gauche_arme1_3.png",NULL);
-		 images[5]=load_bitmap("../images/lara_court_a_gauche_arme1_4.png",NULL);
-		 images[6]=load_bitmap("../images/lara_court_a_droite_arme1_1.png",NULL);
-		 images[7]=load_bitmap("../images/lara_court_a_droite_arme1_2.png",NULL);
-		 images[8]=load_bitmap("../images/lara_court_a_droite_arme1_3.png",NULL);
-		 images[9]=load_bitmap("../images/lara_court_a_droite_arme1_4.png",NULL);
-		 images[10]=load_bitmap("../images/lara_tir_arme1_1.png",NULL);
-		 images[11]=load_bitmap("../images/lara_tir_arme1_2.png",NULL);
-		 images[12]=load_bitmap("../images/lara_tir_arme1_3.png",NULL);
-		 images[13]=load_bitmap("../images/lara_debout_arme2.png",NULL);
-		 images[14]=load_bitmap("../images/lara_court_a_gauche_arme2_1.png",NULL);
-		 images[15]=load_bitmap("../images/lara_court_a_gauche_arme2_2.png",NULL);
-		 images[16]=load_bitmap("../images/lara_court_a_gauche_arme2_3.png",NULL);
-		 images[17]=load_bitmap("../images/lara_court_a_gauche_arme2_4.png",NULL);
-		 images[18]=load_bitmap("../images/lara_court_a_droite_arme2_1.png",NULL);
-		 images[19]=load_bitmap("../images/lara_court_a_droite_arme2_2.png",NULL);
-		 images[20]=load_bitmap("../images/lara_court_a_droite_arme2_3.png",NULL);
-		 images[21]=load_bitmap("../images/lara_court_a_droite_arme2_4.png",NULL);
-		 images[22]=load_bitmap("../images/lara_tir_arme2_1.png",NULL);
-		 images[23]=load_bitmap("../images/lara_tir_arme2_2.png",NULL);
-		 images[24]=load_bitmap("../images/lara_tir_arme2_3.png",NULL);
-		 images[25]=load_bitmap("../images/lara_debout_arme3.png",NULL);
-		 images[26]=load_bitmap("../images/lara_court_a_gauche_arme3_1.png",NULL);
-		 images[27]=load_bitmap("../images/lara_court_a_gauche_arme3_2.png",NULL);
-		 images[28]=load_bitmap("../images/lara_court_a_gauche_arme3_3.png",NULL);
-		 images[29]=load_bitmap("../images/lara_court_a_gauche_arme3_4.png",NULL);
-		 images[30]=load_bitmap("../images/lara_court_a_droite_arme3_1.png",NULL);
-		 images[31]=load_bitmap("../images/lara_court_a_droite_arme3_2.png",NULL);
-		 images[32]=load_bitmap("../images/lara_court_a_droite_arme3_3.png",NULL);
-		 images[33]=load_bitmap("../images/lara_court_a_droite_arme3_4.png",NULL);
-		 images[34]=load_bitmap("../images/lara_tir_arme3_1.png",NULL);
-		 images[35]=load_bitmap("../images/lara_tir_arme3_2.png",NULL);
-		 images[36]=load_bitmap("../images/lara_tir_arme3_3.png",NULL);
-		 images[37]=load_bitmap("../images/lara_debout_arme4.png",NULL);
-		 images[38]=load_bitmap("../images/lara_court_a_gauche_arme4_1.png",NULL);
-		 images[39]=load_bitmap("../images/lara_court_a_gauche_arme4_2.png",NULL);
-		 images[40]=load_bitmap("../images/lara_court_a_gauche_arme4_3.png",NULL);
-		 images[41]=load_bitmap("../images/lara_court_a_gauche_arme4_4.png",NULL);
-		 images[42]=load_bitmap("../images/lara_court_a_droite_arme4_1.png",NULL);
-		 images[43]=load_bitmap("../images/lara_court_a_droite_arme4_2.png",NULL);
-		 images[44]=load_bitmap("../images/lara_court_a_droite_arme4_3.png",NULL);
-		 images[45]=load_bitmap("../images/lara_court_a_droite_arme4_4.png",NULL);
-		 images[46]=load_bitmap("../images/lara_tir_arme4_1.png",NULL);
-		 images[47]=load_bitmap("../images/lara_tir_arme4_2.png",NULL);
-		 images[48]=load_bitmap("../images/lara_tir_arme4_3.png",NULL);
-		 images[49]=load_bitmap("../images/lara_debout_bazuka.png",NULL);
-		 images[50]=load_bitmap("../images/lara_court_a_gauche_bazuka_1.png",NULL);
-		 images[51]=load_bitmap("../images/lara_court_a_gauche_bazuka_2.png",NULL);
-		 images[52]=load_bitmap("../images/lara_court_a_gauche_bazuka_3.png",NULL);
-		 images[53]=load_bitmap("../images/lara_court_a_gauche_bazuka_4.png",NULL);
-		 images[54]=load_bitmap("../images/lara_court_a_droite_bazuka_1.png",NULL);
-		 images[55]=load_bitmap("../images/lara_court_a_droite_bazuka_2.png",NULL);
-		 images[56]=load_bitmap("../images/lara_court_a_droite_bazuka_3.png",NULL);
-		 images[57]=load_bitmap("../images/lara_court_a_droite_bazuka_4.png",NULL);
-		 images[58]=load_bitmap("../images/lara_tir_bazuka_1.png",NULL);
-		 images[59]=load_bitmap("../images/lara_tir_bazuka_2.png",NULL);
-		 images[60]=load_bitmap("../images/lara_tir_bazuka_3.png",NULL);
-		 images[61]=load_bitmap("../images/lara_perd_1.png",NULL);
-		 images[62]=load_bitmap("../images/lara_perd_2.png",NULL);
-		 images[63]=load_bitmap("../images/lara_perd_3.png",NULL);
-		 images[64]=load_bitmap("../images/lara_perd_4.png",NULL);
-		 images[65]=load_bitmap("../images/lara_perd_5.png",NULL);
-		 images[66]=load_bitmap("../images/lara_perd_6.png",NULL);
-		 images[67]=load_bitmap("../images/lara_gagne_1.png",NULL);
-		 images[68]=load_bitmap("../images/lara_gagne_2.png",NULL);
-		 images[69]=load_bitmap("../images/lara_gagne_3.png",NULL);
-		 images[70]=load_bitmap("../images/lara_gagne_4.png",NULL);
-		 images[71]=load_bitmap("../images/lara_gagne_5.png",NULL);
-		 images[72]=load_bitmap("../images/lara_gagne_6.png",NULL);
-		 images[73]=load_bitmap("../images/lara_gagne_7.png",NULL);
-    	 images[74]=load_bitmap("../images/arme2.png",NULL);
-    	 images[75]=load_bitmap("../images/arme3.png",NULL);
-    	 images[76]=load_bitmap("../images/arme4.png",NULL);
-    	 images[77]=load_bitmap("../images/bazuka.png",NULL);
-    	 images[78]=load_bitmap("../images/balle.png",NULL);
-    	 images[79]=load_bitmap("../images/bombe.png",NULL);
-    	 images[80]=load_bitmap("../images/obstacle_petit_horizontal.png",NULL);
-    	 images[81]=load_bitmap("../images/obstacle_grand_horizontal.png",NULL);
-    	 images[82]=load_bitmap("../images/obstacle_petit_vertical.png",NULL);
-    	 images[83]=load_bitmap("../images/obstacle_grand_vertical.png",NULL);
-    	 images[84]=load_bitmap("../images/bulle_petite_pleine.png",NULL);
-    	 images[85]=load_bitmap("../images/bulle_moyenne_pleine.png",NULL);
-    	 images[86]=load_bitmap("../images/bulle_grande_pleine.png",NULL);
-    	 images[87]=load_bitmap("../images/boss_mouvement_ailes_1.png",NULL);
-    	 images[88]=load_bitmap("../images/boss_mouvement_ailes_2.png",NULL);
-    	 images[89]=load_bitmap("../images/boss_mouvement_ailes_3.png",NULL);
-    	 images[90]=load_bitmap("../images/boss_mouvement_ailes_4.png",NULL);
-    	 images[91]=load_bitmap("../images/boss_mouvement_ailes_5.png",NULL);
-    	 images[92]=load_bitmap("../images/boss_mouvement_ailes_6.png",NULL);
-    	 images[93]=load_bitmap("../images/boss_perd_1.png",NULL);
-    	 images[94]=load_bitmap("../images/boss_perd_2.png",NULL);
-    	 images[95]=load_bitmap("../images/boss_perd_3.png",NULL);
-    	 images[96]=load_bitmap("../images/boss_perd_4.png",NULL);
-    	 images[97]=load_bitmap("../images/boule_de_feu_petite_pleine.png",NULL);
-    	 images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.png",NULL);
-    	 images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.png",NULL);
-    	
+		 images[1]=load_bitmap("../images/lara_debout_arme1.bmp",NULL);
+		 images[2]=load_bitmap("../images/lara_court_a_gauche_arme1_1.bmp",NULL);
+		 images[3]=load_bitmap("../images/lara_court_a_gauche_arme1_2.bmp",NULL);
+		 images[4]=load_bitmap("../images/lara_court_a_gauche_arme1_3.bmp",NULL);
+		 images[5]=load_bitmap("../images/lara_court_a_gauche_arme1_4.bmp",NULL);
+		 images[6]=load_bitmap("../images/lara_court_a_droite_arme1_1.bmp",NULL);
+		 images[7]=load_bitmap("../images/lara_court_a_droite_arme1_2.bmp",NULL);
+		 images[8]=load_bitmap("../images/lara_court_a_droite_arme1_3.bmp",NULL);
+		 images[9]=load_bitmap("../images/lara_court_a_droite_arme1_4.bmp",NULL);
+		 images[10]=load_bitmap("../images/lara_tir_arme1_1.bmp",NULL);
+		 images[11]=load_bitmap("../images/lara_tir_arme1_2.bmp",NULL);
+		 images[12]=load_bitmap("../images/lara_tir_arme1_3.bmp",NULL);
+		 images[13]=load_bitmap("../images/lara_debout_arme2.bmp",NULL);
+		 images[14]=load_bitmap("../images/lara_court_a_gauche_arme2_1.bmp",NULL);
+		 images[15]=load_bitmap("../images/lara_court_a_gauche_arme2_2.bmp",NULL);
+		 images[16]=load_bitmap("../images/lara_court_a_gauche_arme2_3.bmp",NULL);
+		 images[17]=load_bitmap("../images/lara_court_a_gauche_arme2_4.bmp",NULL);
+		 images[18]=load_bitmap("../images/lara_court_a_droite_arme2_1.bmp",NULL);
+		 images[19]=load_bitmap("../images/lara_court_a_droite_arme2_2.bmp",NULL);
+		 images[20]=load_bitmap("../images/lara_court_a_droite_arme2_3.bmp",NULL);
+		 images[21]=load_bitmap("../images/lara_court_a_droite_arme2_4.bmp",NULL);
+		 images[22]=load_bitmap("../images/lara_tir_arme2_1.bmp",NULL);
+		 images[23]=load_bitmap("../images/lara_tir_arme2_2.bmp",NULL);
+		 images[24]=load_bitmap("../images/lara_tir_arme2_3.bmp",NULL);
+		 images[25]=load_bitmap("../images/lara_debout_arme3.bmp",NULL);
+		 images[26]=load_bitmap("../images/lara_court_a_gauche_arme3_1.bmp",NULL);
+		 images[27]=load_bitmap("../images/lara_court_a_gauche_arme3_2.bmp",NULL);
+		 images[28]=load_bitmap("../images/lara_court_a_gauche_arme3_3.bmp",NULL);
+		 images[29]=load_bitmap("../images/lara_court_a_gauche_arme3_4.bmp",NULL);
+		 images[30]=load_bitmap("../images/lara_court_a_droite_arme3_1.bmp",NULL);
+		 images[31]=load_bitmap("../images/lara_court_a_droite_arme3_2.bmp",NULL);
+		 images[32]=load_bitmap("../images/lara_court_a_droite_arme3_3.bmp",NULL);
+		 images[33]=load_bitmap("../images/lara_court_a_droite_arme3_4.bmp",NULL);
+		 images[34]=load_bitmap("../images/lara_tir_arme3_1.bmp",NULL);
+		 images[35]=load_bitmap("../images/lara_tir_arme3_2.bmp",NULL);
+		 images[36]=load_bitmap("../images/lara_tir_arme3_3.bmp",NULL);
+		 images[37]=load_bitmap("../images/lara_debout_arme4.bmp",NULL);
+		 images[38]=load_bitmap("../images/lara_court_a_gauche_arme4_1.bmp",NULL);
+		 images[39]=load_bitmap("../images/lara_court_a_gauche_arme4_2.bmp",NULL);
+		 images[40]=load_bitmap("../images/lara_court_a_gauche_arme4_3.bmp",NULL);
+		 images[41]=load_bitmap("../images/lara_court_a_gauche_arme4_4.bmp",NULL);
+		 images[42]=load_bitmap("../images/lara_court_a_droite_arme4_1.bmp",NULL);
+		 images[43]=load_bitmap("../images/lara_court_a_droite_arme4_2.bmp",NULL);
+		 images[44]=load_bitmap("../images/lara_court_a_droite_arme4_3.bmp",NULL);
+		 images[45]=load_bitmap("../images/lara_court_a_droite_arme4_4.bmp",NULL);
+		 images[46]=load_bitmap("../images/lara_tir_arme4_1.bmp",NULL);
+		 images[47]=load_bitmap("../images/lara_tir_arme4_2.bmp",NULL);
+		 images[48]=load_bitmap("../images/lara_tir_arme4_3.bmp",NULL);
+		 images[49]=load_bitmap("../images/lara_debout_bazuka.bmp",NULL);
+		 images[50]=load_bitmap("../images/lara_court_a_gauche_bazuka_1.bmp",NULL);
+		 images[51]=load_bitmap("../images/lara_court_a_gauche_bazuka_2.bmp",NULL);
+		 images[52]=load_bitmap("../images/lara_court_a_gauche_bazuka_3.bmp",NULL);
+		 images[53]=load_bitmap("../images/lara_court_a_gauche_bazuka_4.bmp",NULL);
+		 images[54]=load_bitmap("../images/lara_court_a_droite_bazuka_1.bmp",NULL);
+		 images[55]=load_bitmap("../images/lara_court_a_droite_bazuka_2.bmp",NULL);
+		 images[56]=load_bitmap("../images/lara_court_a_droite_bazuka_3.bmp",NULL);
+		 images[57]=load_bitmap("../images/lara_court_a_droite_bazuka_4.bmp",NULL);
+		 images[58]=load_bitmap("../images/lara_tir_bazuka_1.bmp",NULL);
+		 images[59]=load_bitmap("../images/lara_tir_bazuka_2.bmp",NULL);
+		 images[60]=load_bitmap("../images/lara_tir_bazuka_3.bmp",NULL);
+		 images[61]=load_bitmap("../images/lara_perd_1.bmp",NULL);
+		 images[62]=load_bitmap("../images/lara_perd_2.bmp",NULL);
+		 images[63]=load_bitmap("../images/lara_perd_3.bmp",NULL);
+		 images[64]=load_bitmap("../images/lara_perd_4.bmp",NULL);
+		 images[65]=load_bitmap("../images/lara_perd_5.bmp",NULL);
+		 images[66]=load_bitmap("../images/lara_perd_6.bmp",NULL);
+		 images[67]=load_bitmap("../images/lara_gagne_1.bmp",NULL);
+		 images[68]=load_bitmap("../images/lara_gagne_2.bmp",NULL);
+		 images[69]=load_bitmap("../images/lara_gagne_3.bmp",NULL);
+		 images[70]=load_bitmap("../images/lara_gagne_4.bmp",NULL);
+		 images[71]=load_bitmap("../images/lara_gagne_5.bmp",NULL);
+		 images[72]=load_bitmap("../images/lara_gagne_6.bmp",NULL);
+		 images[73]=load_bitmap("../images/lara_gagne_7.bmp",NULL);
+    	 images[74]=load_bitmap("../images/arme2.bmp",NULL);
+    	 images[75]=load_bitmap("../images/arme3.bmp",NULL);
+    	 images[76]=load_bitmap("../images/arme4.bmp",NULL);
+    	 images[77]=load_bitmap("../images/bazuka.bmp",NULL);
+    	 images[78]=load_bitmap("../images/balle.bmp",NULL);
+    	 images[79]=load_bitmap("../images/bombe.bmp",NULL);
+    	 images[80]=load_bitmap("../images/obstacle_petit_horizontal.bmp",NULL);
+    	 images[81]=load_bitmap("../images/obstacle_grand_horizontal.bmp",NULL);
+    	 images[82]=load_bitmap("../images/obstacle_petit_vertical.bmp",NULL);
+    	 images[83]=load_bitmap("../images/obstacle_grand_vertical.bmp",NULL);
+    	 images[84]=load_bitmap("../images/bulle_petite_pleine.bmp",NULL);
+    	 images[85]=load_bitmap("../images/bulle_moyenne_pleine.bmp",NULL);
+    	 images[86]=load_bitmap("../images/bulle_grande_pleine.bmp",NULL);
+    	 images[87]=load_bitmap("../images/boss_mouvement_ailes_1.bmp",NULL);
+    	 images[88]=load_bitmap("../images/boss_mouvement_ailes_2.bmp",NULL);
+    	 images[89]=load_bitmap("../images/boss_mouvement_ailes_3.bmp",NULL);
+    	 images[90]=load_bitmap("../images/boss_mouvement_ailes_4.bmp",NULL);
+    	 images[91]=load_bitmap("../images/boss_mouvement_ailes_5.bmp",NULL);
+    	 images[92]=load_bitmap("../images/boss_mouvement_ailes_6.bmp",NULL);
+    	 images[93]=load_bitmap("../images/boss_perd_1.bmp",NULL);
+    	 images[94]=load_bitmap("../images/boss_perd_2.bmp",NULL);
+    	 images[95]=load_bitmap("../images/boss_perd_3.bmp",NULL);
+    	 images[96]=load_bitmap("../images/boss_perd_4.bmp",NULL);
+    	 images[97]=load_bitmap("../images/boule_de_feu_petite_pleine.bmp",NULL);
+    	 images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.bmp",NULL);
+    	 images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.bmp",NULL);
+
 }
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
 	BITMAP *image = images[numero_sprite];
-	blit(image,screen,0,0, (int)(x - image->w / 2), (int)(y - image->h / 2), image->w, image->h);
+	draw_sprite(screen, image,(int)(x - image->w / 2),(int)(y - image->h / 2));
 }
-
 void afficherNiveau(int niveau) {
 	int w, h;
 	/* Utilise la police bitmap par défaut d'Allegro */
