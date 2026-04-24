@@ -17,7 +17,6 @@ typedef struct position
     float vy;
     int largeur;
     int hauteur;
-    bool actif; // booleen mis à false pour supprimer l’objet
 }Position;
 
 // Structure Bulle
