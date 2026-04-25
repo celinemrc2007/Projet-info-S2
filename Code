@@ -35,26 +35,26 @@ void lancerNiveau() {
     switch (niveau) {
         case 1:
             temps_restant = 120; // 2 min
-            bulle->objet = rand () % 2;
+            bulle->objet = rand () % 1;
             break;
 
         case 2:
             temps_restant = 105; // 1 min 45
-            bulle->objet = rand () % 3;
+            bulle->objet = rand () % 2;
             break;
 
         case 3:
             temps_restant = 90; // 1 min 30
-            bulle->objet = rand () % 5;
+            bulle->objet = rand () % 4;
             break;
         case 4:
             temps_restant = 75; // 1 min 15
-            bulle->objet = rand () % 6;
+            bulle->objet = rand () % 5;
             break;
 
           case 5:
             temps_restant = 60; // 1 min
-            bulle->objet = rand () % 9;
+            bulle->objet = rand () % 8;
             break;
     }
 
