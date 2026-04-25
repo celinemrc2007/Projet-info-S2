@@ -15,18 +15,18 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
     }
     switch (niveau)
     {
-        case 1: bulle->objet = rand () % 2;
+        case 1: bulle->objet = rand () % 1;  // Toutes les bulles sont vides.
         bulle->position.vx = rand() % 150 - 75;
         bulle->position.vy = rand() % 150 - 75;
         break;
-        case 2: bulle->objet = rand () % 3;
+        case 2: bulle->objet = rand () % 2; // Ajout d'une nouvelle arme
         //plus le niveau augmente, plus la vitesse augmente
         break;
-        case 3: bulle->objet = rand () % 5;
+        case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
         break;
-        case 4: bulle->objet = rand () % 5;
+        case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme 
         break;
-        case 5: bulle->objet = rand () % 7; // inclusion bonus malus
+        case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
         break;
     }
 
