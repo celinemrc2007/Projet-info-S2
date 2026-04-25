@@ -1,1 +1,231 @@
+#include<stdio.h>
+#include "gestionGraphique.h"
+#include "logiqueJeu.h"
+#include "gestionListes.h"
 
+
+#define GRAVITE 30   // unité : pixel/s²
+#define N 10
+#define HORS_ZONE_JEU -500
+
+Obstacle obstacles[N];
+Bulle **tete_bulle;
+Balle **tete_balle;
+Objet **tete_objet;
+Joueur *joueur;
+Boss *boss;
+
+void gererBulle(Bulle *bulle, float cycle) {
+    // effet de gravité sur les bulles
+    bulle->position.vy += GRAVITE*cycle;
+    // cinematique
+    bulle->position.x += bulle->position.vx*cycle;
+    bulle->position.y += bulle->position.vy*cycle;
+    /*for (int i = 0; i < N; i++) {
+        if (detecterCollision(bulle->position, obstacle->position)==true) {
+        rebondBulleObstacle(bulle, obstacle);
+        }
+    }
+    Balle *balle = *tete_balle;
+    while (balle != NULL) {
+        if (detecterCollision(bulle->position, balle->position) == true) {
+            collisionBulleBalle(balle);
+            balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
+        }
+    balle = balle->suivant;
+    }
+
+    collisionBulleBord(bulle);
+
+    if (detecterCollision(bulle->position, joueur->position) == true) { // Si la bulle touche le joueur, le joueur perd.
+        gererEchecNiveau;
+    }
+    }*/
+}
+
+void afficherBoss (Boss *boss) {
+    // Animation de battement des ailes
+    afficherSprite(boss->position.x, boss->position.y, 87);
+    afficherSprite(boss->position.x, boss->position.y, 88);
+    afficherSprite(boss->position.x, boss->position.y, 89);
+    afficherSprite(boss->position.x, boss->position.y, 90);
+    afficherSprite(boss->position.x, boss->position.y, 91);
+    afficherSprite(boss->position.x, boss->position.y, 92);
+    if (boss->nb_tirs_recus >= 30) {
+        afficherSprite(boss->position.x, boss->position.y, 93);
+        afficherSprite(boss->position.x, boss->position.y, 94);
+        afficherSprite(boss->position.x, boss->position.y, 95);
+        afficherSprite(boss->position.x, boss->position.y, 96);
+        //afficherVictoireNiveau;
+    }
+}
+
+void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle) {
+    int diff_lh = (obstacle->position.largeur - obstacle->position.hauteur)/2;
+    int dx = bulle->position.x - obstacle->position.x;
+    int dy = bulle->position.y - obstacle->position.y;
+
+    if (bulle->position.vy >= 0) {
+        if (bulle->position.vx >= 0) { // vx >= 0 et vy >= 0
+            if (dy/obstacle->position.hauteur >= dx/obstacle->position.largeur) {
+                bulle->position.vx = -bulle->position.vx; // rebond en x
+                bulle->position.x = 2*obstacle->position.x - obstacle->position.largeur -
+                    2*bulle->rayon - bulle->position.x;
+            } else {
+                bulle->position.vy = -bulle->position.vy; // rebond en y
+                bulle->position.y = 2*obstacle->position.y - obstacle->position.hauteur -
+                    2*bulle->rayon - bulle->position.y;
+            }
+        } else {   // vy>=0 et vx<0
+            if (dy/obstacle->position.hauteur >= -dx/obstacle->position.largeur) {
+                bulle->position.vx = -bulle->position.vx; // rebond en x
+                bulle->position.x = 2*obstacle->position.x + obstacle->position.largeur +
+                    2*bulle->rayon - bulle->position.x;
+            } else {
+                bulle->position.vy = -bulle->position.vy; // rebond en y
+                bulle->position.y = 2*obstacle->position.y - obstacle->position.hauteur -
+                    2*bulle->rayon - bulle->position.y;
+            }
+        }
+    } else {
+        if (bulle->position.vx >= 0) { // vx >= 0 et vy < 0
+            if (-dy/obstacle->position.hauteur >= dx/obstacle->position.largeur) {
+                bulle->position.vx = -bulle->position.vx; // rebond en x
+                bulle->position.x = 2*obstacle->position.x - obstacle->position.largeur -
+                    2*bulle->rayon - bulle->position.x;
+            } else {
+                bulle->position.hauteur = 2*bulle->position.y - 2*obstacle->position.y - obstacle->position.hauteur;
+                if (bulle->position.hauteur < bulle->rayon)
+                {
+                    bulle->position.vy = -bulle->position.vy; // rebond en y
+                    bulle->position.y = 2*obstacle->position.y + obstacle->position.hauteur +
+                        bulle->rayon - bulle->position.y;
+                }
+            }
+        } else {   // vy>=0 et vx<0
+            if (-dy/obstacle->position.hauteur >= -dx/obstacle->position.largeur) {
+                bulle->position.vx = -bulle->position.vx; // rebond en x
+                bulle->position.x = 2*obstacle->position.x + obstacle->position.largeur +
+                    2*bulle->rayon - bulle->position.x;
+            } else {
+                bulle->position.vy = -bulle->position.vy; // rebond en y
+                bulle->position.y = 2*obstacle->position.y + obstacle->position.hauteur +
+                    2*bulle->rayon - bulle->position.y;
+            }
+        }
+    }
+}
+
+void afficherElements() {
+    Bulle *bulle = *tete_bulle;
+    while (bulle != NULL) {
+        if (bulle->boule_de_feu == false) {
+            switch (bulle->rayon) {
+                case PETITE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 84);
+                    break;
+                case MOYENNE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 85);
+                    break;
+                case GRANDE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 86);
+                    break;
+            }
+        } else {
+            switch (bulle->rayon) {
+                case PETITE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 97);
+                    break;
+                case MOYENNE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 98);
+                    break;
+                case GRANDE_BULLE:
+                    afficherSpriteRedimensionne(&bulle->position, 99);
+                    break;
+            }
+        }
+        bulle = bulle->suivant;
+    }
+    Balle *balle = *tete_balle;
+    while (balle != NULL) {
+        afficherSprite(balle->position.x, balle->position.y, 78);
+        balle = balle->suivant;
+    }
+    Objet **tete_objet;
+    Objet *objet = *tete_objet;
+    while (objet != NULL) {
+        switch (bulle->objet) {
+            case 1 :
+                afficherSprite(objet->position.x, objet->position.y, 74); // Affichage de l'arme 2
+                break;
+            case 2 :
+                afficherSprite(objet->position.x, objet->position.y, 75); // Affichage de l'arme 3
+                break;
+            case 3 :
+                afficherSprite(objet->position.x, objet->position.y, 100); // Affichage de l'éclair
+                break;
+            case 4 :
+                afficherSprite(objet->position.x, objet->position.y, 76); // Affichage de l'arme 4
+                break;
+            case 5 :
+                afficherSprite(objet->position.x, objet->position.y, 77); // Affichage de l'arme 5
+                break;
+            case 6 :
+                afficherSprite(objet->position.x, objet->position.y, 101); // Affichage du bonus
+                break;
+            case 7 :
+                afficherSprite(objet->position.x, objet->position.y, 102); // Affichage du malus
+                break;
+        }
+        objet = objet->suivant;
+    }
+    afficherBoss(boss);
+    // Affiche des informations dans la zone d'infos
+    /*afficherDecompte;
+      afficherPseudo;
+      afficherNiveau(niveau);
+      afficherTempsRestant(temps_restant);
+      afficherScore(score);
+    */
+}
+
+void animerElements(float cycle) {
+    Balle *balle = *tete_balle;
+    while (balle != NULL) {
+        //gererBalle(balle, cycle);
+        balle = balle->suivant;
+    }
+    Bulle *bulle = *tete_bulle;
+    while (bulle != NULL) {
+        gererBulle(bulle, cycle);
+        bulle = bulle->suivant;
+    }
+    Objet **tete_objet;
+    Objet *objet = *tete_objet;
+    while (objet != NULL) {
+        /* if (detecterCollision(objet->position, joueur->position) == true) {
+            collisionJoueurObjet(objet);
+        */ objet = objet->suivant;
+    }
+}
+
+void init() {
+    // initialiserListeBulle;
+    // Initialisation des caractériqtiques du joueur au début d'une partie
+    joueur->position.x = LARGEUR_ECRAN/2;
+    joueur->position.y = HAUTEUR_ECRAN/2 -100;
+    joueur->position.vx = 0;
+    joueur->position.vy = 0;
+    joueur->position.hauteur =  HAUTEUR_ECRAN/5;
+    joueur->arme = 0; // Arme par défaut
+
+    // Initialisation des quatre types d'obstacles différents à des positions aléatoires dans la zone de jeu
+
+
+
+
+    // Initialisation de la liste des balles
+
+
+    
+}
