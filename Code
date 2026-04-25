@@ -57,6 +57,12 @@ typedef struct balle
     struct balle *suivant; // pointeur vers la structure balle suivante
 }Balle;
 
+typedef struct boss
+{
+    Position position; // position du boss
+    int nb_tirs_recus; // nb_de_tirs_recus par le joueur
+}Boss;
+
 
 //***************************** FONCTIONS *************************//
 
