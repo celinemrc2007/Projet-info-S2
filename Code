@@ -1,1 +1,15 @@
+#ifndef PROGRAMMES_GESTIONGRAPHIQUE_H
+#define PROGRAMMES_GESTIONGRAPHIQUE_H
+
+#include "gestionListes.h"
+
+#define LARGEUR_ECRAN 1200
+#define HAUTEUR_ECRAN 800
+
+void initialisation_allegro();
+void chargerSprites ();
+void afficherSprite (float x, float y, int numero_sprite);
+void afficherSpriteRedimensionne (Position *position, int numero_sprite);
+void afficherNiveau(int niveau);
+#endif //PROGRAMMES_GESTIONGRAPHIQUE_H
 
