@@ -1,1 +1,13 @@
+#ifndef PROGRAMMES_LOGIQUEJEU_H
+#define PROGRAMMES_LOGIQUEJEU_H
+
+#include "gestionListes.h"
+
+void gererBulle(Bulle *bulle, float cycle);
+void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle);
+void afficherBoss (Boss *boss);
+void afficherElements();
+void animerElements(float cycle)
+void init();
+#endif //PROGRAMMES_LOGIQUEJEU_H
 
