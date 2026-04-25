@@ -125,7 +125,9 @@ void chargerSprites () {
     	 images[97]=load_bitmap("../images/boule_de_feu_petite_pleine.bmp",NULL);
     	 images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.bmp",NULL);
     	 images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.bmp",NULL);
-
+		 images[100]=load_bitmap("../images/eclair.bmp",NULL);
+	     images[101]=load_bitmap("../images/bonus.bmp",NULL);
+		 images[102]=load_bitmap("../images/malus.bmp",NULL);
 }
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
