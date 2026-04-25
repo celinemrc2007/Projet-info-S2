@@ -52,8 +52,8 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
         bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
         break;
     }
-
-    bulle->suivantBulle = NULL;
+    bulle->boules_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
+    bulle->suivant = NULL;
     return bulle; // on retourne l'adresse de la bulle créée
 }
 
