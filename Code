@@ -30,14 +30,13 @@ typedef struct bulle
     Position position; // position de la bulle
     int rayon; // il y a 3 tailles
     int objet; // numéro :  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
-    struct bulle *suivantBulle; // pointeur vers la structure bulle suivante
+    struct bulle *suivant; // pointeur vers la structure bulle suivante
 }Bulle;
 
 //Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie.
 // Structure Obstacle
 typedef struct obstacle {
     Position position;
-    struct obstacle *suivant;
 } Obstacle;
 
 // Structure Objet
