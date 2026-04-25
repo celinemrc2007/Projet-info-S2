@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <allegro.h>
 #include "gestionGraphique.h"
+#include "gestionListes.h"
 void initialisation_allegro();
 
 // Tableaux de sprites
@@ -132,16 +133,13 @@ void afficherSprite (float x, float y, int numero_sprite) {
 	BITMAP *image = images[numero_sprite];
 	draw_sprite(screen, image,(int)(x - image->w / 2),(int)(y - image->h / 2));
 }
-void afficherNiveau(int niveau) {
-	int w, h;
-	/* Utilise la police bitmap par défaut d'Allegro */
-	FONT *ma_police = font;
 
-	while (!key[KEY_ESC]) {
-		BITMAP *tmp = create_bitmap(200, 50);
-		clear_to_color(screen, makecol(0, 0, 0));
-		textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau);
-		stretch_sprite(screen, tmp, 100, 700, 400, 100);
-		rest(120000);
-	}
+void afficherSpriteRedimensionne (Position *position, int numero_sprite) {
+	BITMAP *image = images[numero_sprite];
+	stretch_sprite(screen, image, (int)(position->x - position->largeur / 2), (int)(position->y - position->hauteur / 2),
+		position->largeur, position->hauteur);
+}
+
+void afficherNiveau(int niveau) {
+	textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau);
 }
