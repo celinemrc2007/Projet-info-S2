@@ -30,7 +30,7 @@ typedef struct bulle
     Position position; // position de la bulle
     int rayon; // il y a 3 tailles
     int objet; // numéro :  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
-    bool boules_de_feu // permet de savoir quel sprites afficher : si on combat le boss, ce booléen est à true
+    bool boule_de_feu // permet de savoir quel sprites afficher : si on combat le boss, ce booléen est à true
                        // et on affiche les sprites boules de feu. Sinon, on affiche les bulles dans afficherElements.
     struct bulle *suivant; // pointeur vers la structure bulle suivante
 }Bulle;
