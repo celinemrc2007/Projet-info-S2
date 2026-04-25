@@ -16,8 +16,8 @@
 // Structure générale
 typedef struct position
 {
-    int x; // centre de l'objet ( axe x vers la droite)
-    int y; // centre de l'objet (attention axe y est vers le bas!)
+    float x; // centre de l'objet ( axe x vers la droite)
+    float y; // centre de l'objet (attention axe y est vers le bas!)
     float vx; //vitesse
     float vy;
     int largeur;
@@ -31,7 +31,7 @@ typedef struct bulle
     int rayon; // il y a 3 tailles
     int objet; // numéro :  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
     bool boule_de_feu // permet de savoir quel sprites afficher : si on combat le boss, ce booléen est à true
-                       // et on affiche les sprites boules de feu. Sinon, on affiche les bulles dans afficherElements.
+                       // et on affiche les sprites boules de feu. Sinon, on affiche les bulles dans afficherElements
     struct bulle *suivant; // pointeur vers la structure bulle suivante
 }Bulle;
 
@@ -44,36 +44,36 @@ typedef struct obstacle {
 // Structure Objet
 typedef struct objet
 {
-    Position positionObjet; // position de l'objet
+    Position position; // position de l'objet
     int type; //  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
     float duree_restante; // durée restante d'activation de l'objet
-    struct objet *suivantObjet; // pointeur vers la structure objet suivante
+    struct objet *suivant; // pointeur vers la structure objet suivante
 }Objet;
 
 // Structure Balle
 typedef struct balle
 {
-    Position positionBalle; // position de la balle
-    struct balle *suivantBalle; // pointeur vers la structure balle suivante
+    Position position; // position de la balle
+    struct balle *suivant; // pointeur vers la structure balle suivante
 }Balle;
 
 
 //***************************** FONCTIONS *************************//
 
-Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
+Bulle *creerBulle();
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
-void ajouterBulleAleatoirement(int niveau);
+void ajouterBulleAleatoirement(const int *niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
 Balle *creerBalle();
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBallesHorsZone(Balle **tete, Balle *balle);
 int supprimerListeBalle(Balle **tete);
-Objet *creerObjet(int niveau);
+Objet *creerObjet();
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
-bool listeVide(void **tete);
+bool listeVide();
 
 
 #endif
