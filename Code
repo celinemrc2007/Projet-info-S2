@@ -24,6 +24,18 @@ typedef struct position
     int hauteur;
 }Position;
 
+typedef struct {
+    Position position;
+    int arme;
+} Joueur;
+
+typedef struct {
+    int nb_tirs;
+    int vitesse;
+    bool vertical; //Si ce booléen vaut true, tous les tirs sont verticaux vers le haut. Sinon, il peut y avoir des tirs diagonaux. 
+    bool bazuka;
+} Arme;
+
 // Structure Bulle
 typedef struct bulle
 {
