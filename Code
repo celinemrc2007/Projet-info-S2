@@ -27,8 +27,8 @@ typedef struct position
 {
     float x; // centre de l'objet ( axe x vers la droite)
     float y; // centre de l'objet (attention axe y est vers le bas!)
-    float vx; //vitesse
-    float vy;
+    int vx; //vitesse
+    int vy;
     int largeur;
     int hauteur;
 }Position;
@@ -51,8 +51,8 @@ typedef struct bulle
     Position position; // position de la bulle
     int rayon; // il y a 3 tailles
     int objet; // numéro :  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
-    bool boule_de_feu // permet de savoir quel sprites afficher : si on combat le boss, ce booléen est à true
-                       // et on affiche les sprites boules de feu. Sinon, on affiche les bulles dans afficherElements
+    bool boule_de_feu; // permet de savoir quel sprites afficher : si on combat le boss, ce booléen est à true
+    // et on affiche les sprites boules de feu. Sinon, on affiche les bulles dans afficherElements
     struct bulle *suivant; // pointeur vers la structure bulle suivante
 }Bulle;
 
@@ -87,20 +87,20 @@ typedef struct boss
 
 //***************************** FONCTIONS *************************//
 
-Bulle *creerBulle();
+Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
-void ajouterBulleAleatoirement(const int *niveau);
+void ajouterBulleAleatoirement(int niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
 Balle *creerBalle();
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBallesHorsZone(Balle **tete, Balle *balle);
 int supprimerListeBalle(Balle **tete);
-Objet *creerObjet();
+Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet );
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
-bool listeVide();
+bool listeVide(void **tete);
 
 
 #endif
