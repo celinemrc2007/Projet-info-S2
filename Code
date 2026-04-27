@@ -3,11 +3,17 @@
 
 #include "gestionListes.h"
 
+#define N 4 //Nombre d'obstacles
+Obstacle obstacles[N];
+
 void gererBulle(Bulle *bulle, float cycle);
+Balle *initialiserListeBalle(Balle *balle);
+void gererBalle(Balle *balle, Balle **tete, float cycle)
 void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle);
 void afficherBoss (Boss *boss);
 void afficherElements();
 void animerElements(float cycle)
 void init();
-#endif //PROGRAMMES_LOGIQUEJEU_H
+bool jeu();
 
+#endif //PROGRAMMES_LOGIQUEJEU_H
