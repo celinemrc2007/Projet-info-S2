@@ -47,20 +47,18 @@ void gererBulle(Bulle *bulle, Balle **tete_balle, Joueur *joueur, float cycle) {
 }
 
 Balle *initialiserListeBalle(Balle *balle) {
-    Balle *balle = *tete_balle;
-    balle == NULL;
+    *tete_balle = NULL;
     return balle;
 }
 
 void gererBalle(Balle *balle, Balle **tete, float cycle) {
-    Balle *balle = *tete_balle;
-    while (balle != NULL) {
+    while (*tete != NULL) {
         // cinematique
         balle->position.x += balle->position.vx*cycle;
         balle->position.y += balle->position.vy*cycle;
-        if (detecterCollision(obstacle.position.y, balle->position) == true) {
+        /*if (detecterCollision(obstacle.position.y, balle->position) == true) {
             balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZonea
-        }
+        } */
         balle = balle->suivant;
     }
 }
@@ -229,7 +227,7 @@ void animerElements(float cycle) {
     }
     Bulle *bulle = *tete_bulle;
     while (bulle != NULL) {
-        gererBulle(bulle, cycle);
+        gererBulle(bulle, tete_balle, joueur, cycle);
         bulle = bulle->suivant;
     }
     Objet **tete_objet;
@@ -241,7 +239,7 @@ void animerElements(float cycle) {
     }
 }
 
-void init() {
+void init(Balle *balle) {
     // initialiserListeBulle(bulle);
     initialiserListeBalle(balle);
     // Initialisation des caractériqtiques du joueur au début d'une partie
@@ -271,7 +269,8 @@ void init() {
 }
 
 bool jeu() {
-    init();
+    Balle *balle;
+    init(balle);
     float temps_restant_initial = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
