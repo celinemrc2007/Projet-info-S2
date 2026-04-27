@@ -8,7 +8,7 @@ Obstacle obstacles[N];
 
 void gererBulle(Bulle *bulle, float cycle);
 Balle *initialiserListeBalle(Balle *balle);
-void gererBalle(Balle *balle, Balle **tete, float cycle)
+void gererBalle(Balle *balle, Balle **tete, float cycle);
 void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle);
 void afficherBoss (Boss *boss);
 void afficherElements();
