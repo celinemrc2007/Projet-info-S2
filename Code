@@ -4,6 +4,7 @@
 #include <time.h>
 #include <windows.h>
 #include <gestionListes.h>
+#include <gestionGraphique.h>
 
 #define VITESSE_OBJET 100
 
