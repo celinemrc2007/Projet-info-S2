@@ -48,11 +48,11 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
     {
         case TRUE: // bulles apparaissent partout dans le jeu
         bulle->position.x = bulle->rayon + rand()%(LARGEUR_ECRAN-bulle->rayon-(bulle->rayon)+1); // position x entre 0+rayon (min) et 1200-rayon (max)
-        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
+        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
         case FALSE: // bulles apparaissent que sur les bords
         bulle->position.x = (bulle->rayon) | (LARGEUR_ECRAN-bulle->rayon); // sur les bors à gauche ou à droite
-        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité
+        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
     }
     bulle->boule_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
@@ -70,7 +70,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
     else
     {
         // ajout en début de liste
-        nouveau->suivantBulle = *tete;
+        nouveau->suivant = *tete;
         *tete = nouveau; // nouvelle bulle devient la tete
     }
     return nouveau; // on retourne l'adresse de la nouvelle bulle
@@ -93,17 +93,17 @@ void ajouterBulleAleatoirement(int niveau) // je pense qu'il faut passer le nive
 
 void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la liste
 {
-    if (!listeVide())
+    if (!listeVide(tete))
     {
         Bulle *temporaire = *tete; // temporaire qui commence au debut de la liste
         if (temporaire->position.x == bulle->position.x && temporaire->position.y == bulle->position.y) //critere : si temporaire et bulle sont au meme endroit
         {
-            *tete = temporaire->suivantBulle; // on fait pointer la tete sur la bulle suivante
+            *tete = temporaire->suivant; // on fait pointer la tete sur la bulle suivante
             temporaire = NULL; // on rend l'adresse de la bulle pointée nulle pour supprimer la bulle
         }
         else
         {
-            *tete = temporaire->suivantBulle; // on déplace la tete
+            *tete = temporaire->suivant; // on déplace la tete
         }
         free(temporaire); // liberation pour pouvoir avancer
     }
@@ -111,7 +111,7 @@ void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la l
 
 int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la premiere
 {
-    while (!listeVide()) // tant qu'il y a une liste
+    while (!listeVide(tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Bulle *temporaire = *tete; // pour parcourir la liste
@@ -132,6 +132,7 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
 Balle *creerBalle() // on prend l'arme grise par défault ?
 {
     Balle *balle = malloc(sizeof(Balle)); // allocation dynamique
+    Joueur *joueur = malloc(sizeof(Joueur)); // allocation dynamique
     if (balle == NULL)
     {
         printf("Erreur allocation memoire.");
@@ -140,7 +141,7 @@ Balle *creerBalle() // on prend l'arme grise par défault ?
     balle->position.x = joueur->position.x + joueur->position.largeur/3;
     balle->position.y = joueur->position.y + joueur->position.hauteur/2;
     balle->position.vx = 0;
-    balle->position.vy = -30;
+    balle->position.vy = -30; // tir horizontal
     balle->position.hauteur = 6/100*HAUTEUR_ECRAN;
     balle->position.largeur = 2/100*LARGEUR_ECRAN;
     return balle; // on retourne l'adresse de la balle créée
@@ -156,7 +157,7 @@ Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
     else
     {
         // ajout en début de liste
-        nouveau->suivantBalle = *tete;
+        nouveau->suivant = *tete;
         *tete = nouveau; // nouvelle balle devient la tete
     }
     return nouveau; // on retourne l'adresse de la nouvelle balle
@@ -168,15 +169,15 @@ void supprimerBallesHorsZone(Balle **tete, Balle *balle)
     {
         // il y a au moins un élément
         Balle *temporaire = *tete; // temporaire qui commence au debut de la liste
-        if (balle->positionBalle.y<(0+40) | balle->positionBalle.x <(0+60) | balle->positionBalle.x >(1200-60)) // critere : si la balle dépasse en haut ou sur les cotes de la zone de jeu (en considerant sa taille)
+        if (balle->position.y<(0+40) | balle->position.x <(0+60) | balle->position.x >(1200-60)) // critere : si la balle dépasse en haut ou sur les cotes de la zone de jeu (en considerant sa taille)
         {
             // on supprime la balle
-            *tete = temporaire->suivantBalle; // on passe à la balle suivante
+            *tete = temporaire->suivant; // on passe à la balle suivante
             temporaire = NULL; // on rend l'adresse de la balle pointée nulle pour supprimer la bulle
         }
         else
         {
-            *tete = temporaire->suivantBalle; // on déplace la tete
+            *tete = temporaire->suivant; // on déplace la tete
 
         }
         free(temporaire); //liberation pour pouvoir avancer
@@ -189,13 +190,13 @@ int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la p
     {
         // on libere toutes les bulles
         Balle *temporaire = *tete; // pour parcourir la liste
-        if ((*tete)->suivantBalle == NULL) //s'il n'y a qu'une seule balle dans la liste
+        if ((*tete)->suivant == NULL) //s'il n'y a qu'une seule balle dans la liste
         {
             *tete = NULL; //on rend l'adresse de la balle pointée nulle
         }
         else
         {
-            *tete = temporaire->suivantBalle; // on avance dans la liste
+            *tete = temporaire->suivant; // on avance dans la liste
         }
         free(temporaire); // liberation pour pouvoir avancer
     }
@@ -211,36 +212,36 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    objet->position = bulle_contenant_objet->position;
+    objet->position = bulle_contenant_objet->position; // l'objet est crée au meme endroit ou il tombe de la bulle
     switch (niveau)
     {
         case 1:
         objet->type = rand()%2;
         objet->position.hauteur = 40;
-        objet->positionObjet.largeur = 60; // taille arme
+        objet->position.largeur = 60; // taille arme
         break;
         case 2: objet->type = rand()%3;
-        objet->positionObjet.hauteur = 40;
-        objet->positionObjet.largeur = 60; // taille arme
+        objet->position.hauteur = 40;
+        objet->position.largeur = 60; // taille arme
         break;
         case 3: objet->type = rand()%5;
-        objet->positionObjet.hauteur = 40;
-        objet->positionObjet.largeur = 60; // taille arme et eclair
+        objet->position.hauteur = 40;
+        objet->position.largeur = 60; // taille arme et eclair
         break;
         case 4: objet->type = rand()%5;
-        objet->positionObjet.hauteur = 40;
-        objet->positionObjet.largeur = 60; // taille arme et eclair
+        objet->position.hauteur = 40;
+        objet->position.largeur = 60; // taille arme et eclair
         break;
         case 5: objet->type = rand()%7;
 
         break;
     }
-    objet->positionObjet.vx = 0;
-    objet->positionObjet.vy = VITESSE_OBJET; // objet descend verticalement
+    objet->position.vx = 0;
+    objet->position.vy = VITESSE_OBJET; // objet descend verticalement
 
 
     objet->duree_restante = 10; // ils ne restent que 10 sec à l'ecran
-    objet->suivantObjet = NULL;
+    objet->suivant = NULL;
     return objet; // on retourne l'adresse de l'objet créé
 }
 
@@ -254,7 +255,7 @@ Objet *ajouterObjet(Objet **tete, Objet *nouveau) // ajout en début de liste
     else
     {
         // ajout en début de liste
-        nouveau->suivantObjet = *tete;
+        nouveau->suivant = *tete;
         *tete = nouveau; // nouvel objet devient la tete
     }
     return nouveau; // on retourne l'adresse du nouvel objet
@@ -265,14 +266,14 @@ void supprimerObjet(Objet **tete, Objet *objet)
     if (listeVide(tete))
     {
         Objet *temporaire = *tete; // temporaire qui commence au debut de la liste
-        if (temporaire->positionObjet.x == objet->positionObjet.x && temporaire->positionObjet.y == objet->positionObjet.y) // critere : si temporaire et objet sont au meme endroit
+        if (temporaire->position.x == objet->position.x && temporaire->position.y == objet->position.y) // critere : si temporaire et objet sont au meme endroit
         {
-            *tete = temporaire->suivantObjet; // on fait pointer la tete sur l'objet suivante
+            *tete = temporaire->suivant; // on fait pointer la tete sur l'objet suivante
             temporaire = NULL; // on rend l'adresse de la bulle pointée nulle pour supprimer la bulle
         }
         else
         {
-            *tete = temporaire->suivantObjet; // on déplace la tete
+            *tete = temporaire->suivant; // on déplace la tete
         }
         free(temporaire); // liberation pour pouvoir avancer
     }
@@ -284,13 +285,13 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     {
         // on libere toutes les bulles
         Objet *temporaire = *tete; // pour parcourir la liste
-        if ((*tete)->suivantObjet == NULL) //si on arrive au bout de la liste
+        if ((*tete)->suivant == NULL) //si on arrive au bout de la liste
         {
             *tete = NULL; //on rend l'adresse de l'objet pointé nulle
         }
         else
         {
-            *tete = temporaire->suivantObjet; // on avance dans la liste
+            *tete = temporaire->suivant; // on avance dans la liste
         }
         free(temporaire); // liberation pour pouvoir avancer
     }
