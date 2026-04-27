@@ -8,7 +8,7 @@
 
 #define VITESSE_OBJET 100
 
-Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
+Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
 {
     Bulle *bulle = malloc(sizeof(Bulle)); // allocation dynamique
     if (bulle == NULL)
@@ -47,12 +47,12 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
     switch (ApparitionDebutJeu)
     {
         case TRUE: // bulles apparaissent partout dans le jeu
-        bulle->position.x = bulle->rayon + rand()%(LARGEUR_ECRAN-bulle->rayon-(bulle->rayon)+1); // position x entre 0+rayon (min) et 1200-rayon (max)
-        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+        bulle->position.x = (bulle->position.largeur)/2 + rand()%((LARGEUR_ECRAN-(bulle->position.largeur)/2)-((bulle->position.largeur)/2)+1); // position x entre 0+rayon (min) et 1200-rayon (max), (bulle->position.largeur)/2 represente le rayon
+        bulle->position.y = (bulle->position.hauteur)/2 + rand()%((500-(bulle->position.hauteur)/2)-((bulle->position.hauteur)/2)+1); // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
         case FALSE: // bulles apparaissent que sur les bords
-        bulle->position.x = (bulle->rayon) | (LARGEUR_ECRAN-bulle->rayon); // sur les bors à gauche ou à droite
-        bulle->position.y = bulle->rayon + rand()%(500-bulle->rayon)-(bulle->rayon)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+        bulle->position.x = (bulle->position.largeur)/2 | (LARGEUR_ECRAN-((bulle->position.largeur)/2)); // sur les bors à gauche ou à droite, (bulle->position.largeur)/2 represente le rayon
+        bulle->position.y = (bulle->position.largeur)/2 + rand()%((500-(bulle->position.largeur)/2))-((bulle->position.largeur)/2)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
     }
     bulle->boule_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
