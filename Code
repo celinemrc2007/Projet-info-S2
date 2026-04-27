@@ -11,6 +11,15 @@
 #define LARGEUR_ECRAN 1800
 #define HAUTEUR_ECRAN 800
 
+// Type d'objets
+#define ARME2 1
+#define ARME3 2
+#define ECLAIR 3
+#define ARME4 4
+#define ARME5 5
+#define BONUS 6
+#define MALUS 7
+
 //************************ STRUCTURES ************************//
 
 // Structure générale
@@ -32,7 +41,7 @@ typedef struct {
 typedef struct {
     int nb_tirs;
     int vitesse;
-    bool vertical; //Si ce booléen vaut true, tous les tirs sont verticaux vers le haut. Sinon, il peut y avoir des tirs diagonaux. 
+    bool vertical; //Si ce booléen vaut true, tous les tirs sont verticaux vers le haut. Sinon, il peut y avoir des tirs diagonaux.
     bool bazuka;
 } Arme;
 
@@ -57,7 +66,7 @@ typedef struct obstacle {
 typedef struct objet
 {
     Position position; // position de l'objet
-    int type; //  (arme (entier compris entre 1 et 4) , eclair (5), bonus (6), malus(7) ou rien (0))
+    int type; //  0:rien -- 1 : arme2 -- 2: arme3 -- 3:éclair -- 4: arme4 -- 5:arme5 -- 6:bonus -- 7:malus
     float duree_restante; // durée restante d'activation de l'objet
     struct objet *suivant; // pointeur vers la structure objet suivante
 }Objet;
