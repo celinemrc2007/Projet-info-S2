@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include <gestionListes.h>
 
+#define VITESSE_OBJET 100
 
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
 {
@@ -24,7 +26,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
         break;
         case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
         break;
-        case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme 
+        case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme
         break;
         case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
         break;
@@ -60,7 +62,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, int niveau)
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 {
     //si liste vide
-    if (listeVide())
+    if (listeVide(tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -112,13 +114,13 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
     {
         // on libere toutes les bulles
         Bulle *temporaire = *tete; // pour parcourir la liste
-        if ((*tete)->suivantBulle == NULL) //si on arrive à la fin de la liste
+        if ((*tete)->suivant == NULL) //si on arrive à la fin de la liste
         {
             *tete = NULL; //on rend l'adresse de la bulle pointée nulle
         }
         else
         {
-            *tete = temporaire->suivantBulle; // on avance dans la liste
+            *tete = temporaire->suivant; // on avance dans la liste
         }
         free(temporaire); // liberation pour pouvoir avancer
     }
@@ -134,20 +136,19 @@ Balle *creerBalle() // on prend l'arme grise par défault ?
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    balle->positionBalle.x =  ;
-    balle->positionBalle.y =  ;
-    balle->positionBalle.vx = 0;
-    balle->positionBalle.vy = rand()% ; // balle part verticalement
-    balle->positionBalle.hauteur = 40; // 5% des dimentions de l'ecran
-    balle->positionBalle.largeur = 60;
-    balle->suivantBalle = NULL;
+    balle->position.x = joueur->position.x + joueur->position.largeur/3;
+    balle->position.y = joueur->position.y + joueur->position.hauteur/2;
+    balle->position.vx = 0;
+    balle->position.vy = -30;
+    balle->position.hauteur = 6/100*HAUTEUR_ECRAN;
+    balle->position.largeur = 2/100*LARGEUR_ECRAN;
     return balle; // on retourne l'adresse de la balle créée
 }
 
 Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
 {
     //si liste vide
-    if (listeVide())
+    if (listeVide(tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -162,7 +163,7 @@ Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
 
 void supprimerBallesHorsZone(Balle **tete, Balle *balle)
 {
-    if (!listeVide())
+    if (!listeVide(tete))
     {
         // il y a au moins un élément
         Balle *temporaire = *tete; // temporaire qui commence au debut de la liste
@@ -183,7 +184,7 @@ void supprimerBallesHorsZone(Balle **tete, Balle *balle)
 
 int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la premiere
 {
-    while (!listeVide()) // tant qu'il y a une liste
+    while (!listeVide(tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Balle *temporaire = *tete; // pour parcourir la liste
@@ -201,7 +202,7 @@ int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la p
 }
 
 
-Objet *creerObjet(int niveau)
+Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
 {
     Objet *objet = malloc(sizeof(Objet)); // allocation dynamique
     if (objet == NULL)
@@ -209,11 +210,12 @@ Objet *creerObjet(int niveau)
         printf("Erreur allocation memoire.");
         exit(1);
     }
+    objet->position = bulle_contenant_objet->position;
     switch (niveau)
     {
         case 1:
         objet->type = rand()%2;
-        objet->positionObjet.hauteur = 40;
+        objet->position.hauteur = 40;
         objet->positionObjet.largeur = 60; // taille arme
         break;
         case 2: objet->type = rand()%3;
@@ -232,10 +234,8 @@ Objet *creerObjet(int niveau)
 
         break;
     }
-    objet->positionObjet.x =  ;
-    objet->positionObjet.y =  ;
     objet->positionObjet.vx = 0;
-    objet->positionObjet.vy = rand()% ; // objet descend verticalement
+    objet->positionObjet.vy = VITESSE_OBJET; // objet descend verticalement
 
 
     objet->duree_restante = 10; // ils ne restent que 10 sec à l'ecran
@@ -246,7 +246,7 @@ Objet *creerObjet(int niveau)
 Objet *ajouterObjet(Objet **tete, Objet *nouveau) // ajout en début de liste
 {
     //si liste vide
-    if (listeVide())
+    if (listeVide(tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -261,7 +261,7 @@ Objet *ajouterObjet(Objet **tete, Objet *nouveau) // ajout en début de liste
 
 void supprimerObjet(Objet **tete, Objet *objet)
 {
-    if (listeVide())
+    if (listeVide(tete))
     {
         Objet *temporaire = *tete; // temporaire qui commence au debut de la liste
         if (temporaire->positionObjet.x == objet->positionObjet.x && temporaire->positionObjet.y == objet->positionObjet.y) // critere : si temporaire et objet sont au meme endroit
@@ -279,7 +279,7 @@ void supprimerObjet(Objet **tete, Objet *objet)
 
 int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
 {
-    while (!listeVide()) // tant qu'il y a une liste
+    while (!listeVide(tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Objet *temporaire = *tete; // pour parcourir la liste
@@ -296,10 +296,10 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     return 1; // la liste est vide
 }
 
-bool listeVide(void **tete)
-{
-    if (*tete == NULL)
-    {
-        return TRUE;
+bool listeVide(void **tete) {
+    if (*tete == NULL) {
+        return true;
+    } else {
+        return false;
     }
-    return FALSE;
+}
