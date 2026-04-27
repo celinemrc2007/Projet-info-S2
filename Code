@@ -24,12 +24,20 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
         break;
         case 2: bulle->objet = rand () % 2; // Ajout d'une nouvelle arme
         //plus le niveau augmente, plus la vitesse augmente
+        bulle->position.vx = rand() % 175 - 75;
+        bulle->position.vy = rand() % 175 - 75;
         break;
         case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
+        bulle->position.vx = rand() % 200 - 75;
+        bulle->position.vy = rand() % 200 - 75;
         break;
         case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme
+        bulle->position.vx = rand() % 225 - 75;
+        bulle->position.vy = rand() % 225 - 75;
         break;
         case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
+        bulle->position.vx = rand() % 250 - 75;
+        bulle->position.vy = rand() % 250 - 75;
         break;
     }
 
@@ -63,7 +71,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 {
     //si liste vide
-    if (listeVide(tete))
+    if (listeVide((void**)tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -76,7 +84,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
     return nouveau; // on retourne l'adresse de la nouvelle bulle
 }
 
-void ajouterBulleAleatoirement(int niveau) // je pense qu'il faut passer le niveau en parametre non ?
+void ajouterBulleAleatoirement(int niveau)
 {
     int proba = rand()%100 + 1; // variable aléatoire entre 1 et 100
     // je ne sais pas trop comment faire, il faut avoir une valeur de referance non ? , genre proba = 100  veut dire qu'il y a tant de bulles créées par minutes etc
@@ -93,7 +101,7 @@ void ajouterBulleAleatoirement(int niveau) // je pense qu'il faut passer le nive
 
 void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la liste
 {
-    if (!listeVide(tete))
+    if (!listeVide((void**)tete))
     {
         Bulle *temporaire = *tete; // temporaire qui commence au debut de la liste
         if (temporaire->position.x == bulle->position.x && temporaire->position.y == bulle->position.y) //critere : si temporaire et bulle sont au meme endroit
@@ -111,7 +119,7 @@ void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la l
 
 int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la premiere
 {
-    while (!listeVide(tete)) // tant qu'il y a une liste
+    while (!listeVide((void**)tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Bulle *temporaire = *tete; // pour parcourir la liste
@@ -129,10 +137,9 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
 }
 
 
-Balle *creerBalle() // on prend l'arme grise par défault ?
+Balle *creerBalle(Joueur *joueur) // on prend l'arme grise par défault ?
 {
     Balle *balle = malloc(sizeof(Balle)); // allocation dynamique
-    Joueur *joueur = malloc(sizeof(Joueur)); // allocation dynamique
     if (balle == NULL)
     {
         printf("Erreur allocation memoire.");
@@ -150,7 +157,7 @@ Balle *creerBalle() // on prend l'arme grise par défault ?
 Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
 {
     //si liste vide
-    if (listeVide(tete))
+    if (listeVide((void**)tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -165,7 +172,7 @@ Balle *ajouterBalle(Balle **tete, Balle *nouveau) // ajout en debut de liste
 
 void supprimerBallesHorsZone(Balle **tete, Balle *balle)
 {
-    if (!listeVide(tete))
+    if (!listeVide((void**)tete))
     {
         // il y a au moins un élément
         Balle *temporaire = *tete; // temporaire qui commence au debut de la liste
@@ -186,7 +193,7 @@ void supprimerBallesHorsZone(Balle **tete, Balle *balle)
 
 int supprimerListeBalle(Balle **tete) // supression de la derniere balle à la premiere
 {
-    while (!listeVide(tete)) // tant qu'il y a une liste
+    while (!listeVide((void**)tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Balle *temporaire = *tete; // pour parcourir la liste
@@ -212,7 +219,7 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    objet->position = bulle_contenant_objet->position; // l'objet est crée au meme endroit ou il tombe de la bulle
+    objet->position = bulle_contenant_objet->position; // l'objet est crée au meme endroit où il tombe de la bulle
     switch (niveau)
     {
         case 1:
@@ -248,7 +255,7 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
 Objet *ajouterObjet(Objet **tete, Objet *nouveau) // ajout en début de liste
 {
     //si liste vide
-    if (listeVide(tete))
+    if (listeVide((void**)tete))
     {
         *tete = nouveau; //tete contient l'adresse de nouveau, nouveau est à la fois premier et dernier
     }
@@ -263,7 +270,7 @@ Objet *ajouterObjet(Objet **tete, Objet *nouveau) // ajout en début de liste
 
 void supprimerObjet(Objet **tete, Objet *objet)
 {
-    if (listeVide(tete))
+    if (listeVide((void**)tete))
     {
         Objet *temporaire = *tete; // temporaire qui commence au debut de la liste
         if (temporaire->position.x == objet->position.x && temporaire->position.y == objet->position.y) // critere : si temporaire et objet sont au meme endroit
@@ -281,7 +288,7 @@ void supprimerObjet(Objet **tete, Objet *objet)
 
 int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
 {
-    while (!listeVide(tete)) // tant qu'il y a une liste
+    while (!listeVide((void **)tete)) // tant qu'il y a une liste
     {
         // on libere toutes les bulles
         Objet *temporaire = *tete; // pour parcourir la liste
