@@ -6,14 +6,14 @@
 #define N 4 //Nombre d'obstacles
 Obstacle obstacles[N];
 
-void gererBulle(Bulle *bulle, float cycle);
+void gererBulle(Bulle *bulle, Balle **tete_balle, Joueur *joueur, float cycle);
 Balle *initialiserListeBalle(Balle *balle);
 void gererBalle(Balle *balle, Balle **tete, float cycle);
 void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle);
 void afficherBoss (Boss *boss);
 void afficherElements();
-void animerElements(float cycle)
-void init();
+void animerElements(float cycle);
+void init(Balle *balle);
 bool jeu();
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
