@@ -5,9 +5,13 @@
 
 
 #define GRAVITE 30   // unité : pixel/s²
-#define HORS_ZONE_JEU -500
+#define HORS_ZONE_JEU -500 // // unité : pixels
+#define CYCLE 0.02 // unité : seconde
+#define TEMPS_JEU_MINIMUM 20 // unité : seconde
 
-int temps_restant;
+float temps_restant;
+bool joueur_touche_par_bulle;
+bool joueur_touche_par_eclair;
 Bulle **tete_bulle;
 Balle **tete_balle;
 Objet **tete_objet;
@@ -16,7 +20,7 @@ Boss *boss;
 
 
 
-void gererBulle(Bulle *bulle, float cycle) {
+void gererBulle(Bulle *bulle, Balle **tete_balle, Joueur *joueur, float cycle) {
     // effet de gravité sur les bulles
     bulle->position.vy += GRAVITE*cycle;
     // cinematique
@@ -35,27 +39,30 @@ void gererBulle(Bulle *bulle, float cycle) {
         }
     balle = balle->suivant;
     }
-
-    collisionBulleBord(bulle);
-
     if (detecterCollision(bulle->position, joueur->position) == true) { // Si la bulle touche le joueur, le joueur perd.
-        gererEchecNiveau;
+        joueur_touche_par_bulle =true;
     }
+    collisionBulleBord(bulle);
     }*/
 }
 
 Balle *initialiserListeBalle(Balle *balle) {
     Balle *balle = *tete_balle;
-    for (int i = 0; i < 7; i++) {
-        creerBalle(balle);
-        ajouterBalle(balle);
-        balle = balle->suivant;
-    }
+    balle == NULL;
     return balle;
 }
 
 void gererBalle(Balle *balle, Balle **tete, float cycle) {
-    
+    Balle *balle = *tete_balle;
+    while (balle != NULL) {
+        // cinematique
+        balle->position.x += balle->position.vx*cycle;
+        balle->position.y += balle->position.vy*cycle;
+        if (detecterCollision(obstacle.position.y, balle->position) == true) {
+            balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZonea
+        }
+        balle = balle->suivant;
+    }
 }
 
 void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle) {
@@ -264,22 +271,27 @@ void init() {
 }
 
 bool jeu() {
-    afficherElements();
-    animerElements(0.5);
     init();
-    /*deplacementsJoueur(Joueur *joueur);
-    tirerBallesBombes(Balle *balle);
-    collisionBulleBord;
-    if (temps_restant >= 20 && listeVide() == true) {
-        gererVictoireNiveau();
-        return true;
-    } if detecterCollision(joueur->position, bulle->position) == true {
-        gererEchecNiveau;
+    float temps_restant_initial = temps_restant;
+    joueur_touche_par_bulle = false;
+    joueur_touche_par_eclair = false;
+
+    while (temps_restant > 0) {
+        afficherElements();
+        animerElements(CYCLE);
+    /*
+        deplacementsJoueur(Joueur *joueur);
+        tirerBallesBombes(Balle *balle);
+        */
+        if ((temps_restant <= temps_restant_initial-TEMPS_JEU_MINIMUM) && (listeVide() == true)) {
+            return true;
+        } else if (joueur_touche_par_bulle =true) { // Si la bulle touche le joueur, le joueur perd.
+                return false;
+        } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
         return false;
-    } else if (detecterCollision(joueur->position, objet->position) == true && objet->type == 3) {
-        gererEchecNiveau;
-        return false;
+        }
+        temps_restant -= CYCLE;
     }
-    */
+    return false;
 }
 
