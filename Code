@@ -145,3 +145,78 @@ void afficherSpriteRedimensionne (Position *position, int numero_sprite) {
 void afficherNiveau(int niveau) {
 	textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau);
 }
+
+
+void afficherPseudo(char pseudo[50]) {
+    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, 755, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo);
+}
+
+
+void afficherRegles() {
+
+    clear_bitmap(screen);
+
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "=== REGLES DU JEU ===");
+
+    textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "Detruisez toutes les bulles dans le temps imparti pour gagner.");
+
+    textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Fleches GAUCHE/DROITE : se deplacer");
+
+    textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Fleche HAUT : tirer");
+
+    textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle vous touche, vous perdez le niveau");
+
+    textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes pour devenir plus fort");
+
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
+
+    clear_keybuf();
+
+    readkey();
+}
+
+
+
+void afficherExplosionBazuka(Joueur *joueur) {
+    afficherSprite(joueur->position.x, joueur->position.y, 58);
+    rest(80);
+    afficherSprite(joueur->position.x, joueur->position.y, 59);
+    rest(80);
+    afficherSprite(joueur->position.x, joueur->position.y, 60);
+    rest(80);
+}
+
+
+
+void afficherVictoireNiveau(Joueur *joueur) {
+
+    for (int i = 67; i <= 73; i++) {
+        clear_bitmap(screen);
+        afficherSprite(joueur->position.x, joueur->position.y, i);
+        rest(150);
+    }
+
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 220, 0), -1, "BRAVO, NIVEAU REUSSI !");
+
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
+
+    clear_keybuf();
+    readkey();
+}
+
+
+
+void afficherEchecNiveau(Joueur *joueur) {
+    for (int i = 61; i <= 66; i++) {
+        clear_bitmap(screen);
+        afficherSprite(joueur->position.x, joueur->position.y, i);
+        rest(150);
+    }
+ 
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 50, 50),   -1, "NIVEAU ECHOUE");
+    
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
+    
+    clear_keybuf();
+    readkey();
+}
