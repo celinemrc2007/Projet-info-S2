@@ -11,5 +11,10 @@ void chargerSprites ();
 void afficherSprite (float x, float y, int numero_sprite);
 void afficherSpriteRedimensionne (Position *position, int numero_sprite);
 void afficherNiveau(int niveau);
-#endif //PROGRAMMES_GESTIONGRAPHIQUE_H
+void afficherPseudo();
+void afficherRegles();
+void afficherExplosionBazuka();
+void afficherEchecNiveau();
+void afficherVictoireNiveau();
 
+#endif //PROGRAMMES_GESTIONGRAPHIQUE_H
