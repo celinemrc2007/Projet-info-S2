@@ -294,3 +294,68 @@ bool jeu() {
     return false;
 }
 
+
+
+Bulle *initialiserBulle(int niveau) {
+    Bulle *bulle = malloc(sizeof(Bulle));
+    if (bulle == NULL)
+    {
+        printf("Erreur allocation bulle\n");
+        exit(1);
+    }
+
+    /* Objet dans la bulle */
+    switch (niveau)
+    {
+        case 1: bulle->objet = 0; break;
+        case 2: bulle->objet = rand() % 2; break;
+        case 3: bulle->objet = rand() % 4; break;
+        case 4: bulle->objet = rand() % 5; break;
+        case 5: bulle->objet = rand() % 8; break;
+        default: bulle->objet = 0; break;
+    }
+
+    /* Taille */
+    bulle->rayon = 1 + rand() % 3;
+
+    if (bulle->rayon == 1)
+    {
+        bulle->position.largeur = 2 * PETITE_BULLE;
+        bulle->position.hauteur = 2 * PETITE_BULLE;
+    }
+    else if (bulle->rayon == 2)
+    {
+        bulle->position.largeur = 2 * MOYENNE_BULLE;
+        bulle->position.hauteur = 2 * MOYENNE_BULLE;
+    }
+    else
+    {
+        bulle->position.largeur = 2 * GRANDE_BULLE;
+        bulle->position.hauteur = 2 * GRANDE_BULLE;
+    }
+
+    /* Position (en haut de l'écran) */
+    int marge = bulle->position.largeur / 2 + 5;
+
+    bulle->position.x = marge + rand() % (LARGEUR_ECRAN - 2 * marge);
+    bulle->position.y = marge + rand() % (HAUTEUR_ECRAN / 2 - 2 * marge);
+
+    /* Vitesse */
+    float vitesse = 60 + niveau * 10;
+
+    if (rand() % 2 == 0)
+        bulle->position.vx = vitesse;
+    else
+        bulle->position.vx = -vitesse;
+
+    bulle->position.vy = 0; // gravité plus tard
+
+    /* Autres */
+    bulle->boule_de_feu = false;
+    bulle->suivant = NULL;
+
+    return bulle;
+}
+
+
+
