@@ -15,5 +15,9 @@ void afficherElements();
 void animerElements(float cycle);
 void init(Balle *balle);
 bool jeu();
+Bulle *initialiserBulle(int niveau);
+void collisionJoueurObjet(Objet *objet);
+bool detecterCollision(Position *pos1, Position *pos2);
+void eclaterBulle(Bulle *bulle);
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
