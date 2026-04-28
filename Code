@@ -359,3 +359,106 @@ Bulle *initialiserBulle(int niveau) {
 
 
 
+void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
+    if (objet == NULL || joueur == NULL)
+        return;
+
+    switch (objet->type)
+    {
+        case 0:
+            break;
+
+        case ARME2:
+        case ARME3:
+        case ARME4:
+        case ARME5:
+            joueur->arme = objet->type;   // Le joueur change d’arme
+            break;
+
+        case ECLAIR:
+            joueur_touche_par_eclair = true;
+            break;
+
+        case BONUS:
+            bonusBouclier();
+            break;
+
+        case MALUS:
+            malusMultiplication();
+            break;
+    }
+
+    supprimerObjet(tete_objet, objet);
+}
+
+
+
+
+bool detecterCollision(Position *pos1, Position *pos2)
+{
+    if (pos1 == NULL || pos2 == NULL)
+        return false;
+
+    /* Bords objet 1 */
+    float gauche1 = pos1->x - pos1->largeur / 2.0f;
+    float droite1 = pos1->x + pos1->largeur / 2.0f;
+    float haut1   = pos1->y - pos1->hauteur / 2.0f;
+    float bas1    = pos1->y + pos1->hauteur / 2.0f;
+
+    /* Bords objet 2 */
+    float gauche2 = pos2->x - pos2->largeur / 2.0f;
+    float droite2 = pos2->x + pos2->largeur / 2.0f;
+    float haut2   = pos2->y - pos2->hauteur / 2.0f;
+    float bas2    = pos2->y + pos2->hauteur / 2.0f;
+
+    /* Cas où il n'y a pas collision */
+    if (droite1 <= gauche2) return false;
+    if (gauche1 >= droite2) return false;
+    if (bas1 <= haut2) return false;
+    if (haut1 >= bas2) return false;
+
+    /* Sinon collision */
+    return true;
+}
+
+
+
+
+void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet)
+{
+    if (bulle == NULL)
+        return;
+
+    /* Si la bulle contient un objet, on le crée */
+    if (bulle->objet != 0)
+    {
+        Objet *nouvel_objet = (Objet *)malloc(sizeof(Objet));
+
+        if (nouvel_objet != NULL)
+        {
+            /* Position = position de la bulle */
+            nouvel_objet->position.x = bulle->position.x;
+            nouvel_objet->position.y = bulle->position.y;
+
+            /* L'objet tombe vers le bas */
+            nouvel_objet->position.vx = 0.0f;
+            nouvel_objet->position.vy = 150.0f;
+
+            /* Taille (peut-être à ajuster on verra selon le résultat) */
+            nouvel_objet->position.largeur = 40;
+            nouvel_objet->position.hauteur = 40;
+
+            /* Type = contenu de la bulle */
+            nouvel_objet->type = bulle->objet;
+
+            nouvel_objet->duree_restante = 10.0f;
+
+            nouvel_objet->suivant = NULL;
+
+            /* Ajout dans la liste des objets */
+            ajouterObjet(tete_objet, nouvel_objet);
+        }
+    }
+
+    supprimerBulle(tete_bulle, bulle);
+}
