@@ -157,11 +157,28 @@ void gererBoss (Boss *boss, Joueur *joueur) {
     }
 }
 
-void bonusBouclier () {
 
+
+void bonusBouclier()
+{
+    if (joueur == NULL)
+        return;
+
+    bouclierActif = true;
+    tempsBouclier = 5.0f;
 }
 
-void malusMultiplication () {
-    
-}
 
+
+void malusMultiplication()
+{
+    if (joueur != NULL)
+        afficherSprite(joueur->position.x, joueur->position.y, 102);
+
+    for (int i = 0; i < 5; i++)
+    {
+        Bulle *nouvelle = creerBulle(false, niveau);
+        if (nouvelle != NULL)
+            ajouterBulle(tete_bulle, nouvelle);
+    }
+}
