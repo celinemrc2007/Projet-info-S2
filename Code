@@ -149,8 +149,8 @@ Balle *creerBalle(Joueur *joueur) // on prend l'arme grise par défault ?
     balle->position.y = joueur->position.y + joueur->position.hauteur/2;
     balle->position.vx = 0;
     balle->position.vy = -30; // tir horizontal
-    balle->position.hauteur = 6/100*HAUTEUR_ECRAN;
-    balle->position.largeur = 2/100*LARGEUR_ECRAN;
+    balle->position.hauteur = (6/100)*HAUTEUR_ECRAN;
+    balle->position.largeur = (2/100)*LARGEUR_ECRAN;
     return balle; // on retourne l'adresse de la balle créée
 }
 
@@ -224,20 +224,20 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
     {
         case 1:
         objet->type = rand()%2;
-        objet->position.hauteur = 40;
-        objet->position.largeur = 60; // taille arme
+        objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
+        objet->position.largeur = (5/100)*LARGEUR_ECRAN; // taille arme
         break;
         case 2: objet->type = rand()%3;
-        objet->position.hauteur = 40;
-        objet->position.largeur = 60; // taille arme
+        objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
+        objet->position.largeur = (5/100)*LARGEUR_ECRAN; // taille arme
         break;
         case 3: objet->type = rand()%5;
-        objet->position.hauteur = 40;
-        objet->position.largeur = 60; // taille arme et eclair
+        objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
+        objet->position.largeur = (5/100)*LARGEUR_ECRAN; // taille arme et eclair
         break;
         case 4: objet->type = rand()%5;
-        objet->position.hauteur = 40;
-        objet->position.largeur = 60; // taille arme et eclair
+        objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
+        objet->position.largeur = (5/100)*LARGEUR_ECRAN; // taille arme et eclair
         break;
         case 5: objet->type = rand()%7;
 
