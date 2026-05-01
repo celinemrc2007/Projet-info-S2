@@ -143,14 +143,20 @@ void afficherSpriteRedimensionne (Position *position, int numero_sprite) {
 }
 
 void afficherNiveau(int niveau) {
-	textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau);
+	textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
 }
 
 
 void afficherPseudo(char pseudo[50]) {
-    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, 755, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo);
+    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, 755, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
 }
 
+void afficherTempsRestant(int temps_restant) // temps_restant est en sec
+{
+	int minutes = temps_restant / 60;
+	int secondes = temps_restant % 60;
+	textprintf_ex(screen, font, 50, 760,makecol(255,255,255), -1, "Temps restant : %d:%d", minutes, secondes); // 10 pixels en dessous du niveau
+}
 
 void afficherRegles() {
 
@@ -205,18 +211,17 @@ void afficherVictoireNiveau(Joueur *joueur) {
 }
 
 
-
 void afficherEchecNiveau(Joueur *joueur) {
     for (int i = 61; i <= 66; i++) {
         clear_bitmap(screen);
         afficherSprite(joueur->position.x, joueur->position.y, i);
         rest(150);
     }
- 
+
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 50, 50),   -1, "NIVEAU ECHOUE");
-    
+
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
-    
+
     clear_keybuf();
     readkey();
 }
