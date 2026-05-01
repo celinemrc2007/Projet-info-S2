@@ -6,6 +6,7 @@
 #define LARGEUR_ECRAN 1200
 #define HAUTEUR_ECRAN 800
 
+//************************** FONCTIONS ************************//
 void initialisation_allegro();
 void chargerSprites ();
 void afficherFondEcran();
@@ -17,5 +18,6 @@ void afficherRegles();
 void afficherExplosionBazuka();
 void afficherEchecNiveau();
 void afficherVictoireNiveau();
+void afficherVictoirePartie();
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
