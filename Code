@@ -8,6 +8,7 @@
 
 void initialisation_allegro();
 void chargerSprites ();
+void afficherFondEcran();
 void afficherSprite (float x, float y, int numero_sprite);
 void afficherSpriteRedimensionne (Position *position, int numero_sprite);
 void afficherNiveau(int niveau);
