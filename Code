@@ -1,20 +1,25 @@
-#ifndef PROGRAMMES_LOGIQUEJEU_H
 #define PROGRAMMES_LOGIQUEJEU_H
 
 #include "gestionListes.h"
 
-#define N 4 //Nombre d'obstacles
-Obstacle obstacles[N];
+#define N_OBSTACLES 8 // Nombre d'obstacles (dont 4 obstacles fixes de bord d'écran)
+Obstacle obstacles[N_OBSTACLES];
 
-void gererBulle(Bulle *bulle, Balle **tete_balle, Joueur *joueur, float cycle);
-Balle *initialiserListeBalle(Balle *balle);
-void gererBalle(Balle *balle, Balle **tete, float cycle);
-void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle);
+#define N_ARMES 5 //Nombre d'armes
+Arme armes[N_ARMES];
+
+extern float temps_restant;
+
+void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle);
+void gererBalle(Balle *tete, float cycle);
+bool detecterCollision(Position *pos1, Position *pos2);
+void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
 void afficherBoss (Boss *boss);
 void afficherElements();
 void animerElements(float cycle);
-void init(Balle *balle);
-bool jeu();
+Arme *initialiserArmes (Arme *arme);
+void init(Bulle *bulle);
+bool jeu(Bulle *bulle);
 Bulle *initialiserBulle(int niveau);
 void collisionJoueurObjet(Objet *objet);
 bool detecterCollision(Position *pos1, Position *pos2);
