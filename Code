@@ -25,7 +25,7 @@ int recupererNiveau() {
 /* ================= LANCEMENT NIVEAU ================= */
 
 void lancerNiveau() {
-    system("cls");
+    afficherFondEcran();
     copie_contrat = compteurs_contrat;
 
     /* Initialisation du contrat selon le niveau */
@@ -65,8 +65,8 @@ void lancerNiveau() {
             gererVictoireNiveau ();
         } else {
           jeu();
-          gererBoss();  
-        }  
+          gererBoss();
+        }
     } else {
         gererEchecNiveau();
     }
@@ -76,8 +76,8 @@ void lancerNiveau() {
 void finNiveau() {
     int choix = 0;
     int choix_realise = 0;
-    
-    clear_to_color(screen, makecol(0, 0, 0));
+
+    afficherFondEcran();
     int x = 50; // Position X
     int y = HAUTEUR_ECRAN / 3;
     int blanc = makecol(255, 255, 255);
@@ -87,19 +87,19 @@ void finNiveau() {
     textout_ex(screen, font, "2. Sauvegarder et revenir au menu", x, y + 50, blanc, -1);
     textout_ex(screen, font, "3. Sauvegarder et quitter le jeu", x, y + 70, blanc, -1);
     textout_ex(screen, font, "4. Quitter le jeu sans sauvegarder", x, y + 90, blanc, -1);
-    
+
     while (!choix_realise) {
         if (keypressed()) {
             int touche = readkey();
             char ascii = touche & 0xFF; // Récupération du caractère ASCII
-            
+
             if (ascii >= '1' && ascii <= '4') {  // Conversion du caractère en chiffre entier
                 choix = ascii - '0';
                 choix_realise = 1; // On sort de la boucle une fois le choix realise
             }
         }
     }
-    
+
     switch(choix) {
         case 1:
             lancerNiveau();
@@ -149,7 +149,7 @@ void gererBoss (Boss *boss, Joueur *joueur) {
         Bulle *ajouterBulle (Bulle **tete, Bulle *nouveau);
     }
         // à ajouter : si collision entre le joueur et le boss, appeler gererEchecNiveau
-    int direction = rand() % 4; 
+    int direction = rand() % 4;
 
     switch(direction) {
         case 0: // à droite
@@ -170,8 +170,6 @@ void gererBoss (Boss *boss, Joueur *joueur) {
     }
 }
 
-
-
 void bonusBouclier()
 {
     if (joueur == NULL)
@@ -180,8 +178,6 @@ void bonusBouclier()
     bouclierActif = true;
     tempsBouclier = 5.0f;
 }
-
-
 
 void malusMultiplication()
 {
