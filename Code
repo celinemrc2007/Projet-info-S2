@@ -92,7 +92,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
 void ajouterBulleAleatoirement(int niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
-Balle *creerBalle();
+Balle *creerBalle(Joueur *joueur);
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBallesHorsZone(Balle **tete, Balle *balle);
 int supprimerListeBalle(Balle **tete);
