@@ -1,125 +1,181 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <math.h>
 #include "gestionGraphique.h"
 #include "logiqueJeu.h"
+
+#include <allegro/timer.h>
+
 #include "gestionListes.h"
 
-
-#define GRAVITE 30   // unité : pixel/s²
+#define GRAVITE 50.0f   // unité : pixel/s²
 #define HORS_ZONE_JEU -500 // // unité : pixels
-#define CYCLE 0.02 // unité : seconde
+#define CYCLE 0.02f // unité : seconde
 #define TEMPS_JEU_MINIMUM 20 // unité : seconde
+#define SQRT2_DIV_2 0.7071f
+#define DIST_REBOND_RATIO 0.6f  // Déformation limitée à 40 % en hauteur ou en largeur
+#define TEMPS_REBOND_2 (0.002f)    // En s² A ajuster
 
 float temps_restant;
 bool joueur_touche_par_bulle;
 bool joueur_touche_par_eclair;
-Bulle **tete_bulle;
-Balle **tete_balle;
-Objet **tete_objet;
+Bulle *tete_bulle;
+Balle *tete_balle;
+Objet *tete_objet;
 Joueur *joueur;
 Boss *boss;
 
-
-
-void gererBulle(Bulle *bulle, Balle **tete_balle, Joueur *joueur, float cycle) {
-    // effet de gravité sur les bulles
+void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
+    // Effet de gravité sur les bulles
     bulle->position.vy += GRAVITE*cycle;
-    // cinematique
+    // Cinématique
     bulle->position.x += bulle->position.vx*cycle;
     bulle->position.y += bulle->position.vy*cycle;
-    /*for (int i = 0; i < N; i++) {
-        if (detecterCollision(bulle->position, obstacle->position)==true) {
-        rebondBulleObstacle(bulle, obstacle);
+
+    // Par défaut, pas de déformation
+    bulle->position.largeur = 2*bulle->rayon;
+    bulle->position.hauteur = 2*bulle->rayon;
+
+    for (int i = 0; i < N_OBSTACLES; i++) {
+        if (detecterCollision(&bulle->position, &obstacles[i].position)==true) {
+            rebondBulleObstacle(bulle, &obstacles[i], cycle);
         }
     }
-    Balle *balle = *tete_balle;
+    Balle *balle = tete_balle;
     while (balle != NULL) {
-        if (detecterCollision(bulle->position, balle->position) == true) {
-            collisionBulleBalle(balle);
+        if (detecterCollision(&bulle->position, &balle->position) == true) {
+            //collisionBulleBalle(balle);
             balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
         }
     balle = balle->suivant;
     }
-    if (detecterCollision(bulle->position, joueur->position) == true) { // Si la bulle touche le joueur, le joueur perd.
+    if (detecterCollision(&bulle->position, &joueur->position) == true) { // Si la bulle touche le joueur, le joueur perd.
         joueur_touche_par_bulle =true;
     }
-    collisionBulleBord(bulle);
-    }*/
 }
 
-Balle *initialiserListeBalle(Balle *balle) {
-    *tete_balle = NULL;
-    return balle;
-}
-
-void gererBalle(Balle *balle, Balle **tete, float cycle) {
-    while (*tete != NULL) {
-        // cinematique
+void gererBalle(Balle *tete, float cycle) {
+    Balle *balle = tete;
+    while (balle != NULL) {
+        // Cinématique
         balle->position.x += balle->position.vx*cycle;
         balle->position.y += balle->position.vy*cycle;
-        /*if (detecterCollision(obstacle.position.y, balle->position) == true) {
-            balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZonea
-        } */
+        for (int i = 0; i < N_OBSTACLES; i++) {
+            if (detecterCollision(&obstacles[i].position, &balle->position) == true) {
+                balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
+            }
+        }
         balle = balle->suivant;
     }
 }
 
-void rebondBulleObstacle(Bulle *bulle, Obstacle *obstacle) {
-    int diff_lh = (obstacle->position.largeur - obstacle->position.hauteur)/2;
-    int dx = bulle->position.x - obstacle->position.x;
-    int dy = bulle->position.y - obstacle->position.y;
+void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
+    float dx = bulle->position.x - obstacle->position.x;
+    float dy = bulle->position.y - obstacle->position.y;
+    float coin_x = (float)obstacle->position.largeur/2;
+    float coin_y = (float)obstacle->position.hauteur/2;
+    float rayon = (float)bulle->rayon;
+    float c, s; // Cosinus et sinus de l'accélération vers l'extérieur de l'obstacle
+    float dx1, dy1, r;
 
-    if (bulle->position.vy >= 0) {
-        if (bulle->position.vx >= 0) { // vx >= 0 et vy >= 0
-            if (dy/obstacle->position.hauteur >= dx/obstacle->position.largeur) {
-                bulle->position.vx = -bulle->position.vx; // rebond en x
-                bulle->position.x = 2*obstacle->position.x - obstacle->position.largeur -
-                    2*bulle->rayon - bulle->position.x;
-            } else {
-                bulle->position.vy = -bulle->position.vy; // rebond en y
-                bulle->position.y = 2*obstacle->position.y - obstacle->position.hauteur -
-                    2*bulle->rayon - bulle->position.y;
-            }
-        } else {   // vy>=0 et vx<0
-            if (dy/obstacle->position.hauteur >= -dx/obstacle->position.largeur) {
-                bulle->position.vx = -bulle->position.vx; // rebond en x
-                bulle->position.x = 2*obstacle->position.x + obstacle->position.largeur +
-                    2*bulle->rayon - bulle->position.x;
-            } else {
-                bulle->position.vy = -bulle->position.vy; // rebond en y
-                bulle->position.y = 2*obstacle->position.y - obstacle->position.hauteur -
-                    2*bulle->rayon - bulle->position.y;
-            }
+    if (dx >  coin_x + rayon) return; // pas de contact
+    if (dx < -coin_x - rayon) return; // pas de contact
+    if (dy >  coin_y + rayon) return; // pas de contact
+    if (dy < -coin_y - rayon) return; // pas de contact
+
+    if ((dx >= -coin_x) && (dx <= coin_x)) {
+        c = 0;
+        if (dy >= 0) {
+            s = 1; // Accélération vers le bas
+        } else {
+            s = -1; // Accélération vers le haut
         }
-    } else {
-        if (bulle->position.vx >= 0) { // vx >= 0 et vy < 0
-            if (-dy/obstacle->position.hauteur >= dx/obstacle->position.largeur) {
-                bulle->position.vx = -bulle->position.vx; // rebond en x
-                bulle->position.x = 2*obstacle->position.x - obstacle->position.largeur -
-                    2*bulle->rayon - bulle->position.x;
-            } else {
-                bulle->position.hauteur = 2*bulle->position.y - 2*obstacle->position.y - obstacle->position.hauteur;
-                if (bulle->position.hauteur < bulle->rayon)
-                {
-                    bulle->position.vy = -bulle->position.vy; // rebond en y
-                    bulle->position.y = 2*obstacle->position.y + obstacle->position.hauteur +
-                        bulle->rayon - bulle->position.y;
-                }
-            }
-        } else {   // vy>=0 et vx<0
-            if (-dy/obstacle->position.hauteur >= -dx/obstacle->position.largeur) {
-                bulle->position.vx = -bulle->position.vx; // rebond en x
-                bulle->position.x = 2*obstacle->position.x + obstacle->position.largeur +
-                    2*bulle->rayon - bulle->position.x;
-            } else {
-                bulle->position.vy = -bulle->position.vy; // rebond en y
-                bulle->position.y = 2*obstacle->position.y + obstacle->position.hauteur +
-                    2*bulle->rayon - bulle->position.y;
-            }
+    } else if ((dy >= -coin_y) && (dy <= coin_y)) {
+        s = 0;
+        if (dx >= 0) {
+            c = 1; // Accélération vers la droite
+            //printf("c=1 dx=%f\n", dx);
+        } else {
+            c = -1; // Accélération vers la gauche
+        }
+    } else { // Cas du contact en coin
+        // Décalage vers le coin
+        dx1 = dx;
+        dy1 = dy;
+        if (dx1 > 0) dx1 -=  coin_x;
+        if (dx1 < 0) dx1 -= -coin_x;
+        if (dy1 > 0) dy1 -=  coin_y;
+        if (dy1 < 0) dy1 -= -coin_y;
+        r = sqrtf(dx1*dx1 + dy1*dy1);
+        if (r >= rayon) return; // pas de contact
+        c = dx1/r;
+        s = dy1/r;
+    }
+
+    // Rebond pour éviter une déformation trop grande
+    float c2 = c*c;
+    float s2 = s*s;
+    float rebond_x = coin_x + rayon * DIST_REBOND_RATIO;
+    float rebond_y = coin_y + rayon * DIST_REBOND_RATIO;
+    if ((dx > -rebond_x) && (dx < rebond_x) && (dy > -rebond_y) && (dy < rebond_y)) {
+        printf("Rebond vx=%f vy=%f\n", bulle->position.vx, bulle->position.vy);
+        if (dx < 0) rebond_x = -rebond_x;
+        if (dy < 0) rebond_y = -rebond_y;
+        if ((c2 >= s2) && (bulle->position.vx * c < 0)) { // Rebond en x
+            dx = 2 * rebond_x - dx;
+            bulle->position.x = obstacle->position.x + dx;
+            bulle->position.vx = -bulle->position.vx;
+        }
+        if ((s2 > c2) && (bulle->position.vy * s < 0)) { // Rebond en y
+            dy = 2 * rebond_y - dy;
+            bulle->position.y = obstacle->position.y + dy;
+            bulle->position.vy = -bulle->position.vy;
         }
     }
+
+    // Déformation de la bulle et accélération correspondante
+    float deformation;
+    float l,h;
+    if (c == 0) { // Déformation en hauteur seulement
+        h = fabsf(dy) - coin_y;
+        deformation = rayon - h;
+        bulle->position.hauteur = (int) (2*h);
+    } else if (s == 0) { // Déformation en largeur seulement
+        l = fabsf(dx) - coin_x;
+        deformation = rayon - l;
+        bulle->position.largeur = (int) (2*l);
+        //printf("deforme x %f\n l=%d", deformation, bulle->position.largeur);
+    } else { // Déformation en coin
+        dx1 = dx;
+        dy1 = dy;
+        if (dx1 > 0) dx1 -=  coin_x;
+        if (dx1 < 0) dx1 -= -coin_x;
+        if (dy1 > 0) dy1 -=  coin_y;
+        if (dy1 < 0) dy1 -= -coin_y;
+        r = sqrtf(dx1*dx1 + dy1*dy1);
+        if (r >= rayon) return; // pas de déformation, plus de contact
+        c = dx1/r;
+        s = dy1/r;
+        c2 = c*c;
+        s2 = s*s;
+        if (c2 >= s2) {
+            h = rayon + (fabsf(c) - 1) * (rayon - r) / (1 - SQRT2_DIV_2);
+            l = r * fabsf(c) / sqrtf(1 - s2 * r * r / h / h);
+            deformation = rayon - h;
+        } else {
+            l = rayon + (fabsf(s) - 1) * (rayon - r) / (1 - SQRT2_DIV_2);
+            h = r * fabsf(s) / sqrtf(1 - c2 * r * r / l / l);
+            deformation = rayon - l;
+        }
+        //printf("c=%f s=%f r=%f l=%f h=%f\n",c,s,r,l,h);
+        bulle->position.largeur = (int) (2*l);
+        bulle->position.hauteur = (int) (2*h);
+    }
+    bulle->position.vx += deformation * c * cycle / TEMPS_REBOND_2;
+    bulle->position.vy += deformation * s * cycle / TEMPS_REBOND_2;
 }
 
 void afficherBoss (Boss *boss) {
+    if (boss==NULL) return;
     // Animation de battement des ailes
     afficherSprite(boss->position.x, boss->position.y, 87);
     afficherSprite(boss->position.x, boss->position.y, 88);
@@ -137,10 +193,11 @@ void afficherBoss (Boss *boss) {
 }
 
 void afficherElements() {
+    afficherFondEcran();
     // Affichage du joueur
-    afficherSprite(joueur->position.x, joueur->position.y, 1);
+    //if (joueur != NULL) afficherSprite(joueur->position.x, joueur->position.y, 1);
 
-    Bulle *bulle = *tete_bulle;
+    Bulle *bulle = tete_bulle;
     while (bulle != NULL) { // Affichage des bulles ou des boules de feu lors du boss
         if (bulle->boule_de_feu == false) {
             switch (bulle->rayon) {
@@ -169,13 +226,12 @@ void afficherElements() {
         }
         bulle = bulle->suivant;
     }
-    Balle *balle = *tete_balle;
+    Balle *balle = tete_balle;
     while (balle != NULL) { // Affichage des balles
         afficherSprite(balle->position.x, balle->position.y, 78);
         balle = balle->suivant;
     }
-    Objet **tete_objet;
-    Objet *objet = *tete_objet;
+    Objet *objet = tete_objet;
     while (objet != NULL) { // Affichage des objets
         switch (bulle->objet) {
             case 1 :
@@ -203,10 +259,10 @@ void afficherElements() {
         objet = objet->suivant;
     }
     // Affichage des obstacles
-    afficherSprite(obstacles[0].position.x, obstacles[0].position.y, 80);
-    afficherSprite(obstacles[1].position.x, obstacles[1].position.y, 81);
-    afficherSprite(obstacles[2].position.x, obstacles[2].position.y, 82);
-    afficherSprite(obstacles[3].position.x, obstacles[3].position.y, 83);
+    afficherSprite(obstacles[4].position.x, obstacles[4].position.y, 80);
+    afficherSprite(obstacles[5].position.x, obstacles[5].position.y, 81);
+    afficherSprite(obstacles[6].position.x, obstacles[6].position.y, 82);
+    afficherSprite(obstacles[7].position.x, obstacles[7].position.y, 83);
 
     // Affichage du boss
     afficherBoss(boss);
@@ -220,57 +276,93 @@ void afficherElements() {
 }
 
 void animerElements(float cycle) {
-    Balle *balle = *tete_balle;
+    Balle *balle = tete_balle;
     while (balle != NULL) {
         //gererBalle(balle, cycle);
         balle = balle->suivant;
     }
-    Bulle *bulle = *tete_bulle;
+    Bulle *bulle = tete_bulle;
     while (bulle != NULL) {
         gererBulle(bulle, tete_balle, joueur, cycle);
         bulle = bulle->suivant;
     }
-    Objet **tete_objet;
-    Objet *objet = *tete_objet;
+    Objet *objet = tete_objet;
     while (objet != NULL) {
         /* if (detecterCollision(objet->position, joueur->position) == true) {
             collisionJoueurObjet(objet);
-        */ objet = objet->suivant;
+        */
+        objet = objet->suivant;
     }
 }
 
-void init(Balle *balle) {
-    // initialiserListeBulle(bulle);
-    initialiserListeBalle(balle);
-    // Initialisation des caractériqtiques du joueur au début d'une partie
+void init(Bulle *bulle) {
+    printf("Debut init\n");
+    tete_bulle = bulle; // TODO modifier
+    // initialiserListeBulle(tete_bulle);
+    tete_balle = NULL; // Initialisation de la liste de balle (vide)
+    tete_objet = NULL; // Initialisatiob de la liste d'objet (vide)
+
+    // Initialisation des caractéristiques du joueur au début d'une partie
+    joueur = malloc(sizeof(Joueur)); // allocation dynamique
+    if (joueur == NULL)
+    {
+        printf("Erreur allocation memoire.");
+        exit(1);
+    }
     joueur->position.x = LARGEUR_ECRAN/2;
-    joueur->position.y = HAUTEUR_ECRAN/2 -100;
+    joueur->position.y = HAUTEUR_ECRAN/2 - 100;
     joueur->position.vx = 0;
     joueur->position.vy = 0;
     joueur->position.hauteur =  HAUTEUR_ECRAN/5;
     joueur->position.largeur = 4/3*joueur->position.hauteur;
     joueur->arme = 0; // Arme par défaut
 
-    // Initialisation des quatre types d'obstacles différents à des positions aléatoires dans la zone de jeu
-    for (int i = 0; i < N; i++) {
-        obstacles[i].position.y = 2*GRANDE_BULLE + rand() % (LARGEUR_ECRAN - obstacles[i].position.hauteur - 2*GRANDE_BULLE); // permet que les obstacles soient éloignés du bord
-        obstacles[i].position.y = 2*GRANDE_BULLE + rand() % (HAUTEUR_ECRAN - obstacles[i].position.hauteur - 2*GRANDE_BULLE); // permet que les obstacles soient éloignés du bord
-    }
+    // Obstacle virtuel : bas de l'écran
+    obstacles[0].position.x = (float)LARGEUR_ECRAN/2;
+    obstacles[0].position.y = (float)HAUTEUR_ECRAN+100;
+    obstacles[0].position.largeur = LARGEUR_ECRAN;
+    obstacles[0].position.hauteur = 200;
+
+    // Obstacle virtuel : haut de l'écran
+    obstacles[1].position.x = (float)LARGEUR_ECRAN/2;
+    obstacles[1].position.y = (float)-100;
+    obstacles[1].position.largeur = LARGEUR_ECRAN;
+    obstacles[1].position.hauteur = 200;
+
+    // Obstacle virtuel : bord droit de l'écran
+    obstacles[2].position.x = (float)LARGEUR_ECRAN+100;
+    obstacles[2].position.y = (float)HAUTEUR_ECRAN/2;
+    obstacles[2].position.largeur = 200;
+    obstacles[2].position.hauteur = HAUTEUR_ECRAN;
+
+    // Obstacle virtuel : bord gauche de l'écran
+    obstacles[3].position.x = (float)-100;
+    obstacles[3].position.y = (float)HAUTEUR_ECRAN/2;
+    obstacles[3].position.largeur = 200;
+    obstacles[3].position.hauteur = HAUTEUR_ECRAN;
+
     // Deux tailles d'obstacles horizontaux
-    obstacles[0].position.largeur = 15/100*LARGEUR_ECRAN;
-    obstacles[0].position.hauteur = 3/100*HAUTEUR_ECRAN;
-    obstacles[1].position.largeur = 30/100*LARGEUR_ECRAN;
-    obstacles[1].position.hauteur = 3/100*HAUTEUR_ECRAN;
+    obstacles[4].position.largeur = HAUTEUR_ECRAN*15/100;
+    obstacles[4].position.hauteur = HAUTEUR_ECRAN*3/100;
+    obstacles[5].position.largeur = HAUTEUR_ECRAN*30/100;
+    obstacles[5].position.hauteur = HAUTEUR_ECRAN*3/100;
     // Deux tailles d'obstacles verticaux
-    obstacles[2].position.largeur = 3/100*LARGEUR_ECRAN;
-    obstacles[2].position.hauteur = 15/100*HAUTEUR_ECRAN;
-    obstacles[3].position.largeur = 3/100*LARGEUR_ECRAN;
-    obstacles[3].position.hauteur = 30/100*HAUTEUR_ECRAN;
+    obstacles[6].position.largeur = HAUTEUR_ECRAN*3/100;
+    obstacles[6].position.hauteur = HAUTEUR_ECRAN*15/100;
+    obstacles[7].position.largeur = HAUTEUR_ECRAN*3/100;
+    obstacles[7].position.hauteur = HAUTEUR_ECRAN*30/100;
+
+    // Initialisation des quatre types d'obstacles différents à des positions aléatoires dans la zone de jeu
+    for (int i = 4; i < N_OBSTACLES; i++) {
+        obstacles[i].position.x = 2*GRANDE_BULLE + rand() % (LARGEUR_ECRAN - obstacles[i].position.largeur - 4*GRANDE_BULLE); // permet que les obstacles soient éloignés du bord
+        obstacles[i].position.y = 2*GRANDE_BULLE + rand() % (HAUTEUR_ECRAN/2); // permet que les obstacles soient éloignés du bord
+    }
+    printf("Init terminee\n");
 }
 
-bool jeu() {
-    Balle *balle;
-    init(balle);
+bool jeu(Bulle *bulle) {
+    init(bulle);
+    temps_restant = 120;
     float temps_restant_initial = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
@@ -281,7 +373,6 @@ bool jeu() {
     /*
         deplacementsJoueur(Joueur *joueur);
         tirerBallesBombes(Balle *balle);
-        */
         if ((temps_restant <= temps_restant_initial-TEMPS_JEU_MINIMUM) && (listeVide() == true)) {
             return true;
         } else if (joueur_touche_par_bulle =true) { // Si la bulle touche le joueur, le joueur perd.
@@ -289,7 +380,9 @@ bool jeu() {
         } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
         return false;
         }
+        */
         temps_restant -= CYCLE;
+        rest(CYCLE * 1000);
     }
     return false;
 }
@@ -380,15 +473,15 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
             break;
 
         case BONUS:
-            bonusBouclier();
+            //bonusBouclier();
             break;
 
         case MALUS:
-            malusMultiplication();
+            //malusMultiplication();
             break;
     }
 
-    supprimerObjet(tete_objet, objet);
+    //supprimerObjet(tete_objet, objet);
 }
 
 
@@ -456,9 +549,8 @@ void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet)
             nouvel_objet->suivant = NULL;
 
             /* Ajout dans la liste des objets */
-            ajouterObjet(tete_objet, nouvel_objet);
+//            ajouterObjet(tete_objet, nouvel_objet);
         }
     }
 
-    supprimerBulle(tete_bulle, bulle);
 }
