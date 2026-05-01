@@ -130,6 +130,10 @@ void chargerSprites () {
 		 images[102]=load_bitmap("../images/malus.bmp",NULL);
 }
 
+void afficherFondEcran() {
+	clear_bitmap(screen);
+}
+
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
 	BITMAP *image = images[numero_sprite];
