@@ -73,34 +73,47 @@ void lancerNiveau() {
 }
 
 /* ================= FIN NIVEAU APRES ANIMATION ================= */
-void finNiveau {
-    system("cls");
-    int choix;
-    text_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-    printf("\nQue souhaites-tu faire ?\n");
-    printf("1. Continuer\n");
-    printf("2. Sauvegarder et revenir au menu\n");
-    printf("3. Sauvegarder et quitter le jeu\n");
-    printf("4. Quitter le jeu sans sauvegarder\n");
-    printf("Votre choix : ");
-    scanf("%d", &choix);
+void finNiveau() {
+    int choix = 0;
+    int choix_realise = 0;
+    
+    clear_to_color(screen, makecol(0, 0, 0));
+    int x = 50; // Position X
+    int y = HAUTEUR_ECRAN / 3;
+    int blanc = makecol(255, 255, 255);
+
+    textout_ex(screen, font, "Que souhaites-tu faire ?", x, y, blanc, -1);
+    textout_ex(screen, font, "1. Continuer", x, y + 30, blanc, -1);
+    textout_ex(screen, font, "2. Sauvegarder et revenir au menu", x, y + 50, blanc, -1);
+    textout_ex(screen, font, "3. Sauvegarder et quitter le jeu", x, y + 70, blanc, -1);
+    textout_ex(screen, font, "4. Quitter le jeu sans sauvegarder", x, y + 90, blanc, -1);
+    
+    while (!choix_realise) {
+        if (keypressed()) {
+            int touche = readkey();
+            char ascii = touche & 0xFF; // Récupération du caractère ASCII
+            
+            if (ascii >= '1' && ascii <= '4') {  // Conversion du caractère en chiffre entier
+                choix = ascii - '0';
+                choix_realise = 1; // On sort de la boucle une fois le choix realise
+            }
+        }
+    }
     
     switch(choix) {
         case 1:
             lancerNiveau();
             break;
-
         case 2:
             sauvegarderPartie();
             menu();
             break;
-
         case 3:
             sauvegarderPartie();
             exit(0);
             break;
         case 4:
-            exit(0)
+            exit(0);
             break;
     }
 }
