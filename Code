@@ -10,6 +10,7 @@ Arme armes[N_ARMES];
 
 extern float temps_restant;
 
+//******************************* FONCTIONS **************************//
 void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle);
 void gererBalle(Balle *tete, float cycle);
 bool detecterCollision(Position *pos1, Position *pos2);
