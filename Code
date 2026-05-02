@@ -360,29 +360,32 @@ void init(Bulle *bulle) {
     printf("Init terminee\n");
 }
 
+
 bool jeu(Bulle *bulle) {
     init(bulle);
-    temps_restant = 120;
-    float temps_restant_initial = temps_restant;
+    clock_t debut = clock();
+    float temps_depart = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
 
     while (temps_restant > 0) {
+        temps_restant = temps_depart - (clock() - debut) / CLOCKS_PER_SEC;
         afficherElements();
         animerElements(CYCLE);
     /*
         deplacementsJoueur(Joueur *joueur);
         tirerBallesBombes(Balle *balle);
-        if ((temps_restant <= temps_restant_initial-TEMPS_JEU_MINIMUM) && (listeVide() == true)) {
+        if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide() == true)) {
             return true;
         } else if (joueur_touche_par_bulle =true) { // Si la bulle touche le joueur, le joueur perd.
                 return false;
         } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
         return false;
         }
-        */
         temps_restant -= CYCLE;
         rest(CYCLE * 1000);
+        */
+        
     }
     return false;
 }
