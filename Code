@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <time.h>
-#include <conio.h>
+#include <allegro.h>
 
 #include "gestionGraphique.h"
-#include "gestionNiveau.h"
+#include "gestionListes.h"
+#include "gestionNiveaux.h"
 #include "logiqueJeu.h"
 #include "sauvegarde.h"
 
-
+int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -26,46 +27,37 @@ int recupererNiveau() {
 
 void lancerNiveau() {
     afficherFondEcran();
-    copie_contrat = compteurs_contrat;
-
-    /* Initialisation du contrat selon le niveau */
-    for (int i = 1; i <= 5; i++)
-        compteurs_contrat[i] = 0;
+    srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
 
     switch (niveau) {
         case 1:
             temps_restant = 120; // 2 min
-            bulle->objet = rand () % 1;
             break;
 
         case 2:
             temps_restant = 105; // 1 min 45
-            bulle->objet = rand () % 2;
             break;
 
         case 3:
             temps_restant = 90; // 1 min 30
-            bulle->objet = rand () % 4;
             break;
         case 4:
             temps_restant = 75; // 1 min 15
-            bulle->objet = rand () % 5;
             break;
 
           case 5:
             temps_restant = 60; // 1 min
-            bulle->objet = rand () % 8;
             break;
     }
 
-    afficherNumeroNiveau(niveau);
+    afficherNiveau(niveau);
     int resultat_jeu = jeu();
     if (resultat_jeu==true) {
         if (niveau != 4) {
             gererVictoireNiveau ();
         } else {
           jeu();
-          gererBoss();
+          //gererBoss();
         }
     } else {
         gererEchecNiveau();
