@@ -13,7 +13,6 @@ extern float temps_restant;
 //******************************* FONCTIONS **************************//
 void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle);
 void gererBalle(Balle *tete, float cycle);
-bool detecterCollision(Position *pos1, Position *pos2);
 void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
 void afficherBoss (Boss *boss);
 void afficherElements();
@@ -24,6 +23,7 @@ bool jeu(Bulle *bulle);
 Bulle *initialiserBulle(int niveau);
 void collisionJoueurObjet(Objet *objet);
 bool detecterCollision(Position *pos1, Position *pos2);
+bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
 void eclaterBulle(Bulle *bulle);
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
