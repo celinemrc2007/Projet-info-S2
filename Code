@@ -363,13 +363,12 @@ void init(Bulle *bulle) {
 
 bool jeu(Bulle *bulle) {
     init(bulle);
-    clock_t debut = clock();
+    temps_restant = 120;
     float temps_depart = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
 
     while (temps_restant > 0) {
-        temps_restant = temps_depart - (clock() - debut) / CLOCKS_PER_SEC;
         afficherElements();
         animerElements(CYCLE);
     /*
@@ -381,11 +380,11 @@ bool jeu(Bulle *bulle) {
                 return false;
         } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
         return false;
-        }
+        }*/
         temps_restant -= CYCLE;
         rest(CYCLE * 1000);
-        */
-        
+
+
     }
     return false;
 }
