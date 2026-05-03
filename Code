@@ -1,3 +1,5 @@
+
+#ifndef PROGRAMMES_LOGIQUEJEU_H
 #define PROGRAMMES_LOGIQUEJEU_H
 
 #include "gestionListes.h"
@@ -20,10 +22,10 @@ void animerElements(float cycle);
 Arme *initialiserArmes (Arme *arme);
 void init(Bulle *bulle);
 bool jeu(Bulle *bulle);
-Bulle *initialiserBulle(int niveau);
-void collisionJoueurObjet(Objet *objet);
+void collisionJoueurObjet(Objet *objet, Joueur *joueur);
 bool detecterCollision(Position *pos1, Position *pos2);
 bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
-void eclaterBulle(Bulle *bulle);
+void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet);
+
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
