@@ -8,12 +8,15 @@
 #include "gestionListes.h"
 
 #define GRAVITE 50.0f   // unité : pixel/s²
+#define FROTTEMENT 0.01f
 #define HORS_ZONE_JEU -500 // // unité : pixels
 #define CYCLE 0.02f // unité : seconde
 #define TEMPS_JEU_MINIMUM 20 // unité : seconde
 #define SQRT2_DIV_2 0.7071f
 #define DIST_REBOND_RATIO 0.6f  // Déformation limitée à 40 % en hauteur ou en largeur
 #define TEMPS_REBOND_2 (0.002f)    // En s² A ajuster
+#define NB_SOUS_CYCLE 5
+#define VITESSE_BULLE_MAX 500 // unité : pixel/s
 
 float temps_restant;
 bool joueur_touche_par_bulle;
@@ -25,21 +28,30 @@ Joueur *joueur;
 Boss *boss;
 
 void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
-    // Effet de gravité sur les bulles
-    bulle->position.vy += GRAVITE*cycle;
-    // Cinématique
-    bulle->position.x += bulle->position.vx*cycle;
-    bulle->position.y += bulle->position.vy*cycle;
+    // Boucle d'animation pour plus de precision
+    cycle /= NB_SOUS_CYCLE;
+    for (int j=0 ; j<NB_SOUS_CYCLE ; j++) {
+        // Effet de gravité sur les bulles
+        bulle->position.vy += GRAVITE*cycle;
+        // Frottement
+       // bulle->position.vx -= FROTTEMENT * cycle * bulle->position.vx;
+        //bulle->position.vy -= FROTTEMENT * cycle * bulle->position.vy;
 
-    // Par défaut, pas de déformation
-    bulle->position.largeur = 2*bulle->rayon;
-    bulle->position.hauteur = 2*bulle->rayon;
+        // Cinématique
+        bulle->position.x += bulle->position.vx*cycle;
+        bulle->position.y += bulle->position.vy*cycle;
 
-    for (int i = 0; i < N_OBSTACLES; i++) {
-        if (detecterCollision(&bulle->position, &obstacles[i].position)==true) {
-            rebondBulleObstacle(bulle, &obstacles[i], cycle);
+        // Par défaut, pas de déformation
+        bulle->position.largeur = 2*bulle->rayon;
+        bulle->position.hauteur = 2*bulle->rayon;
+
+        for (int i = 0; i < N_OBSTACLES; i++) {
+            if (detecterCollisionBulle(bulle, &obstacles[i].position)==true) {
+                rebondBulleObstacle(bulle, &obstacles[i], cycle);
+            }
         }
     }
+
     Balle *balle = tete_balle;
     while (balle != NULL) {
         if (detecterCollision(&bulle->position, &balle->position) == true) {
@@ -69,47 +81,47 @@ void gererBalle(Balle *tete, float cycle) {
 }
 
 void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
-    float dx = bulle->position.x - obstacle->position.x;
-    float dy = bulle->position.y - obstacle->position.y;
-    float coin_x = (float)obstacle->position.largeur/2;
-    float coin_y = (float)obstacle->position.hauteur/2;
-    float rayon = (float)bulle->rayon;
-    float c, s; // Cosinus et sinus de l'accélération vers l'extérieur de l'obstacle
-    float dx1, dy1, r;
+        float dx = bulle->position.x - obstacle->position.x;
+        float dy = bulle->position.y - obstacle->position.y;
+        float coin_x = (float)obstacle->position.largeur/2;
+        float coin_y = (float)obstacle->position.hauteur/2;
+        float rayon = (float)bulle->rayon;
+        float c, s; // Cosinus et sinus de l'accélération vers l'extérieur de l'obstacle
+        float dx1, dy1, r;
 
-    if (dx >  coin_x + rayon) return; // pas de contact
-    if (dx < -coin_x - rayon) return; // pas de contact
-    if (dy >  coin_y + rayon) return; // pas de contact
-    if (dy < -coin_y - rayon) return; // pas de contact
+        if (dx >  coin_x + rayon) return; // pas de contact
+        if (dx < -coin_x - rayon) return; // pas de contact
+        if (dy >  coin_y + rayon) return; // pas de contact
+        if (dy < -coin_y - rayon) return; // pas de contact
 
-    if ((dx >= -coin_x) && (dx <= coin_x)) {
-        c = 0;
-        if (dy >= 0) {
-            s = 1; // Accélération vers le bas
-        } else {
-            s = -1; // Accélération vers le haut
+        if ((dx >= -coin_x) && (dx <= coin_x)) {
+            c = 0;
+            if (dy >= 0) {
+                s = 1; // Accélération vers le bas
+            } else {
+                s = -1; // Accélération vers le haut
+            }
+        } else if ((dy >= -coin_y) && (dy <= coin_y)) {
+            s = 0;
+            if (dx >= 0) {
+                c = 1; // Accélération vers la droite
+                //printf("c=1 dx=%f\n", dx);
+            } else {
+                c = -1; // Accélération vers la gauche
+            }
+        } else { // Cas du contact en coin
+            // Décalage vers le coin
+            dx1 = dx;
+            dy1 = dy;
+            if (dx1 > 0) dx1 -=  coin_x;
+            if (dx1 < 0) dx1 -= -coin_x;
+            if (dy1 > 0) dy1 -=  coin_y;
+            if (dy1 < 0) dy1 -= -coin_y;
+            r = sqrtf(dx1*dx1 + dy1*dy1);
+            if (r >= rayon) return; // pas de contact
+            c = dx1/r;
+            s = dy1/r;
         }
-    } else if ((dy >= -coin_y) && (dy <= coin_y)) {
-        s = 0;
-        if (dx >= 0) {
-            c = 1; // Accélération vers la droite
-            //printf("c=1 dx=%f\n", dx);
-        } else {
-            c = -1; // Accélération vers la gauche
-        }
-    } else { // Cas du contact en coin
-        // Décalage vers le coin
-        dx1 = dx;
-        dy1 = dy;
-        if (dx1 > 0) dx1 -=  coin_x;
-        if (dx1 < 0) dx1 -= -coin_x;
-        if (dy1 > 0) dy1 -=  coin_y;
-        if (dy1 < 0) dy1 -= -coin_y;
-        r = sqrtf(dx1*dx1 + dy1*dy1);
-        if (r >= rayon) return; // pas de contact
-        c = dx1/r;
-        s = dy1/r;
-    }
 
     // Rebond pour éviter une déformation trop grande
     float c2 = c*c;
@@ -172,6 +184,13 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
     }
     bulle->position.vx += deformation * c * cycle / TEMPS_REBOND_2;
     bulle->position.vy += deformation * s * cycle / TEMPS_REBOND_2;
+
+    // Limite la vitesse de la bulle
+    float v = sqrtf((bulle->position.vx) * (bulle->position.vx) + (bulle->position.vy) * (bulle->position.vy));
+    if (v > VITESSE_BULLE_MAX) {
+        bulle->position.vx *= VITESSE_BULLE_MAX / v;
+        bulle->position.vy *= VITESSE_BULLE_MAX / v;
+    }
 }
 
 void afficherBoss (Boss *boss) {
@@ -360,7 +379,6 @@ void init(Bulle *bulle) {
     printf("Init terminee\n");
 }
 
-
 bool jeu(Bulle *bulle) {
     init(bulle);
     temps_restant = 120;
@@ -388,71 +406,6 @@ bool jeu(Bulle *bulle) {
     }
     return false;
 }
-
-
-
-Bulle *initialiserBulle(int niveau) {
-    Bulle *bulle = malloc(sizeof(Bulle));
-    if (bulle == NULL)
-    {
-        printf("Erreur allocation bulle\n");
-        exit(1);
-    }
-
-    /* Objet dans la bulle */
-    switch (niveau)
-    {
-        case 1: bulle->objet = 0; break;
-        case 2: bulle->objet = rand() % 2; break;
-        case 3: bulle->objet = rand() % 4; break;
-        case 4: bulle->objet = rand() % 5; break;
-        case 5: bulle->objet = rand() % 8; break;
-        default: bulle->objet = 0; break;
-    }
-
-    /* Taille */
-    bulle->rayon = 1 + rand() % 3;
-
-    if (bulle->rayon == 1)
-    {
-        bulle->position.largeur = 2 * PETITE_BULLE;
-        bulle->position.hauteur = 2 * PETITE_BULLE;
-    }
-    else if (bulle->rayon == 2)
-    {
-        bulle->position.largeur = 2 * MOYENNE_BULLE;
-        bulle->position.hauteur = 2 * MOYENNE_BULLE;
-    }
-    else
-    {
-        bulle->position.largeur = 2 * GRANDE_BULLE;
-        bulle->position.hauteur = 2 * GRANDE_BULLE;
-    }
-
-    /* Position (en haut de l'écran) */
-    int marge = bulle->position.largeur / 2 + 5;
-
-    bulle->position.x = marge + rand() % (LARGEUR_ECRAN - 2 * marge);
-    bulle->position.y = marge + rand() % (HAUTEUR_ECRAN / 2 - 2 * marge);
-
-    /* Vitesse */
-    float vitesse = 60 + niveau * 10;
-
-    if (rand() % 2 == 0)
-        bulle->position.vx = vitesse;
-    else
-        bulle->position.vx = -vitesse;
-
-    bulle->position.vy = 0; // gravité plus tard
-
-    /* Autres */
-    bulle->boule_de_feu = false;
-    bulle->suivant = NULL;
-
-    return bulle;
-}
-
-
 
 void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
     if (objet == NULL || joueur == NULL)
@@ -488,7 +441,7 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
 
 
 
-
+// Collision entre rectangle
 bool detecterCollision(Position *pos1, Position *pos2)
 {
     if (pos1 == NULL || pos2 == NULL)
@@ -516,7 +469,31 @@ bool detecterCollision(Position *pos1, Position *pos2)
     return true;
 }
 
+bool detecterCollisionBulle(Bulle *bulle, Position *pos2) {
+    float dx = bulle->position.x - pos2->x;
+    float dy = bulle->position.y - pos2->y;
+    float coin_x = (float)pos2->largeur/2;
+    float coin_y = (float)pos2->hauteur/2;
+    float dx1, dy1, r;
 
+    if (dx >  coin_x + (float)bulle->rayon) return false; // pas de contact
+    if (dx < -coin_x - (float)bulle->rayon) return false; // pas de contact
+    if (dy >  coin_y + (float)bulle->rayon) return false; // pas de contact
+    if (dy < -coin_y - (float)bulle->rayon) return false; // pas de contact
+
+    if ((dx >= -coin_x) && (dx <= coin_x)) return true;
+    if ((dy >= -coin_y) && (dy <= coin_y)) return true;
+    // Décalage vers le coin
+    dx1 = dx;
+    dy1 = dy;
+    if (dx1 > 0) dx1 -=  coin_x;
+    if (dx1 < 0) dx1 -= -coin_x;
+    if (dy1 > 0) dy1 -=  coin_y;
+    if (dy1 < 0) dy1 -= -coin_y;
+    r = sqrtf(dx1*dx1 + dy1*dy1);
+    if (r < (float)bulle->rayon) return true;
+    return false;
+}
 
 
 void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet)
