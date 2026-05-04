@@ -217,7 +217,7 @@ void afficherVictoireNiveau(Joueur *joueur) {
         afficherSprite(joueur->position.x, joueur->position.y, i);
         rest(150);
     }
-
+	// animation lara gagne
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 220, 0), -1, "BRAVO, NIVEAU REUSSI !");
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
 
@@ -232,6 +232,7 @@ void afficherEchecNiveau(Joueur *joueur) {
         afficherSprite(joueur->position.x, joueur->position.y, i);
         rest(150);
     }
+	// animation lara perd
 
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 50, 50),   -1, "NIVEAU ECHOUE");
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
