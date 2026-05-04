@@ -59,7 +59,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
         bulle->position.y = (bulle->position.hauteur)/2 + rand()%((500-(bulle->position.hauteur)/2)-((bulle->position.hauteur)/2)+1); // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
         case FALSE: // bulles apparaissent que sur les bords
-        bulle->position.x = (bulle->position.largeur)/2 | (LARGEUR_ECRAN-((bulle->position.largeur)/2)); // sur les bors à gauche ou à droite, (bulle->position.largeur)/2 represente le rayon
+        bulle->position.x = ((bulle->position.largeur)/2) || ((LARGEUR_ECRAN-((bulle->position.largeur)/2))); // sur les bors à gauche ou à droite, (bulle->position.largeur)/2 represente le rayon
         bulle->position.y = (bulle->position.largeur)/2 + rand()%((500-(bulle->position.largeur)/2))-((bulle->position.largeur)/2)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
     }
