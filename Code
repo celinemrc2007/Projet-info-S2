@@ -86,7 +86,6 @@ typedef struct boss
 
 
 //***************************** FONCTIONS *************************//
-
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
 void ajouterBulleAleatoirement(int niveau);
