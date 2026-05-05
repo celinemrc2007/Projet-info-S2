@@ -138,6 +138,12 @@ void chargerSprites () {
 		images[110]=load_bitmap("../images/victoire_partie8.bmp",NULL);
 		images[111]=load_bitmap("../images/victoire_partie9.bmp",NULL);
 		images[112]=load_bitmap("../images/victoire_partie10.bmp",NULL);
+		images[113]=load_bitmap("../images/fond_ecran_niveau1.bmp",NULL);
+		images[114]=load_bitmap("../images/fond_ecran_niveau2.bmp",NULL);
+		images[115]=load_bitmap("../images/fond_ecran_niveau3.bmp",NULL);
+		images[116]=load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
+		images[117]=load_bitmap("../images/fond_ecran_boss.bmp",NULL);
+		images[118]=load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
 
 }
 
@@ -209,6 +215,86 @@ void afficherExplosionBazuka(Joueur *joueur) {
 }
 
 
+void afficherDeplacementsJoueur(Joueur *joueur)
+{
+	// si le personnage se déplace vers la gauche
+	if (key[KEY_LEFT])
+	{
+		// animation en fonction de l'arme
+		switch (joueur->arme)
+		{
+		case : // arme 1
+			for (int i= 2; i<=5; i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME2: // arme 2
+			for (int i=14; i<=17;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME3: // arme 3
+			for (int i=26; i<=29;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME4: // arme 4
+			for (int i=38; i<=41;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME5: // arme 5
+			for (int i=50; i<=53;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		}
+	}
+	// si le personnage se deplace vers la droite
+	if (key[KEY_RIGHT])
+	{
+		// animation en fonction de l'arme
+		switch (joueur->arme)
+		{
+		case : // arme 1
+			for (int i= 6; i<=9; i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME2: // arme 2
+			for (int i=18; i<=21;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME3: // arme 3
+			for (int i=30; i<=33;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME4: // arme 4
+			for (int i=42; i<=45;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		case ARME5: // arme 5
+			for (int i=54; i<=57;i++)
+			{
+				afficherSprite(joueur->position.x, joueur->position.y, i);
+			}
+			break;
+		}
+	}
+}
+
 
 void afficherVictoireNiveau(Joueur *joueur) {
 
@@ -256,7 +342,7 @@ void afficherVictoirePartie()
 	afficherSprite(600, 300, 111);
 	afficherSprite(600, 300, 112);
 	// affichage du texte en dessous du trophé
-	textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/2 + 20, makecol(243,187,27), -1, "VICTOIRE PARTIE"); // même couleur que le trophée
+	textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/2 + 20, makecol(243,187,27), -1, "BRAVO !! VICTOIRE PARTIE"); // même couleur que le trophée
 	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 40, makecol(255, 255, 255), -1, "Appuyez sur une touche");
 
 	clear_keybuf();
