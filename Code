@@ -557,6 +557,6 @@ void reinitialiserArme(Joueur *joueur)
     compteur_arme--;
     if (compteur_arme == 0)
     {
-        joueur->arme = ; // arme de base
+        joueur->arme = ARME1; // arme de base
     }
 }
