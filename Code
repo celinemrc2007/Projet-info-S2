@@ -16,8 +16,9 @@ void afficherNiveau(int niveau);
 void afficherPseudo();
 void afficherRegles();
 void afficherExplosionBazuka();
-void afficherEchecNiveau();
-void afficherVictoireNiveau();
+void afficherDeplacementsJoueur(Joueur *joueur);
+void afficherEchecNiveau(Joueur *joueur);
+void afficherVictoireNiveau(Joueur *joueur);
 void afficherVictoirePartie();
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
