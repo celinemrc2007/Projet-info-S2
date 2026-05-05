@@ -5,7 +5,7 @@
 
 #include <allegro/timer.h>
 
-#include "gestionListes.h"
+#include "gestionListe.h"
 
 #define GRAVITE 50.0f   // unité : pixel/s²
 #define FROTTEMENT 0.01f
@@ -439,6 +439,25 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
     //supprimerObjet(tete_objet, objet);
 }
 
+void collisionBulleBalle(Bulle *bulle, Balle *balle)
+{
+ // test de collision
+    if ((balle->position.y - bulle->position.y) == (balle->position.hauteur)/2 + (bulle->position.largeur)/2) // on regarde l'écart entre centre balle et bulle
+    {
+        if(bulle->rayon == 1) // petite bulle
+        {
+            eclaterBulle();
+        }
+        if(bulle->rayon == 2) // moyenne bulle
+        {
+            divisionBulleEnTrois();
+        }
+        if(bulle->rayon == 3) // grande bulle
+        {
+            dvisionBulleEnDeux();
+        }
+    }
+}
 
 
 // Collision entre rectangle
@@ -531,5 +550,13 @@ void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet)
 //            ajouterObjet(tete_objet, nouvel_objet);
         }
     }
+}
 
+void reinitialiserArme(Joueur *joueur)
+{
+    compteur_arme--;
+    if (compteur_arme == 0)
+    {
+        joueur->arme = ; // arme de base
+    }
 }
