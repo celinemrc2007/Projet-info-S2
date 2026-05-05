@@ -223,7 +223,7 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 		// animation en fonction de l'arme
 		switch (joueur->arme)
 		{
-		case : // arme 1
+		case ARME1: // arme 1
 			for (int i= 2; i<=5; i++)
 			{
 				afficherSprite(joueur->position.x, joueur->position.y, i);
@@ -261,7 +261,7 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 		// animation en fonction de l'arme
 		switch (joueur->arme)
 		{
-		case : // arme 1
+		case ARME1: // arme 1
 			for (int i= 6; i<=9; i++)
 			{
 				afficherSprite(joueur->position.x, joueur->position.y, i);
