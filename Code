@@ -1,1 +1,17 @@
+#include "gestionClavier.h"
+#include <allegro.h>
 
+void deplacementJoueur(Joueur *joueur)
+{
+    if (key[KEY_LEFT])
+    {
+        joueur->position.x -= 10; // à chaque clic sur flèche, le perso se deplace de 10 pixels
+    }
+    if (key[KEY_RIGHT])
+    {
+        joueur->position.x += 10;
+    }
+    // limites de deplacement du joueur, le joueur ne dépasse pas les bords
+    if (joueur->position.x < 0) joueur->position.x = 0;
+    if (joueur->position.x > LARGEUR_ECRAN - (joueur->position.largeur)/2) joueur->position.x = LARGEUR_ECRAN - (joueur->position.largeur)/2;
+}
