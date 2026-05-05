@@ -1,1 +1,3 @@
+#include "gestionListe.h"
 
+void deplacementJoueur(Joueur *joueur);
