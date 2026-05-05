@@ -20,12 +20,14 @@ void afficherBoss (Boss *boss);
 void afficherElements();
 void animerElements(float cycle);
 Arme *initialiserArmes (Arme *arme);
-void init();
-bool jeu();
+void init(Bulle *bulle);
+bool jeu(Bulle *bulle);
 void collisionJoueurObjet(Objet *objet, Joueur *joueur);
+void collisionBulleBalle(Bulle *bulle, Balle *balle)
 bool detecterCollision(Position *pos1, Position *pos2);
 bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
 void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet);
+void reinitialiserArme(Joueur *joueur);
 
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
