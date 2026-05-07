@@ -1,16 +1,14 @@
-#ifndef GESTION_NIVEAU_H
-#define GESTION_NIVEAU_H
-// les deux trucs au dessus sont propres à chacun en fonction de comment vous appelez vos fichiers sur votre PC
+#ifndef GESTION_NIVEAUX_H
+#define GESTION_NIVEAUX_H
 
-
-
-#include "logiqueJeu.h"
 #include "sauvegarde.h"
 
 /* ===== VARIABLES ===== */
 
 extern char pseudo[MAX_PSEUDO];
 extern int niveau;
+extern bool bouclier_actif;
+extern float bouclier_timer;
 
 /* ===== FONCTIONS ===== */
 
@@ -42,4 +40,6 @@ void mettreAJourBouclier();
 /* Gère le malus au niveau 5 */
 void malusMultiplication ();
 
-#endif //pareil pour ça
+
+
+#endif
