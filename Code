@@ -28,6 +28,11 @@ bool detecterCollision(Position *pos1, Position *pos2);
 bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
 void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet);
 void reinitialiserArme(Joueur *joueur);
+Bulle *creerBulle(float x, float y, float vx, float vy, float rayon, int objet);
+Bulle *initialiserListeBulle(int niveau);
+Bulle *divisionBulleEnDeux(Bulle *bulle);
+Bulle *divisionBulleEnTrois(Bulle *bulle);
+void collisionBulleBord(Bulle *bulle);
 
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
