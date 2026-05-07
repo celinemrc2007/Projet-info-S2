@@ -11,6 +11,8 @@
 #include "sauvegarde.h"
 
 int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
+bool bouclier_actif = false;
+float bouclier_timer = 0.0f;
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -162,13 +164,23 @@ void gererBoss (Boss *boss, Joueur *joueur) {
     }
 }
 
-void bonusBouclier()
-{
-    if (joueur == NULL)
-        return;
+void bonusBouclier() {
+    bouclier_actif = true;
+    bouclier_timer = 10.0f;
+}
 
-    bouclierActif = true;
-    tempsBouclier = 5.0f;
+void afficherBouclier() {
+    if (!bouclier_actif || joueur == NULL) return;
+    afficherSprite(joueur->position.x, joueur->position.y, 101);
+}
+
+void mettreAJourBouclier() {
+    if (!bouclier_actif) return;
+    bouclier_timer -= CYCLE;
+    if (bouclier_timer <= 0.0f) {
+        bouclier_timer = 0.0f;
+        bouclier_actif = false;
+    }
 }
 
 void malusMultiplication()
