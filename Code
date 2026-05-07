@@ -226,15 +226,15 @@ void afficherRegles() {
 
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "===== REGLES DU JEU =====");
 
-    textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "Detruisez toutes les bulles dans le temps imparti pour gagner.");
+    textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "But du jeu : Detruisez toutes les bulles dans le temps imparti pour gagner.");
 
-    textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Fleches GAUCHE/DROITE : se deplacer");
+    textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Deplacez votre personnage : Utilisez les fleches GAUCHE/DROITE");
 
-    textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Fleche HAUT : tirer");
+    textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Tirez les balles des armes : Utilise fleche HAUT");
 
-    textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle vous touche, vous perdez le niveau");
+    textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle ou un eclair vous touchent, vous perdez le niveau");
 
-    textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes pour devenir plus fort");
+    textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes qui tombent à vos pieds pour devenir plus fort");
 
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
 
