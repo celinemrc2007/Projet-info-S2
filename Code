@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <allegro.h>
-#include "gestionGraphique.h"
+
 #include "gestionListes.h"
+#include "gestionGraphique.h"
+
 void initialisation_allegro();
 
 // Tableaux de sprites
@@ -104,7 +106,7 @@ void chargerSprites () {
 		images[76]=load_bitmap("../images/arme4.bmp",NULL);
 		images[77]=load_bitmap("../images/bazuka.bmp",NULL);
 		images[78]=load_bitmap("../images/balle.bmp",NULL);
-		images[79]=load_bitmap("../images/bombe.bmp",NULL);
+		images[79]=load_bitmap("../images/balle_bazooka.bmp",NULL);
 		images[80]=load_bitmap("../images/obstacle_petit_horizontal.bmp",NULL);
 		images[81]=load_bitmap("../images/obstacle_grand_horizontal.bmp",NULL);
 		images[82]=load_bitmap("../images/obstacle_petit_vertical.bmp",NULL);
@@ -126,8 +128,8 @@ void chargerSprites () {
 		images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.bmp",NULL);
 		images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.bmp",NULL);
 		images[100]=load_bitmap("../images/eclair.bmp",NULL);
-		images[101]=load_bitmap("../images/bonus_bouclier.bmp",NULL);
-		images[102]=load_bitmap("../images/malus_multiplication.bmp",NULL);
+		images[101]=load_bitmap("../images/bonus.bmp",NULL);
+		images[102]=load_bitmap("../images/malus.bmp",NULL);
 		images[103]=load_bitmap("../images/victoire_partie1.bmp",NULL);
 		images[104]=load_bitmap("../images/victoire_partie2.bmp",NULL);
 		images[105]=load_bitmap("../images/victoire_partie3.bmp",NULL);
@@ -144,18 +146,16 @@ void chargerSprites () {
 		images[116]=load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
 		images[117]=load_bitmap("../images/fond_ecran_boss.bmp",NULL);
 		images[118]=load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
-		images[119]=load_bitmap("../images/balle_bazooka.bmp",NULL); // j'ai rajouté la balle bazooka si vous aimez pas j'enlève
-		images[120]=load_bitmap("../images/fond_ecran_menu.bmp",NULL);
 }
 
 void afficherDecompte(void)
 {
-    int cx = ZONE_JEU_X + ZONE_JEU_LARGEUR  / 2;
-    int cy = ZONE_JEU_Y + ZONE_JEU_HAUTEUR  / 2;
+    int cx = ZONE_JEU_LARGEUR  / 2;
+    int cy = ZONE_JEU_HAUTEUR  / 2;
 
-    int coul_blanc = makecol(255, 255, 255);
-    int coul_noir  = makecol(0,   0,   0);
-    int coul_vert  = makecol(50,  220, 50); 
+    int blanc = makecol(255, 255, 255);
+    int noir  = makecol(0,   0,   0);
+    int vert  = makecol(50,  220, 50);
 
     int bx = cx - 80, by = cy - 80;
     int bw = 160, bh = 160;
@@ -164,25 +164,22 @@ void afficherDecompte(void)
         char texte[4];
         sprintf(texte, "%d", i);
 
-        rectfill(screen, bx, by, bx + bw - 1, by + bh - 1, coul_noir);
- 
         int tw = text_length(font, texte);
         int th = text_height(font);
         textout_ex(screen, font, texte,
                    cx - tw / 2, cy - th / 2,
-                   coul_blanc, coul_noir);
- 
+                   blanc, noir);
+
         vsync();
         rest(1000);
     }
 
     /* Affiche "GO !" en vert */
-    rectfill(screen, bx, by, bx + bw - 1, by + bh - 1, coul_noir);
     int tw = text_length(font, "GO !");
     int th = text_height(font);
     textout_ex(screen, font, "GO !",
                cx - tw / 2, cy - th / 2,
-               coul_vert, coul_noir);
+               vert, noir);
     vsync();
     rest(700);
 }
@@ -190,7 +187,6 @@ void afficherDecompte(void)
 void afficherFondEcran() {
 	clear_bitmap(screen);
 }
-
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
@@ -205,57 +201,46 @@ void afficherSpriteRedimensionne (Position *position, int numero_sprite) {
 }
 
 void afficherNiveau(int niveau) {
-	textprintf_ex(screen,font,50,750,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
+	textprintf_ex(screen,font,200,HAUTEUR_ECRAN - 50,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
 }
 
-
 void afficherPseudo(char pseudo[50]) {
-    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, 755, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
+    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, HAUTEUR_ECRAN - 50, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
 }
 
 void afficherTempsRestant(int temps_restant) // temps_restant est en sec
 {
 	int minutes = temps_restant / 60;
 	int secondes = temps_restant % 60;
-	textprintf_ex(screen, font, 50, 760,makecol(255,255,255), -1, "Temps restant : %d:%d", minutes, secondes); // 10 pixels en dessous du niveau
-}
-
-void afficherRegles() {
-
-    clear_bitmap(screen);
-
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "===== REGLES DU JEU =====");
-
-    textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "But du jeu : Detruisez toutes les bulles dans le temps imparti pour gagner.");
-
-    textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Deplacez votre personnage : Utilisez les fleches GAUCHE/DROITE");
-
-    textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Tirez les balles des armes : Utilise fleche HAUT");
-
-    textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle ou un eclair vous touchent, vous perdez le niveau");
-
-    textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes qui tombent à vos pieds pour devenir plus fort");
-
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
-
-    clear_keybuf();
-
-    readkey();
+	textprintf_ex(screen, font, 200, HAUTEUR_ECRAN - 100,makecol(255,255,255), -1, "TEMPS RESTANT : %d:%d", minutes, secondes); // 10 pixels en dessous du niveau
 }
 
 void afficherScore(int score)
 {
-    char texte[64];
-    sprintf(texte, "Score : %d", score);
+	textprintf_ex(screen,font,LARGEUR_ECRAN - 300,HAUTEUR_ECRAN - 100,makecol(255,255,255),-1,"SCORE : %d", score);
+}
 
-    int coul_blanc = makecol(255, 255, 255);
-    int coul_noir  = makecol(0,   0,   0);
- 
-    /* Efface la ligne du score */
-    rectfill(screen, ZONE_INFO_X, ZONE_INFO_Y + 100, ZONE_INFO_X + ZONE_INFO_LARGEUR - 1, ZONE_INFO_Y + 149, coul_noir);
- 
-    /* Affiche la nouvelle valeur */
-    textout_ex(screen, font, texte, ZONE_INFO_X + 15, ZONE_INFO_Y + 115, coul_blanc, coul_noir);
+void afficherRegles() {
+
+	clear_bitmap(screen);
+
+	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "===== REGLES DU JEU =====");
+
+	textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "But du jeu : Detruisez toutes les bulles dans le temps imparti pour gagner.");
+
+	textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Deplacez votre personnage : Utilisez les fleches GAUCHE/DROITE");
+
+	textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Tirez les balles des armes : Utilise fleche HAUT");
+
+	textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle ou un eclair vous touchent, vous perdez le niveau");
+
+	textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes qui tombent à vos pieds pour devenir plus fort");
+
+	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
+
+	clear_keybuf();
+
+	readkey();
 }
 
 
@@ -353,9 +338,9 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 void afficherVictoireNiveau(Joueur *joueur) {
 
     for (int i = 67; i <= 73; i++) {
-        clear_bitmap(screen);
+    	afficherFondEcran();
         afficherSprite(joueur->position.x, joueur->position.y, i);
-        rest(150);
+        rest(100);
     }
 	// animation lara gagne
     textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 220, 0), -1, "BRAVO, NIVEAU REUSSI !");
@@ -368,9 +353,9 @@ void afficherVictoireNiveau(Joueur *joueur) {
 
 void afficherEchecNiveau(Joueur *joueur) {
     for (int i = 61; i <= 66; i++) {
-        clear_bitmap(screen);
+    	afficherFondEcran();
         afficherSprite(joueur->position.x, joueur->position.y, i);
-        rest(150);
+        rest(100);
     }
 	// animation lara perd
 
@@ -385,16 +370,11 @@ void afficherVictoirePartie()
 {
 	// animation sprite trophée tourne sur lui-meme
 	// affichage au milieu un peu en haut
-	afficherSprite(600, 300, 103);
-	afficherSprite(600, 300, 104);
-	afficherSprite(600, 300, 105);
-	afficherSprite(600, 300, 106);
-	afficherSprite(600, 300, 107);
-	afficherSprite(600, 300, 108);
-	afficherSprite(600, 300, 109);
-	afficherSprite(600, 300, 110);
-	afficherSprite(600, 300, 111);
-	afficherSprite(600, 300, 112);
+	for (int i = 103; i <= 112; i++) {
+		afficherFondEcran();
+		afficherSprite(600, 300, i);
+		rest(100);
+	}
 	// affichage du texte en dessous du trophé
 	textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/2 + 20, makecol(243,187,27), -1, "BRAVO !! VICTOIRE PARTIE"); // même couleur que le trophée
 	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 40, makecol(255, 255, 255), -1, "Appuyez sur une touche");
@@ -403,19 +383,7 @@ void afficherVictoirePartie()
 	readkey();
 }
 
-void afficherBalle(Balle *liste)
+/*void afficherBalle(Balle *balle)
 {
-    int coul_rouge = makecol(255, 0, 0);
-    Balle *courant = liste;
 
-    while (courant != NULL) {
-        int bx = (int)(courant->position.x - courant->position.largeur  / 2.0f);
-        int by = (int)(courant->position.y - courant->position.hauteur / 2.0f);
-        int bw = (int) courant->position.largeur;
-        int bh = (int) courant->position.hauteur;
-
-        rectfill(screen, x1, y1, x2, y2, coul_jaune);
-
-        courant = courant->balle;
-    }
-}
+    } */
