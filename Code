@@ -4,13 +4,10 @@
 #include <time.h>
 #include <allegro.h>
 
-#include "gestionGraphique.h"
-#include "gestionNiveau.h"
-#include "logiqueJeu.h"
-#include "sauvegarde.h"
 
-extern int niveau;
-extern char pseudo[MAX_PSEUDO];
+#include "gestionGraphique.h"
+#include "gestionNiveaux.h"
+#include "sauvegarde.h"
 
 
 int menu()
@@ -59,7 +56,7 @@ void saisirPseudo()
         {
             break;
         }
-     
+
         else if (touche == 8 && longueur > 0) // Touche Effacer = 8 en ASCII
         {
             longueur--;
@@ -101,7 +98,7 @@ int main()
 
             case 2:
                 /* Nouvelle partie */
-                saisirPseudo();
+                //saisirPseudo();
                 niveau = 1;
                 lancerNiveau();
                 break;
