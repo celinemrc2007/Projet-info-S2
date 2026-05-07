@@ -15,3 +15,42 @@ void deplacementJoueur(Joueur *joueur)
     if (joueur->position.x < 0) joueur->position.x = 0;
     if (joueur->position.x > LARGEUR_ECRAN - (joueur->position.largeur)/2) joueur->position.x = LARGEUR_ECRAN - (joueur->position.largeur)/2;
 }
+
+void tirerBallesBombes(Balle **listeBalle, Joueur *joueur)
+{
+    if (!key[KEY_UP]){
+        return;
+    }
+    float ox = joueur->position.x;
+    float oy = joueur->position.y - joueur->position.hauteur / 2.0f;
+
+    float v  = VITESSE_BALLE_BASE;
+    float v3 = v * 3.0f;          
+    float d  = 0.7071f;           
+
+    switch (joueur->arme) {
+
+        case 1:
+            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            break;
+        case 2:
+            ajouterBalle(listeBalle, ox, oy, 0.0f, -v3);
+            break;
+        case 3:
+            ajouterBalle(listeBalle, ox - ECART_BALLES_ARME3, oy, 0.0f, -v);
+            ajouterBalle(listeBalle, ox,                       oy, 0.0f, -v);
+            ajouterBalle(listeBalle, ox + ECART_BALLES_ARME3, oy, 0.0f, -v);
+            break;
+        case 4:
+            ajouterBalle(listeBalle, ox, oy,  0.0f,    -v);
+            ajouterBalle(listeBalle, ox, oy, -v * d,   -v * d);
+            ajouterBalle(listeBalle, ox, oy,  v * d,   -v * d);
+            break;        
+        case 5:
+            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            break;
+        default:
+            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            break;
+    }
+}
