@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
-#include <time.h>
 #include <allegro.h>
+//#include <windows.h>
 
 #include "gestionGraphique.h"
 #include "gestionListes.h"
 #include "gestionNiveaux.h"
 #include "logiqueJeu.h"
 #include "sauvegarde.h"
+#include "principal.h"
 
 int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
 bool bouclier_actif = false;
@@ -29,6 +29,7 @@ int recupererNiveau() {
 
 void lancerNiveau() {
     afficherFondEcran();
+    printf("init_obstacles");
     srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
 
     switch (niveau) {
@@ -51,7 +52,6 @@ void lancerNiveau() {
             temps_restant = 60; // 1 min
             break;
     }
-
     afficherNiveau(niveau);
     int resultat_jeu = jeu();
     if (resultat_jeu==true) {
@@ -72,8 +72,8 @@ void finNiveau() {
     int choix_realise = 0;
 
     afficherFondEcran();
-    int x = 50; // Position X
-    int y = HAUTEUR_ECRAN / 3;
+    int x = LARGEUR_ECRAN/2 - 100;
+    int y = HAUTEUR_ECRAN/2 - 100;
     int blanc = makecol(255, 255, 255);
 
     textout_ex(screen, font, "Que souhaites-tu faire ?", x, y, blanc, -1);
@@ -99,11 +99,11 @@ void finNiveau() {
             lancerNiveau();
             break;
         case 2:
-            sauvegarderPartie();
+            sauvegarderPartie(pseudo, niveau);
             menu();
             break;
         case 3:
-            sauvegarderPartie();
+            sauvegarderPartie(pseudo, niveau);
             exit(0);
             break;
         case 4:
@@ -119,7 +119,7 @@ void gererVictoireNiveau() {
         gererVictoirePartie();
     } else {
         niveau++;
-        afficherVictoireNiveau();
+        afficherVictoireNiveau(joueur);
         finNiveau();
     }
 }
@@ -127,7 +127,7 @@ void gererVictoireNiveau() {
 /* ================= ECHEC NIVEAU ================= */
 
 void gererEchecNiveau() {
-        afficherEchecNiveau();
+        afficherEchecNiveau(joueur);
         finNiveau();
 }
 
@@ -182,8 +182,6 @@ void mettreAJourBouclier() {
         bouclier_actif = false;
     }
 }
-
-
 
 void malusMultiplication () {
     afficherSprite(joueur->position.x, joueur->position.y, 102);
