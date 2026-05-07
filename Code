@@ -36,6 +36,8 @@ void gererBoss (Boss *boss, Joueur *joueur);
 
 /* Gère le bonus au niveau 5 */
 void bonusBouclier ();
+void afficherBouclier();
+void mettreAJourBouclier();
 
 /* Gère le malus au niveau 5 */
 void malusMultiplication ();
