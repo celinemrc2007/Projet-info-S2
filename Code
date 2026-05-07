@@ -6,78 +6,21 @@
 #include <gestionListes.h>
 #include <gestionGraphique.h>
 
-#define VITESSE_OBJET 100
 
-Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
-{
-    Bulle *bulle = malloc(sizeof(Bulle)); // allocation dynamique
-    if (bulle == NULL)
-    {
-        printf("Erreur allocation memoire.");
-        exit(1);
-    }
-    switch (niveau)
-    {
-        case 1: bulle->objet = rand () % 1;  // Toutes les bulles sont vides.
-        bulle->position.vx = rand() % 150 - 75;
-        bulle->position.vy = rand() % 150 - 75;
-        break;
-        case 2: bulle->objet = rand () % 2; // Ajout d'une nouvelle arme
-        //plus le niveau augmente, plus la vitesse augmente
-        bulle->position.vx = rand() % 175 - 75;
-        bulle->position.vy = rand() % 175 - 75;
-        break;
-        case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
-        bulle->position.vx = rand() % 200 - 75;
-        bulle->position.vy = rand() % 200 - 75;
-        break;
-        case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme
-        bulle->position.vx = rand() % 225 - 75;
-        bulle->position.vy = rand() % 225 - 75;
-        break;
-        case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
-        bulle->position.vx = rand() % 250 - 75;
-        bulle->position.vy = rand() % 250 - 75;
-        break;
-    }
-
-    int rayon; // variable pour un choix aléatoire de rayon
-    rayon = 1 + rand()%3; 
-    switch (rayon)
-    {
-        case 1: 
-        bulle->rayon = PETITE_BULLE; // rayon petite bulle : 40 pixel
-        bulle->position.largeur = bulle->position.hauteur = 2*bulle->rayon; 
-        break;
-        case 2: 
-        bulle->rayon = MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
-        bulle->position.largeur = bulle->position.hauteur = 2*bulle->rayon; 
-        break;
-        case 3:
-        bulle->rayon = GRANDE_BULLE; // rayon grande bulle : 80 pixel
-        bulle->position.largeur = bulle->position.hauteur = 2*GRANDE_BULLE; 
-        break;
-    }
-
-    switch (ApparitionDebutJeu)
-    {
-        case TRUE: // bulles apparaissent partout dans le jeu
-        bulle->position.x = (bulle->position.largeur)/2 + rand()%((LARGEUR_ECRAN-(bulle->position.largeur)/2)-((bulle->position.largeur)/2)+1); // position x entre 0+rayon (min) et 1200-rayon (max), (bulle->position.largeur)/2 represente le rayon
-        bulle->position.y = (bulle->position.hauteur)/2 + rand()%((500-(bulle->position.hauteur)/2)-((bulle->position.hauteur)/2)+1); // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
-        break;
 
         case FALSE: // bulles apparaissent que sur les bords
         if (rand() % 2 == 0) // creer choix aléatoire
-            bulle->position.x = bulle->position.largeur / 2; // sur les bors à gauche
+            bulle->position.x = bulle->rayon; // sur les bors à gauche
         else
-            bulle->position.x = LARGEUR_ECRAN - (bulle->position.largeur / 2); // ou à droite (bulle->position.largeur)/2 represente le rayon
-        bulle->position.y = (bulle->position.largeur)/2 + rand()%((500-(bulle->position.largeur)/2))-((bulle->position.largeur)/2)+1; // position y entre 0+rayon (min) et 500-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+            bulle->position.x = LARGEUR_ECRAN - bulle->rayon; // ou à droite
+        bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
         break;
     }
     bulle->boule_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
     bulle->suivant = NULL;
     return bulle; // on retourne l'adresse de la bulle créée
 }
+
 
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 {
@@ -99,7 +42,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 void ajouterBulleAleatoirement(Bulle **tete, int niveau)
 {
     // on cherche à calculer une probabilité d'apparition par fréquence d'images (FPS)
-    int proba = rand()%100; // variable aléatoire entre 0 et 100
+    int proba = 0;
     int seuil;
     switch (niveau)
     {
@@ -174,7 +117,7 @@ Balle *creerBalle(Joueur *joueur) // on prend l'arme grise par défault ?
     balle->position.x = joueur->position.x + joueur->position.largeur/3;
     balle->position.y = joueur->position.y + joueur->position.hauteur/2;
     balle->position.vx = 0;
-    balle->position.vy = -30; // tir horizontal
+    balle->position.vy = -30; // tir vertical
     balle->position.hauteur = (6/100)*HAUTEUR_ECRAN;
     balle->position.largeur = (2/100)*LARGEUR_ECRAN;
     return balle; // on retourne l'adresse de la balle créée
@@ -266,13 +209,13 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
         objet->position.largeur = (5/100)*LARGEUR_ECRAN; // taille arme et eclair
         break;
         case 5: objet->type = rand()%7;
+        objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
+        objet->position.largeur = (5/100)*LARGEUR_ECRAN; // bouclier et malus font la meme taille que le reste des objets
 
         break;
     }
     objet->position.vx = 0;
     objet->position.vy = VITESSE_OBJET; // objet descend verticalement
-
-
     objet->duree_restante = TEMPS_OBJET; // ils ne restent que 10 sec à l'ecran
     objet->suivant = NULL;
     return objet; // on retourne l'adresse de l'objet créé
