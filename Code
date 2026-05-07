@@ -110,7 +110,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 void ajouterBulleAleatoirement(Bulle **tete, int niveau)
 {
     // on cherche à calculer une probabilité d'apparition par fréquence d'images (FPS)
-    int proba = 0;
+    int proba = rand()%100; // variable aléatoire entre 0 et 100
     int seuil;
     switch (niveau)
     {
@@ -134,7 +134,6 @@ void ajouterBulleAleatoirement(Bulle **tete, int niveau)
         ajouterBulle(tete,nouvelle);
     }
 }
-
 
 void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la liste
 {
@@ -279,7 +278,6 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
         case 5: objet->type = rand()%7;
         objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
         objet->position.largeur = (5/100)*LARGEUR_ECRAN; // bouclier et malus font la meme taille que le reste des objets
-
         break;
     }
     objet->position.vx = 0;
