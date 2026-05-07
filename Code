@@ -145,7 +145,7 @@ void chargerSprites () {
 		images[117]=load_bitmap("../images/fond_ecran_boss.bmp",NULL);
 		images[118]=load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
 		images[119]=load_bitmap("../images/balle_bazooka.bmp",NULL); // j'ai rajouté la balle bazooka si vous aimez pas j'enlève
-
+		images[120]=load_bitmap("../images/fond_ecran_menu.bmp",NULL);
 }
 
 void afficherDecompte(void)
