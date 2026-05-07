@@ -148,6 +148,44 @@ void chargerSprites () {
 
 }
 
+void afficherDecompte(void)
+{
+    int cx = ZONE_JEU_X + ZONE_JEU_LARGEUR  / 2;
+    int cy = ZONE_JEU_Y + ZONE_JEU_HAUTEUR  / 2;
+
+    int coul_blanc = makecol(255, 255, 255);
+    int coul_noir  = makecol(0,   0,   0);
+    int coul_vert  = makecol(50,  220, 50); 
+
+    int bx = cx - 80, by = cy - 80;
+    int bw = 160, bh = 160;
+
+    for (int i = DUREE_DECOMPTE; i >= 1; i--) {
+        char texte[4];
+        sprintf(texte, "%d", i);
+
+        rectfill(screen, bx, by, bx + bw - 1, by + bh - 1, coul_noir);
+ 
+        int tw = text_length(font, texte);
+        int th = text_height(font);
+        textout_ex(screen, font, texte,
+                   cx - tw / 2, cy - th / 2,
+                   coul_blanc, coul_noir);
+ 
+        vsync();
+        rest(1000);
+    }
+
+    /* Affiche "GO !" en vert */
+    rectfill(screen, bx, by, bx + bw - 1, by + bh - 1, coul_noir);
+    int tw = text_length(font, "GO !");
+    int th = text_height(font);
+    textout_ex(screen, font, "GO !",
+               cx - tw / 2, cy - th / 2,
+               coul_vert, coul_noir);
+    vsync();
+    rest(700);
+}
 
 void afficherFondEcran() {
 	clear_bitmap(screen);
@@ -203,6 +241,21 @@ void afficherRegles() {
     clear_keybuf();
 
     readkey();
+}
+
+void afficherScore(int score)
+{
+    char texte[64];
+    sprintf(texte, "Score : %d", score);
+
+    int coul_blanc = makecol(255, 255, 255);
+    int coul_noir  = makecol(0,   0,   0);
+ 
+    /* Efface la ligne du score */
+    rectfill(screen, ZONE_INFO_X, ZONE_INFO_Y + 100, ZONE_INFO_X + ZONE_INFO_LARGEUR - 1, ZONE_INFO_Y + 149, coul_noir);
+ 
+    /* Affiche la nouvelle valeur */
+    textout_ex(screen, font, texte, ZONE_INFO_X + 15, ZONE_INFO_Y + 115, coul_blanc, coul_noir);
 }
 
 
@@ -348,4 +401,21 @@ void afficherVictoirePartie()
 
 	clear_keybuf();
 	readkey();
+}
+
+void afficherBalle(Balle *liste)
+{
+    int coul_rouge = makecol(255, 0, 0);
+    Balle *courant = liste;
+
+    while (courant != NULL) {
+        int bx = (int)(courant->position.x - courant->position.largeur  / 2.0f);
+        int by = (int)(courant->position.y - courant->position.hauteur / 2.0f);
+        int bw = (int) courant->position.largeur;
+        int bh = (int) courant->position.hauteur;
+
+        rectfill(screen, x1, y1, x2, y2, coul_jaune);
+
+        courant = courant->balle;
+    }
 }
