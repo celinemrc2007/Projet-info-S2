@@ -174,7 +174,7 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
 }
 
 
-Balle *creerBalle(Joueur *joueur) // on prend l'arme grise par défault ?
+Balle *creerBalle(float x, float y, float vx, float vy) // on prend l'arme grise par défault ?
 {
     Balle *balle = malloc(sizeof(Balle)); // allocation dynamique
     if (balle == NULL)
@@ -182,12 +182,12 @@ Balle *creerBalle(Joueur *joueur) // on prend l'arme grise par défault ?
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    balle->position.x = joueur->position.x + joueur->position.largeur/3;
-    balle->position.y = joueur->position.y + joueur->position.hauteur/2;
-    balle->position.vx = 0;
-    balle->position.vy = -30; // tir vertical
-    balle->position.hauteur = (6/100)*HAUTEUR_ECRAN;
-    balle->position.largeur = (2/100)*LARGEUR_ECRAN;
+    balle->position.x = x;
+    balle->position.y = y;
+    balle->position.vx = vx;
+    balle->position.vy = vy; // tir horizontal
+    balle->position.hauteur = HAUTEUR_ECRAN*4/100;
+    balle->position.largeur = LARGEUR_ECRAN*2/100;
     return balle; // on retourne l'adresse de la balle créée
 }
 
