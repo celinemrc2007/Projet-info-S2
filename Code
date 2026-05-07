@@ -5,10 +5,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #define PETITE_BULLE 40
 #define MOYENNE_BULLE 56
 #define GRANDE_BULLE 80 // RAYON
@@ -94,11 +90,12 @@ typedef struct boss
 //***************************** FONCTIONS *************************//
 
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
+Bulle *creerBulleClone(Bulle *original);
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
 void ajouterBulleAleatoirement(Bulle **tete, int niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
-Balle *creerBalle(Joueur *joueur);
+Balle *creerBalle(float x, float y, float vx, float vy);
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBallesHorsZone(Balle **tete, Balle *balle);
 int supprimerListeBalle(Balle **tete);
@@ -107,6 +104,5 @@ Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
 bool listeVide(void **tete);
-
 
 #endif
