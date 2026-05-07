@@ -67,14 +67,14 @@ void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
             if (detecterCollisionBulle(bulle, &obstacles[i].position)==true) {
                 rebondBulleObstacle(bulle, &obstacles[i], cycle);
             }
-            if (detecterCollision(&bulle->position, &joueur->position) == true) {
+            /*if (detecterCollision(&bulle->position, &joueur->position) == true) {
                 if (bouclier_actif) {
                     bouclier_actif = false;   // le bouclier absorbe le coup
                     bouclier_timer = 0.0f;
                 } else {
                     joueur_touche_par_bulle = true;
                 }
-            }
+            }*/
         }
     }
 
@@ -241,7 +241,7 @@ void afficherElements() {
     afficherFondEcran();
     // Affichage du joueur
     if (joueur != NULL) afficherSprite(joueur->position.x, joueur->position.y, 1);
-    afficherBouclier();
+//    afficherBouclier();
 
     Bulle *bulle = tete_bulle;
     while (bulle != NULL) { // Affichage des bulles ou des boules de feu lors du boss
@@ -339,7 +339,7 @@ void animerElements(float cycle) {
         objet = objet->suivant;
     }
     //ajouterBulleAleatoirement(&tete_bulle, niveau);
-    mettreAJourBouclier();
+//    mettreAJourBouclier();
 }
 
 Arme *initialiserArmes (Arme *arme) {
