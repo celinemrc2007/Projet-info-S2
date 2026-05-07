@@ -20,5 +20,8 @@ void afficherDeplacementsJoueur(Joueur *joueur);
 void afficherEchecNiveau(Joueur *joueur);
 void afficherVictoireNiveau(Joueur *joueur);
 void afficherVictoirePartie();
+void afficherDecompte(void);
+void afficherScore(int score);
+void afficherBalle(Balle *liste);
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
