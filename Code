@@ -41,14 +41,21 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
         break;
     }
 
-    bulle->rayon = 1 + rand()%3 ; // taille aléatoire pour un nombre entre 1, 2, 3
-    switch (bulle->rayon)
+    int rayon; // variable pour un choix aléatoire de rayon
+    rayon = 1 + rand()%3; 
+    switch (rayon)
     {
-        case 1: bulle->position.largeur = bulle->position.hauteur = 2*PETITE_BULLE; // rayon petite bulle : 40 pixel
+        case 1: 
+        bulle->rayon = PETITE_BULLE; // rayon petite bulle : 40 pixel
+        bulle->position.largeur = bulle->position.hauteur = 2*bulle->rayon; 
         break;
-        case 2: bulle->position.largeur = bulle->position.hauteur = 2*MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
+        case 2: 
+        bulle->rayon = MOYENNE_BULLE; // rayon moyenne bulle : 56 pixel
+        bulle->position.largeur = bulle->position.hauteur = 2*bulle->rayon; 
         break;
-        case 3: bulle->position.largeur = bulle->position.hauteur = 2*GRANDE_BULLE; // rayon grande bulle : 80 pixel
+        case 3:
+        bulle->rayon = GRANDE_BULLE; // rayon grande bulle : 80 pixel
+        bulle->position.largeur = bulle->position.hauteur = 2*GRANDE_BULLE; 
         break;
     }
 
