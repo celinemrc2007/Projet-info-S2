@@ -560,3 +560,85 @@ void reinitialiserArme(Joueur *joueur)
         joueur->arme = ARME1; // arme de base
     }
 }
+
+static float vitesseAleatoire(float max) {
+    float v;
+    do {
+        v = (float)(rand() % (int)(max * 2 * 2 + 1) - (int)(max * 2)) / 2.0f;
+    } while (v == 0.0f);
+    return v;
+}
+
+Bulle *initialiserListeBulle(int niveau) {
+    srand((unsigned int)time(NULL));
+    Bulle *liste = NULL;
+    int nb_bulles;
+    switch (niveau) {
+        case 1: nb_bulles = 3; break;
+        case 2: nb_bulles = 4; break;
+        case 3: nb_bulles = 5; break;
+        case 4: nb_bulles = 6; break;
+        default: nb_bulles = 3; break;
+    }
+
+    for (int i = 0; i < nb_bulles; i++) {
+        float rayon = RAYON_GRANDE;
+        float x, y, vx, vy;
+        if (niveau <= 2) {
+            float marge_x = rayon;
+            float marge_y = rayon;
+            x = (float)ZONE_JEU_X + marge_x + (float)(rand() % (int)((float)ZONE_JEU_LARGEUR - 2.0f * marge_x));
+            y = (float)ZONE_JEU_Y + marge_y + (float)(rand() % (int)((float)ZONE_JEU_HAUTEUR / 2.0f - marge_y));
+        } else {
+            x = (float)ZONE_JEU_X + rayon + (float)(rand() % (int)((float)ZONE_JEU_LARGEUR - 2.0f * rayon));
+            y = (float)ZONE_JEU_Y + rayon;
+        }
+        int dir = rand() % 3; 
+        switch (dir) {
+            case 0: vx = vitesseAleatoire(3.0f); vy = 0.0f;break;
+            case 1: vx = 0.0f;vy = vitesseAleatoire(3.0f); break;
+            default: vx = vitesseAleatoire(3.0f); vy = vitesseAleatoire(3.0f); break;
+        }
+        int objet = (rand() % 8 == 0) ? (rand() % 7 + 1) : 0;
+        Bulle *b = creerBulle(x, y, vx, vy, rayon, objet);
+        if (b) {
+            b->suivant = liste;
+            liste = b;
+        }
+    }
+    return liste;
+}
+
+static float rayon_inferieur(float rayon)
+{
+    if (rayon >= RAYON_GRANDE - EPSILON_RAYON)  return RAYON_MOYENNE;
+    if (rayon >= RAYON_MOYENNE - EPSILON_RAYON) return RAYON_PETITE;
+    return -1.0f; 
+}
+
+Bulle *divisionBulleEnDeux(Bulle *bulle) {
+    float nouveau_rayon = rayon_inferieur(bulle->rayon);
+    if (nouveau_rayon < 0.0f) return NULL;
+    float vx = (float)(rand() % 4 + 1);
+    float vy = -(float)(rand() % 3 + 1);
+    Bulle *b1 = creerBulle(bulle->position.x - nouveau_rayon, bulle->position.y, -vx, vy, nouveau_rayon, 0);
+    Bulle *b2 = creerBulle(bulle->position.x + nouveau_rayon, bulle->position.y, vx, vy, nouveau_rayon, 0);
+    if (b1 && b2)  { b1->suivant = b2; return b1; }
+    if (b1)        return b1;
+    if (b2)        return b2;
+    return NULL;
+}
+
+Bulle *divisionBulleEnTrois(Bulle *bulle) {
+    float nouveau_rayon = rayon_inferieur(bulle->rayon);
+    if (nouveau_rayon < 0.0f) return NULL; 
+    float vx = (float)(rand() % 3 + 1);
+    float vy = -(float)(rand() % 3 + 1);
+    Bulle *b1 = creerBulle(bulle->position.x - nouveau_rayon * 2.0f, bulle->position.y, -vx, vy, nouveau_rayon, 0);
+    Bulle *b2 = creerBulle(bulle->position.x, bulle->position.y, 0.0f, vy - 1.0f, nouveau_rayon, 0);
+    Bulle *b3 = creerBulle(bulle->position.x + nouveau_rayon * 2.0f,bulle->position.y, vx, vy, nouveau_rayon, 0);
+    if (b1) b1->suivant = b2;
+    if (b2) b2->suivant = b3;
+
+    return b1;
+}
