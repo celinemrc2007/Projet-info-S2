@@ -7,8 +7,8 @@
 
 extern char pseudo[MAX_PSEUDO];
 extern int niveau;
-extern bool bouclier_actif;
-extern float bouclier_timer;
+/*extern bool bouclier_actif;
+extern float bouclier_timer;*/
 
 /* ===== FONCTIONS ===== */
 
