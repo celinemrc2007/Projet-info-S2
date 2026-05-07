@@ -1,4 +1,9 @@
-#include "gestionListe.h"
+#ifndef PROGRAMMES_GESTIONCLAVIER_H
+#define PROGRAMMES_GESTIONCLAVIER_H
+
+#include "gestionListes.h"
 
 void deplacementJoueur(Joueur *joueur);
 void tirerBallesBombes(Balle **listeBalle, Joueur *joueur);
+
+#endif //PROGRAMMES_GESTIONCLAVIER_H
