@@ -1,24 +1,27 @@
 #include <stdio.h>
 #include <math.h>
+#include <allegro.h>
+
+#include "gestionListes.h"
 #include "gestionGraphique.h"
 #include "logiqueJeu.h"
-
-#include <allegro/timer.h>
-
-#include "gestionListe.h"
+#include "gestionNiveaux.h"
+#include "gestionClavier.h"
 
 #define GRAVITE 50.0f   // unité : pixel/s²
 #define FROTTEMENT 0.01f
 #define HORS_ZONE_JEU -500 // // unité : pixels
-#define CYCLE 0.02f // unité : seconde
 #define TEMPS_JEU_MINIMUM 20 // unité : seconde
 #define SQRT2_DIV_2 0.7071f
 #define DIST_REBOND_RATIO 0.6f  // Déformation limitée à 40 % en hauteur ou en largeur
 #define TEMPS_REBOND_2 (0.002f)    // En s² A ajuster
 #define NB_SOUS_CYCLE 5
 #define VITESSE_BULLE_MAX 500 // unité : pixel/s
+#define VITESSE_BALLE_BASE 500
+#define N_OBSTACLES 8 // Nombre d'obstacles (dont 4 obstacles fixes de bord d'écran)
 
 float temps_restant;
+float compteur_objet;
 bool joueur_touche_par_bulle;
 bool joueur_touche_par_eclair;
 Bulle *tete_bulle;
@@ -26,6 +29,21 @@ Balle *tete_balle;
 Objet *tete_objet;
 Joueur *joueur;
 Boss *boss;
+Obstacle obstacles[N_OBSTACLES];
+Arme armes[N_ARMES];
+
+bool verifierInitialisationSansCollision(Bulle *tete) {
+    Bulle *bulle = tete;
+    while (bulle != NULL) {
+        for (int i = 0; i < N_OBSTACLES; i++) {
+            while (detecterCollisionBulle(bulle, &obstacles[i].position)==true) {
+                return false;
+            }
+        }
+        bulle = bulle->suivant;
+    }
+    return true;
+}
 
 void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
     // Boucle d'animation pour plus de precision
@@ -46,6 +64,9 @@ void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
         bulle->position.hauteur = 2*bulle->rayon;
 
         for (int i = 0; i < N_OBSTACLES; i++) {
+            if (detecterCollisionBulle(bulle, &obstacles[i].position)==true) {
+                rebondBulleObstacle(bulle, &obstacles[i], cycle);
+            }
             if (detecterCollision(&bulle->position, &joueur->position) == true) {
                 if (bouclier_actif) {
                     bouclier_actif = false;   // le bouclier absorbe le coup
@@ -60,7 +81,7 @@ void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle) {
     Balle *balle = tete_balle;
     while (balle != NULL) {
         if (detecterCollision(&bulle->position, &balle->position) == true) {
-            //collisionBulleBalle(balle);
+            collisionBulleBalle(bulle, balle);
             balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
         }
     balle = balle->suivant;
@@ -219,7 +240,8 @@ void afficherBoss (Boss *boss) {
 void afficherElements() {
     afficherFondEcran();
     // Affichage du joueur
-    //if (joueur != NULL) afficherSprite(joueur->position.x, joueur->position.y, 1);
+    if (joueur != NULL) afficherSprite(joueur->position.x, joueur->position.y, 1);
+    afficherBouclier();
 
     Bulle *bulle = tete_bulle;
     while (bulle != NULL) { // Affichage des bulles ou des boules de feu lors du boss
@@ -290,21 +312,18 @@ void afficherElements() {
 
     // Affichage du boss
     afficherBoss(boss);
+
     // Affiche des informations dans la zone d'infos
-    /*afficherDecompte;
-      afficherPseudo;
-      afficherNiveau(niveau);
-      afficherTempsRestant(temps_restant);
-      afficherScore(score);
-    */
-    //Affichage du bouclier
-    afficherBouclier();
+    afficherPseudo(pseudo);
+    afficherNiveau(niveau);
+    afficherTempsRestant(temps_restant);
+    afficherScore(1);
 }
 
 void animerElements(float cycle) {
     Balle *balle = tete_balle;
     while (balle != NULL) {
-        //gererBalle(balle, cycle);
+        gererBalle(balle, cycle);
         balle = balle->suivant;
     }
     Bulle *bulle = tete_bulle;
@@ -314,18 +333,45 @@ void animerElements(float cycle) {
     }
     Objet *objet = tete_objet;
     while (objet != NULL) {
-        /* if (detecterCollision(objet->position, joueur->position) == true) {
-            collisionJoueurObjet(objet);
-        */
+        if (detecterCollision(&objet->position, &joueur->position) == true) {
+            collisionJoueurObjet(objet, joueur);
+        }
         objet = objet->suivant;
     }
+    //ajouterBulleAleatoirement(&tete_bulle, niveau);
     mettreAJourBouclier();
 }
 
-void init(Bulle *bulle) {
+Arme *initialiserArmes (Arme *arme) {
+    armes[0].nb_tirs = 1;
+    armes[0].vitesse = VITESSE_BALLE_BASE;
+    armes[0].vertical = true;
+    armes[0].bazuka = false;
+
+    armes[1].nb_tirs = 1;
+    armes[1].vitesse = 3*VITESSE_BALLE_BASE;
+    armes[1].vertical = true;
+    armes[1].bazuka = false;
+
+    armes[2].nb_tirs = 3;
+    armes[2].vitesse = VITESSE_BALLE_BASE;
+    armes[2].vertical = true;
+    armes[2].bazuka = false;
+
+    armes[3].nb_tirs = 3;
+    armes[3].vitesse = VITESSE_BALLE_BASE;
+    armes[3].vertical = false;
+    armes[3].bazuka = false;
+
+    armes[4].nb_tirs = 1;
+    armes[4].vitesse = VITESSE_BALLE_BASE;
+    armes[4].vertical = true;
+    armes[4].bazuka = true;
+}
+
+void init() {
     printf("Debut init\n");
-    tete_bulle = bulle; // TODO modifier
-    // initialiserListeBulle(tete_bulle);
+    initialiserListeBulle(niveau);
     tete_balle = NULL; // Initialisation de la liste de balle (vide)
     tete_objet = NULL; // Initialisatiob de la liste d'objet (vide)
 
@@ -336,12 +382,12 @@ void init(Bulle *bulle) {
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    joueur->position.x = LARGEUR_ECRAN/2;
-    joueur->position.y = HAUTEUR_ECRAN/2 - 100;
-    joueur->position.vx = 0;
-    joueur->position.vy = 0;
     joueur->position.hauteur =  HAUTEUR_ECRAN/5;
     joueur->position.largeur = 4/3*joueur->position.hauteur;
+    joueur->position.x = LARGEUR_ECRAN/2;
+    joueur->position.y = ZONE_JEU_HAUTEUR - joueur->position.hauteur/2;
+    joueur->position.vx = 0;
+    joueur->position.vy = 0;
     joueur->arme = 0; // Arme par défaut
 
     // Obstacle virtuel : bas de l'écran
@@ -382,31 +428,33 @@ void init(Bulle *bulle) {
     // Initialisation des quatre types d'obstacles différents à des positions aléatoires dans la zone de jeu
     for (int i = 4; i < N_OBSTACLES; i++) {
         obstacles[i].position.x = 2*GRANDE_BULLE + rand() % (LARGEUR_ECRAN - obstacles[i].position.largeur - 4*GRANDE_BULLE); // permet que les obstacles soient éloignés du bord
-        obstacles[i].position.y = 2*GRANDE_BULLE + rand() % (HAUTEUR_ECRAN/2); // permet que les obstacles soient éloignés du bord
+        obstacles[i].position.y = rand() % 400; // permet que les obstacles soient éloignés du bord
     }
     printf("Init terminee\n");
 }
 
 bool jeu(Bulle *bulle) {
-    init(bulle);
-    temps_restant = 120;
+    init();
+    afficherElements();
+    afficherDecompte();
     float temps_depart = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
-
+    /*while (verifierInitialisationSansCollision(tete_bulle) == false) {
+        initialiserListeBulle(niveau);
+    }*/
     while (temps_restant > 0) {
         afficherElements();
         animerElements(CYCLE);
-    /*
-        deplacementsJoueur(Joueur *joueur);
-        tirerBallesBombes(Balle *balle);
-        if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide() == true)) {
+        deplacementJoueur(joueur);
+        tirerBallesBombes(&tete_balle, joueur);
+        if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide((void **)&tete_bulle) == true)) {
             return true;
-        } else if (joueur_touche_par_bulle =true) { // Si la bulle touche le joueur, le joueur perd.
+        } else if (joueur_touche_par_bulle == true) { // Si la bulle touche le joueur, le joueur perd.
                 return false;
         } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
         return false;
-        }*/
+        }
         temps_restant -= CYCLE;
         rest(CYCLE * 1000);
 
@@ -436,7 +484,7 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
             break;
 
         case BONUS:
-            bonusBouclier();
+            //bonusBouclier();
             break;
 
         case MALUS:
@@ -454,15 +502,15 @@ void collisionBulleBalle(Bulle *bulle, Balle *balle)
     {
         if(bulle->rayon == 1) // petite bulle
         {
-            eclaterBulle();
+            eclaterBulle(bulle, &tete_bulle, &tete_objet);
         }
         if(bulle->rayon == 2) // moyenne bulle
         {
-            divisionBulleEnTrois();
+            divisionBulleEnTrois(bulle);
         }
         if(bulle->rayon == 3) // grande bulle
         {
-            dvisionBulleEnDeux();
+            divisionBulleEnDeux(bulle);
         }
     }
 }
@@ -510,6 +558,7 @@ bool detecterCollisionBulle(Bulle *bulle, Position *pos2) {
 
     if ((dx >= -coin_x) && (dx <= coin_x)) return true;
     if ((dy >= -coin_y) && (dy <= coin_y)) return true;
+
     // Décalage vers le coin
     dx1 = dx;
     dy1 = dy;
@@ -555,15 +604,15 @@ void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet)
             nouvel_objet->suivant = NULL;
 
             /* Ajout dans la liste des objets */
-//            ajouterObjet(tete_objet, nouvel_objet);
+           ajouterObjet(tete_objet, nouvel_objet);
         }
     }
 }
 
 void reinitialiserArme(Joueur *joueur)
 {
-    compteur_arme--;
-    if (compteur_arme == 0)
+    compteur_objet-= CYCLE;
+    if (compteur_objet <= 0)
     {
         joueur->arme = ARME1; // arme de base
     }
@@ -577,76 +626,53 @@ static float vitesseAleatoire(float max) {
     return v;
 }
 
-Bulle *initialiserListeBulle(int niveau) {
+void initialiserListeBulle(int niveau) {
     srand((unsigned int)time(NULL));
-    Bulle *liste = NULL;
     int nb_bulles;
     switch (niveau) {
-        case 1: nb_bulles = 3; break;
-        case 2: nb_bulles = 4; break;
-        case 3: nb_bulles = 5; break;
-        case 4: nb_bulles = 6; break;
-        default: nb_bulles = 3; break;
+        case 1: nb_bulles = 5; break;
+        case 2: nb_bulles = 5; break;
+        case 3: nb_bulles = 0; break;
+        case 4: nb_bulles = 0; break;
+        default: nb_bulles = 0; break;
     }
 
     for (int i = 0; i < nb_bulles; i++) {
-        float rayon = RAYON_GRANDE;
-        float x, y, vx, vy;
-        if (niveau <= 2) {
-            float marge_x = rayon;
-            float marge_y = rayon;
-            x = (float)ZONE_JEU_X + marge_x + (float)(rand() % (int)((float)ZONE_JEU_LARGEUR - 2.0f * marge_x));
-            y = (float)ZONE_JEU_Y + marge_y + (float)(rand() % (int)((float)ZONE_JEU_HAUTEUR / 2.0f - marge_y));
-        } else {
-            x = (float)ZONE_JEU_X + rayon + (float)(rand() % (int)((float)ZONE_JEU_LARGEUR - 2.0f * rayon));
-            y = (float)ZONE_JEU_Y + rayon;
-        }
-        int dir = rand() % 3; 
-        switch (dir) {
-            case 0: vx = vitesseAleatoire(3.0f); vy = 0.0f;break;
-            case 1: vx = 0.0f;vy = vitesseAleatoire(3.0f); break;
-            default: vx = vitesseAleatoire(3.0f); vy = vitesseAleatoire(3.0f); break;
-        }
-        int objet = (rand() % 8 == 0) ? (rand() % 7 + 1) : 0;
-        Bulle *b = creerBulle(x, y, vx, vy, rayon, objet);
-        if (b) {
-            b->suivant = liste;
-            liste = b;
-        }
+        Bulle *bulle = creerBulle(true, niveau);
+        ajouterBulle(&tete_bulle, bulle);
     }
-    return liste;
 }
 
-static float rayon_inferieur(float rayon)
-{
-    if (rayon >= RAYON_GRANDE - EPSILON_RAYON)  return RAYON_MOYENNE;
-    if (rayon >= RAYON_MOYENNE - EPSILON_RAYON) return RAYON_PETITE;
-    return -1.0f; 
+void divisionBulleEnDeux(Bulle *bulle) {
+    Bulle *bulle_1 = creerBulleClone(bulle);
+    Bulle *bulle_2 = creerBulleClone(bulle);
+    bulle_1->position.vx += 200;
+    bulle_1->position.vy -= 200;
+    bulle_1->rayon = MOYENNE_BULLE;
+    bulle_2->position.vx -= 200;
+    bulle_2->position.vy -= 200;
+    bulle_2->rayon = MOYENNE_BULLE;
+    supprimerBulle(&tete_bulle, bulle);
+    ajouterBulle(&tete_bulle, bulle_1);
+    ajouterBulle(&tete_bulle, bulle_2);
 }
 
-Bulle *divisionBulleEnDeux(Bulle *bulle) {
-    float nouveau_rayon = rayon_inferieur(bulle->rayon);
-    if (nouveau_rayon < 0.0f) return NULL;
-    float vx = (float)(rand() % 4 + 1);
-    float vy = -(float)(rand() % 3 + 1);
-    Bulle *b1 = creerBulle(bulle->position.x - nouveau_rayon, bulle->position.y, -vx, vy, nouveau_rayon, 0);
-    Bulle *b2 = creerBulle(bulle->position.x + nouveau_rayon, bulle->position.y, vx, vy, nouveau_rayon, 0);
-    if (b1 && b2)  { b1->suivant = b2; return b1; }
-    if (b1)        return b1;
-    if (b2)        return b2;
-    return NULL;
-}
+void divisionBulleEnTrois(Bulle *bulle) {
+    Bulle *bulle_1 = creerBulleClone(bulle);
+    Bulle *bulle_2 = creerBulleClone(bulle);
+    Bulle *bulle_3 = creerBulleClone(bulle);
+    bulle_1->position.vx += 200;
+    bulle_1->position.vy -= 200;
+    bulle_1->rayon = PETITE_BULLE;
+    bulle_2->position.vx -= 200;
+    bulle_2->position.vy -= 200;
+    bulle_2->rayon = PETITE_BULLE;
+    bulle_3->position.vx += 0;
+    bulle_3->position.vy -= 300;
+    bulle_3->rayon = PETITE_BULLE;
 
-Bulle *divisionBulleEnTrois(Bulle *bulle) {
-    float nouveau_rayon = rayon_inferieur(bulle->rayon);
-    if (nouveau_rayon < 0.0f) return NULL; 
-    float vx = (float)(rand() % 3 + 1);
-    float vy = -(float)(rand() % 3 + 1);
-    Bulle *b1 = creerBulle(bulle->position.x - nouveau_rayon * 2.0f, bulle->position.y, -vx, vy, nouveau_rayon, 0);
-    Bulle *b2 = creerBulle(bulle->position.x, bulle->position.y, 0.0f, vy - 1.0f, nouveau_rayon, 0);
-    Bulle *b3 = creerBulle(bulle->position.x + nouveau_rayon * 2.0f,bulle->position.y, vx, vy, nouveau_rayon, 0);
-    if (b1) b1->suivant = b2;
-    if (b2) b2->suivant = b3;
-
-    return b1;
+    supprimerBulle(&tete_bulle, bulle);
+    ajouterBulle(&tete_bulle, bulle_1);
+    ajouterBulle(&tete_bulle, bulle_2);
+    ajouterBulle(&tete_bulle, bulle_3);
 }
