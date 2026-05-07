@@ -428,7 +428,7 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
             break;
 
         case BONUS:
-            //bonusBouclier();
+            bonusBouclier();
             break;
 
         case MALUS:
