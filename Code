@@ -1,19 +1,24 @@
-#include "gestionClavier.h"
 #include <allegro.h>
+#include "gestionListes.h"
+#include "logiqueJeu.h"
+#include "gestionClavier.h"
+
+
+#define ECART_BALLES_ARME3 HAUTEUR_ECRAN/20
 
 void deplacementJoueur(Joueur *joueur)
 {
     if (key[KEY_LEFT])
     {
-        joueur->position.x -= 10; // à chaque clic sur flèche, le perso se deplace de 10 pixels
+        joueur->position.x -= 20; // à chaque clic sur flèche, le perso se deplace de 10 pixels
     }
     if (key[KEY_RIGHT])
     {
-        joueur->position.x += 10;
+        joueur->position.x += 20;
     }
     // limites de deplacement du joueur, le joueur ne dépasse pas les bords
-    if (joueur->position.x < 0) joueur->position.x = 0;
-    if (joueur->position.x > LARGEUR_ECRAN - (joueur->position.largeur)/2) joueur->position.x = LARGEUR_ECRAN - (joueur->position.largeur)/2;
+    if (joueur->position.x < joueur->position.largeur/2) joueur->position.x = joueur->position.largeur/2;
+    if (joueur->position.x > LARGEUR_ECRAN - joueur->position.largeur/2) joueur->position.x = LARGEUR_ECRAN - (joueur->position.largeur)/2;
 }
 
 void tirerBallesBombes(Balle **listeBalle, Joueur *joueur)
@@ -24,33 +29,33 @@ void tirerBallesBombes(Balle **listeBalle, Joueur *joueur)
     float ox = joueur->position.x;
     float oy = joueur->position.y - joueur->position.hauteur / 2.0f;
 
-    float v  = VITESSE_BALLE_BASE;
-    float v3 = v * 3.0f;          
-    float d  = 0.7071f;           
+    float v  = armes[joueur->arme].vitesse;
+    float v3 = v * 3.0f;
+    float d  = 0.7071f;
 
     switch (joueur->arme) {
 
         case 1:
-            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
             break;
         case 2:
-            ajouterBalle(listeBalle, ox, oy, 0.0f, -v3);
+            ajouterBalle(listeBalle, creerBalle( ox, oy, 0.0f, -v3));
             break;
         case 3:
-            ajouterBalle(listeBalle, ox - ECART_BALLES_ARME3, oy, 0.0f, -v);
-            ajouterBalle(listeBalle, ox,                       oy, 0.0f, -v);
-            ajouterBalle(listeBalle, ox + ECART_BALLES_ARME3, oy, 0.0f, -v);
+            ajouterBalle(listeBalle, creerBalle(ox - ECART_BALLES_ARME3, oy, 0.0f, -v));
+            ajouterBalle(listeBalle, creerBalle(ox,                       oy, 0.0f, -v));
+            ajouterBalle(listeBalle, creerBalle(ox + ECART_BALLES_ARME3, oy, 0.0f, -v));
             break;
         case 4:
-            ajouterBalle(listeBalle, ox, oy,  0.0f,    -v);
-            ajouterBalle(listeBalle, ox, oy, -v * d,   -v * d);
-            ajouterBalle(listeBalle, ox, oy,  v * d,   -v * d);
-            break;        
+            ajouterBalle(listeBalle, creerBalle(ox, oy,  0.0f,    -v));
+            ajouterBalle(listeBalle, creerBalle(ox, oy, -v * d,   -v * d));
+            ajouterBalle(listeBalle, creerBalle(ox, oy,  v * d,   -v * d));
+            break;
         case 5:
-            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
             break;
         default:
-            ajouterBalle(listeBalle, ox, oy, 0.0f, -v);
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
             break;
     }
 }
