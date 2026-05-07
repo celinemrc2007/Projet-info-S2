@@ -11,8 +11,6 @@
 #include "principal.h"
 
 int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
-bool bouclier_actif = false;
-float bouclier_timer = 0.0f;
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -164,7 +162,7 @@ void gererBoss (Boss *boss, Joueur *joueur) {
     }
 }
 
-void bonusBouclier() {
+/*void bonusBouclier() {
     bouclier_actif = true;
     bouclier_timer = 10.0f;
 }
@@ -181,12 +179,12 @@ void mettreAJourBouclier() {
         bouclier_timer = 0.0f;
         bouclier_actif = false;
     }
-}
+}*/
 
 void malusMultiplication () {
     afficherSprite(joueur->position.x, joueur->position.y, 102);
 
     for (int i = 0; i < 3; i++) {
-        ajouterBulleAleatoirement(niveau);
+        //ajouterBulleAleatoirement(*tete_bulle, niveau);
     }
 }
