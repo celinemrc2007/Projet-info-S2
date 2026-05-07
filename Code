@@ -104,7 +104,7 @@ void chargerSprites () {
 		images[76]=load_bitmap("../images/arme4.bmp",NULL);
 		images[77]=load_bitmap("../images/bazuka.bmp",NULL);
 		images[78]=load_bitmap("../images/balle.bmp",NULL);
-		images[79]=load_bitmap("../images/balle_bazooka.bmp",NULL); 
+		images[79]=load_bitmap("../images/bombe.bmp",NULL);
 		images[80]=load_bitmap("../images/obstacle_petit_horizontal.bmp",NULL);
 		images[81]=load_bitmap("../images/obstacle_grand_horizontal.bmp",NULL);
 		images[82]=load_bitmap("../images/obstacle_petit_vertical.bmp",NULL);
@@ -126,8 +126,8 @@ void chargerSprites () {
 		images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.bmp",NULL);
 		images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.bmp",NULL);
 		images[100]=load_bitmap("../images/eclair.bmp",NULL);
-		images[101]=load_bitmap("../images/bonus.bmp",NULL);
-		images[102]=load_bitmap("../images/malus.bmp",NULL);
+		images[101]=load_bitmap("../images/bonus_bouclier.bmp",NULL);
+		images[102]=load_bitmap("../images/malus_multiplication.bmp",NULL);
 		images[103]=load_bitmap("../images/victoire_partie1.bmp",NULL);
 		images[104]=load_bitmap("../images/victoire_partie2.bmp",NULL);
 		images[105]=load_bitmap("../images/victoire_partie3.bmp",NULL);
@@ -144,6 +144,8 @@ void chargerSprites () {
 		images[116]=load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
 		images[117]=load_bitmap("../images/fond_ecran_boss.bmp",NULL);
 		images[118]=load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
+		images[119]=load_bitmap("../images/balle_bazooka.bmp",NULL); // j'ai rajouté la balle bazooka si vous aimez pas j'enlève
+
 }
 
 void afficherDecompte(void)
