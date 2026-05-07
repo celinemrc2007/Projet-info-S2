@@ -292,6 +292,8 @@ void afficherElements() {
       afficherTempsRestant(temps_restant);
       afficherScore(score);
     */
+    //Affichage du bouclier
+    afficherBouclier();
 }
 
 void animerElements(float cycle) {
