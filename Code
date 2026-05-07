@@ -266,7 +266,7 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
     objet->position.vy = VITESSE_OBJET; // objet descend verticalement
 
 
-    objet->duree_restante = 10; // ils ne restent que 10 sec à l'ecran
+    objet->duree_restante = TEMPS_OBJET; // ils ne restent que 10 sec à l'ecran
     objet->suivant = NULL;
     return objet; // on retourne l'adresse de l'objet créé
 }
