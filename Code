@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <allegro.h>
-#include "gestionListes.h"
-#include "gestionGraphique.h"
 
-void initialisation_allegro();
+#include "gestionListes.h"
+#include "gestionNiveaux.h"
+#include "gestionGraphique.h"
 
 // Tableaux de sprites
 // Pas de sprites bulles aplaties finalement pour faire un effet plus fluide lors du rebond
-BITMAP *images[125];
+BITMAP *images[150];
 BITMAP *buffer; // initialisation du buffer
+int sprite_joueur;
 
 void initialisation_allegro() {
 	allegro_init(); // appel obligatoire (var.globales, recup. infos syst me ...)
@@ -29,7 +30,6 @@ void initialisation_allegro() {
 
 void chargerSprites () {
 		buffer = create_bitmap(LARGEUR_ECRAN,HAUTEUR_ECRAN); // buffer pour afficher les fond d'écran de niveaux sans clignotemment
-
 		images[1]=load_bitmap("../images/lara_debout_arme1.bmp",NULL);
 		images[2]=load_bitmap("../images/lara_court_a_gauche_arme1_1.bmp",NULL);
 		images[3]=load_bitmap("../images/lara_court_a_gauche_arme1_2.bmp",NULL);
@@ -176,10 +176,10 @@ void afficherDecompte(void)
 
         int tw = text_length(font, texte);
         int th = text_height(font);
-        textout_ex(screen, font, texte,
+        textout_ex(buffer, font, texte,
                    cx - tw / 2, cy - th / 2,
                    blanc, noir);
-
+		afficherBuffer();
         vsync();
         rest(1000);
     }
@@ -187,35 +187,40 @@ void afficherDecompte(void)
     /* Affiche "GO !" en vert */
     int tw = text_length(font, "GO !");
     int th = text_height(font);
-    textout_ex(screen, font, "GO !",
+    textout_ex(buffer, font, "GO !",
                cx - tw / 2, cy - th / 2,
                vert, noir);
+	afficherBuffer();
     vsync();
     rest(700);
 }
 
-void afficherFondEcran(BITMAP *buffer, int niveau)
+
+void afficherFondEcran(int niveau)
 {
 
 	switch (niveau)
 	{
 		case 1:
-		// on copie le sprite dans le buffer
+			// on copie le sprite dans le buffer
 			blit(images[113], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-		break;
+			break;
 		case 2 :
 			blit(images[114], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-		break;
+			break;
 		case 3 :
 			blit(images[115], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-		break;
+			break;
 		case 4 :
 			blit(images[116], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-		break;
+			break;
 		case 5 :
 			blit(images[118], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-		break;
+			break;
 	}
+}
+
+void afficherBuffer() {
 	// on affiche le buffer à l'écran
 	blit(buffer, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
 }
@@ -223,53 +228,57 @@ void afficherFondEcran(BITMAP *buffer, int niveau)
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
 void afficherSprite (float x, float y, int numero_sprite) {
 	BITMAP *image = images[numero_sprite];
-	draw_sprite(screen, image,(int)(x - image->w / 2),(int)(y - image->h / 2));
+	draw_sprite(buffer, image,(int)(x - image->w / 2),(int)(y - image->h / 2));
 }
 
 void afficherSpriteRedimensionne (Position *position, int numero_sprite) {
 	BITMAP *image = images[numero_sprite];
-	stretch_sprite(screen, image, (int)(position->x - position->largeur / 2), (int)(position->y - position->hauteur / 2),
+	stretch_sprite(buffer, image, (int)(position->x - position->largeur / 2), (int)(position->y - position->hauteur / 2),
 		position->largeur, position->hauteur);
 }
 
-void afficherNiveau(int niveau) {
-	textprintf_ex(screen,font,200,HAUTEUR_ECRAN - 50,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
+void afficherSpriteIncline(Position *position, int numero_sprite, int angle) {
+	BITMAP *image = images[numero_sprite];
+	rotate_sprite(buffer, image, (int)(position->x - position->largeur / 2), (int)(position->y - position->hauteur / 2), itofix(angle));
 }
 
-void afficherPseudo(char pseudo[50])
-{
-    textprintf_ex(screen, font, LARGEUR_ECRAN - 300, HAUTEUR_ECRAN - 50, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
+void afficherNiveau(int niveau) {
+	textprintf_ex(buffer,font,200,HAUTEUR_ECRAN - 50,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
+}
+
+void afficherPseudo(char pseudo[50]) {
+    textprintf_ex(buffer, font, LARGEUR_ECRAN - 300, HAUTEUR_ECRAN - 50, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
 }
 
 void afficherTempsRestant(int temps_restant) // temps_restant est en sec
 {
 	int minutes = temps_restant / 60;
 	int secondes = temps_restant % 60;
-	textprintf_ex(screen, font, 200, HAUTEUR_ECRAN - 100,makecol(255,255,255), -1, "TEMPS RESTANT : %d:%d", minutes, secondes); // 10 pixels en dessous du niveau
+	textprintf_ex(buffer, font, 200, HAUTEUR_ECRAN - 100,makecol(255,255,255), -1, "TEMPS RESTANT : %d:%d", minutes, secondes); // 10 pixels en dessous du niveau
 }
 
 void afficherScore(int score)
 {
-	textprintf_ex(screen,font,LARGEUR_ECRAN - 300,HAUTEUR_ECRAN - 100,makecol(255,255,255),-1,"SCORE : %d", score);
+	textprintf_ex(buffer,font,LARGEUR_ECRAN - 300,HAUTEUR_ECRAN - 100,makecol(255,255,255),-1,"SCORE : %d", score);
 }
 
 void afficherRegles() {
 
-	clear_bitmap(screen);
+	clear_bitmap(buffer);
 
-	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "===== REGLES DU JEU =====");
+	textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, 50, makecol(255, 220, 0), -1, "===== REGLES DU JEU =====");
 
-	textprintf_ex(screen, font, 100, 150, makecol(255,255,255), -1, "But du jeu : Detruisez toutes les bulles dans le temps imparti pour gagner.");
+	textprintf_ex(buffer, font, 100, 150, makecol(255,255,255), -1, "But du jeu : Detruisez toutes les bulles dans le temps imparti pour gagner.");
 
-	textprintf_ex(screen, font, 100, 190, makecol(255,255,255), -1, "Deplacez votre personnage : Utilisez les fleches GAUCHE/DROITE");
+	textprintf_ex(buffer, font, 100, 190, makecol(255,255,255), -1, "Deplacez votre personnage : Utilisez les fleches GAUCHE/DROITE");
 
-	textprintf_ex(screen, font, 100, 230, makecol(255,255,255), -1, "Tirez les balles des armes : Utilise fleche HAUT");
+	textprintf_ex(buffer, font, 100, 230, makecol(255,255,255), -1, "Tirez les balles des armes : Utilise fleche HAUT");
 
-	textprintf_ex(screen, font, 100, 310, makecol(255,80,80), -1, "Si une bulle ou un eclair vous touchent, vous perdez le niveau");
+	textprintf_ex(buffer, font, 100, 310, makecol(255,80,80), -1, "Si une bulle ou un eclair vous touchent, vous perdez le niveau");
 
-	textprintf_ex(screen, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes qui tombent à vos pieds pour devenir plus fort");
+	textprintf_ex(buffer, font, 100, 350, makecol(255,255,255), -1, "Recuperez les armes qui tombent à vos pieds pour devenir plus fort");
 
-	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
+	textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN - 50, makecol(200,200,200), -1, "Appuyez sur une touche pour revenir au menu");
 
 	clear_keybuf();
 
@@ -277,13 +286,15 @@ void afficherRegles() {
 }
 
 
-void afficherExplosionBazuka(Joueur *joueur)
-{
+void afficherExplosionBazuka(Joueur *joueur) {
     afficherSprite(joueur->position.x, joueur->position.y, 58);
+	afficherBuffer();
     rest(80);
     afficherSprite(joueur->position.x, joueur->position.y, 59);
+	afficherBuffer();
     rest(80);
     afficherSprite(joueur->position.x, joueur->position.y, 60);
+	afficherBuffer();
     rest(80);
 }
 
@@ -296,36 +307,26 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 		// animation en fonction de l'arme
 		switch (joueur->arme)
 		{
-		case ARME1: // arme 1
-			for (int i= 2; i<=5; i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME2: // arme 2
-			for (int i=14; i<=17;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME3: // arme 3
-			for (int i=26; i<=29;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME4: // arme 4
-			for (int i=38; i<=41;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME5: // arme 5
-			for (int i=50; i<=53;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
+			case ARME1:
+				sprite_joueur++;
+				if ((sprite_joueur < 2) || (sprite_joueur > 5)) sprite_joueur = 2;
+				break;
+			case ARME2:
+				sprite_joueur++;
+				if ((sprite_joueur < 14) || (sprite_joueur > 17)) sprite_joueur = 14;
+				break;
+			case ARME3:
+					sprite_joueur++;
+					if ((sprite_joueur < 26) || (sprite_joueur > 29)) sprite_joueur = 26;
+					break;
+			case ARME4:
+					sprite_joueur++;
+					if ((sprite_joueur < 38) || (sprite_joueur > 41)) sprite_joueur = 38;
+					break;
+			case ARME5:
+					sprite_joueur++;
+					if ((sprite_joueur < 50) || (sprite_joueur > 53)) sprite_joueur = 50;
+					break;
 		}
 	}
 	// si le personnage se deplace vers la droite
@@ -334,76 +335,80 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 		// animation en fonction de l'arme
 		switch (joueur->arme)
 		{
-		case ARME1: // arme 1
-			for (int i= 6; i<=9; i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME2: // arme 2
-			for (int i=18; i<=21;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME3: // arme 3
-			for (int i=30; i<=33;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME4: // arme 4
-			for (int i=42; i<=45;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
-		case ARME5: // arme 5
-			for (int i=54; i<=57;i++)
-			{
-				afficherSprite(joueur->position.x, joueur->position.y, i);
-			}
-			break;
+			case ARME1:
+				sprite_joueur++;
+				if ((sprite_joueur < 6) || (sprite_joueur > 9)) sprite_joueur = 6;
+				break;
+			case ARME2:
+				sprite_joueur++;
+				if ((sprite_joueur < 18) || (sprite_joueur > 21)) sprite_joueur = 18;
+				break;
+			case ARME3:
+				sprite_joueur++;
+				if ((sprite_joueur < 30) || (sprite_joueur > 33)) sprite_joueur = 30;
+				break;
+			case ARME4:
+				sprite_joueur++;
+				if ((sprite_joueur < 42) || (sprite_joueur > 45)) sprite_joueur = 42;
+				break;
+			case ARME5:
+				sprite_joueur++;
+				if ((sprite_joueur < 54) || (sprite_joueur > 57)) sprite_joueur = 54;
+				break;
 		}
 	}
 }
 
-void afficherTirJoueur(Joueur *joueur)
-{
+void afficherTirJoueur(Joueur *joueur) {
 	switch (joueur->arme) {
-		case ARME1: afficherSprite(joueur->position.x, joueur->position.y, 11);
+		case ARME1: sprite_joueur = 11;
 			break;
-		case ARME2: afficherSprite(joueur->position.x, joueur->position.y, 23);
+		case ARME2: sprite_joueur = 23;
 			break;
-		case ARME3: afficherSprite(joueur->position.x, joueur->position.y, 35);
+		case ARME3: sprite_joueur = 35;
 			break;
-		case ARME4: afficherSprite(joueur->position.x, joueur->position.y, 47);
+		case ARME4: sprite_joueur = 47;
 			break;
-		case ARME5: afficherSprite(joueur->position.x, joueur->position.y, 59);
+		case ARME5: sprite_joueur = 59;
 			break;
 	}
 }
 
-void afficherJoueur(Joueur *joueur)
-{
+void afficherJoueur(Joueur *joueur) {
 	if (key[KEY_LEFT] || key[KEY_RIGHT]) {
 		afficherDeplacementsJoueur(joueur);
 	} else if (key[KEY_UP]) {
 		afficherTirJoueur(joueur);
+	} else {
+		switch (joueur->arme) {
+			case ARME1: sprite_joueur = 1;
+				break;
+			case ARME2: sprite_joueur = 13;
+				break;
+			case ARME3: sprite_joueur = 25;
+				break;
+			case ARME4: sprite_joueur = 37;
+				break;
+			case ARME5: sprite_joueur = 49;
+				break;
+		}
 	}
+	afficherSprite(joueur->position.x, joueur->position.y, sprite_joueur);
 }
 
 
 void afficherVictoireNiveau(Joueur *joueur) {
 
     for (int i = 67; i <= 73; i++) {
+    	afficherFondEcran(niveau);
         afficherSprite(joueur->position.x, joueur->position.y, i);
+    	afficherBuffer();
         rest(100);
     }
 	// animation lara gagne
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 220, 0), -1, "BRAVO, NIVEAU REUSSI !");
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
-
+    textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 - 20, makecol(255, 220, 0), -1, "BRAVO, NIVEAU REUSSI !");
+    textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
+	afficherBuffer();
     clear_keybuf();
     readkey();
 }
@@ -411,14 +416,16 @@ void afficherVictoireNiveau(Joueur *joueur) {
 
 void afficherEchecNiveau(Joueur *joueur) {
     for (int i = 61; i <= 66; i++) {
+    	afficherFondEcran(niveau);
         afficherSprite(joueur->position.x, joueur->position.y, i);
+    	afficherBuffer();
         rest(100);
     }
 	// animation lara perd
 
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 - 20, makecol(255, 50, 50),   -1, "NIVEAU ECHOUE");
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
-
+    textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 - 20, makecol(255, 50, 50),   -1, "NIVEAU ECHOUE");
+    textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 + 20, makecol(255, 255, 255), -1, "Appuyez sur une touche");
+	afficherBuffer();
     clear_keybuf();
     readkey();
 }
@@ -428,25 +435,31 @@ void afficherVictoirePartie()
 	// animation sprite trophée tourne sur lui-meme
 	// affichage au milieu un peu en haut
 	for (int i = 103; i <= 112; i++) {
+		afficherFondEcran(niveau);
 		afficherSprite(600, 300, i);
+		afficherBuffer();
 		rest(100);
 	}
 	// affichage du texte en dessous du trophé
-	textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/2 + 20, makecol(243,187,27), -1, "BRAVO !! VICTOIRE PARTIE"); // même couleur que le trophée
-	textprintf_centre_ex(screen, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 2 + 40, makecol(255, 255, 255), -1, "Appuyez sur une touche");
-
+	textprintf_centre_ex(buffer, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/4 + 20, makecol(243,187,27), -1, "BRAVO !! VICTOIRE PARTIE"); // même couleur que le trophée
+	textprintf_centre_ex(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 + 40, makecol(255, 255, 255), -1, "Appuyez sur une touche");
+	afficherBuffer();
 	clear_keybuf();
 	readkey();
 }
 
-/*void afficherBalle(Balle *balle)
-{
-
-    } */
+void afficherBalle(Balle *balle) {
+	if (balle->bazuka == true) {
+		afficherSpriteIncline(&balle->position, 79, balle->angle);
+		//afficherSprite(balle->position.x, balle->position.y, 79);
+	} else {
+		afficherSpriteIncline(&balle->position, 78, balle->angle);
+		//afficherSprite(balle->position.x, balle->position.y, 78);
+	}
+}
 
 void detruireSprites()
 {
-
 	for (int i = 1; i <= 118; i++) {
 
 		if (images[i] != NULL) {
