@@ -73,7 +73,7 @@ void finNiveau() {
     int choix = 0;
     int choix_realise = 0;
 
-    afficherFondEcran();
+    
     int x = LARGEUR_ECRAN/2 - 100;
     int y = HAUTEUR_ECRAN/2 - 100;
     int blanc = makecol(255, 255, 255);
