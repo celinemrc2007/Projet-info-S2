@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <allegro.h>
+
 
 #include "gestionGraphique.h"
 #include "gestionListes.h"
 #include "gestionNiveaux.h"
 #include "logiqueJeu.h"
 #include "sauvegarde.h"
-
+#include "principal.h"
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -24,31 +24,25 @@ int recupererNiveau() {
 /* ================= LANCEMENT NIVEAU ================= */
 
 void lancerNiveau() {
-    printf("init_obstacles");
-    srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
+    afficherFondEcran(niveau);
 
     switch (niveau) {
         case 1:
-            afficherFondEcran(buffer,1);
             temps_restant = 120; // 2 min
             break;
 
         case 2:
-            afficherFondEcran(buffer,2);
             temps_restant = 105; // 1 min 45
             break;
 
         case 3:
-            afficherFondEcran(buffer,3);
             temps_restant = 90; // 1 min 30
             break;
         case 4:
-            afficherFondEcran(buffer,4);
             temps_restant = 75; // 1 min 15
             break;
 
           case 5:
-            afficherFondEcran(buffer,5);
             temps_restant = 60; // 1 min
             break;
     }
@@ -71,16 +65,16 @@ void finNiveau() {
     int choix = 0;
     int choix_realise = 0;
 
-
+    afficherFondEcran(niveau);
     int x = LARGEUR_ECRAN/2 - 100;
     int y = HAUTEUR_ECRAN/2 - 100;
-    int blanc = makecol(255, 255, 255);
+    int noir = makecol(0, 0, 0);
 
-    textout_ex(screen, font, "Que souhaites-tu faire ?", x, y, blanc, -1);
-    textout_ex(screen, font, "1. Continuer", x, y + 30, blanc, -1);
-    textout_ex(screen, font, "2. Sauvegarder et revenir au menu", x, y + 50, blanc, -1);
-    textout_ex(screen, font, "3. Sauvegarder et quitter le jeu", x, y + 70, blanc, -1);
-    textout_ex(screen, font, "4. Quitter le jeu sans sauvegarder", x, y + 90, blanc, -1);
+    textout_ex(screen, font, "Que souhaites-tu faire ?", x, y, noir, -1);
+    textout_ex(screen, font, "1. Continuer", x, y + 30, noir, -1);
+    textout_ex(screen, font, "2. Sauvegarder et revenir au menu", x, y + 50, noir, -1);
+    textout_ex(screen, font, "3. Sauvegarder et quitter le jeu", x, y + 70, noir, -1);
+    textout_ex(screen, font, "4. Quitter le jeu sans sauvegarder", x, y + 90, noir, -1);
 
     while (!choix_realise) {
         if (keypressed()) {
@@ -100,7 +94,7 @@ void finNiveau() {
             break;
         case 2:
             sauvegarderPartie(pseudo, niveau);
-            // menu();
+            menu();
             break;
         case 3:
             sauvegarderPartie(pseudo, niveau);
@@ -135,7 +129,7 @@ void gererEchecNiveau() {
 
 void gererVictoirePartie() {
     afficherVictoirePartie();
-    // menu();
+    menu();
 }
 
 void gererBoss (Boss *boss, Joueur *joueur) {
@@ -164,21 +158,16 @@ void gererBoss (Boss *boss, Joueur *joueur) {
     }
 }
 
-/*void bonusBouclier() {
-    bouclier_actif = true;
-    bouclier_timer = 10.0f;
-}
-
-void afficherBouclier() {
-    if (!bouclier_actif || joueur == NULL) return;
+/*void afficherBouclier() {
+    if (compteur_bouclier > 0) {
     afficherSprite(joueur->position.x, joueur->position.y, 101);
+    }
 }
 
 void mettreAJourBouclier() {
-    if (!bouclier_actif) return;
-    bouclier_timer -= CYCLE;
-    if (bouclier_timer <= 0.0f) {
-        bouclier_timer = 0.0f;
+    compteur_bouclier -= CYCLE;
+    if (compteur_bouclier <= 0.0f) {
+        compteur_bouclier = 0.0f;
         bouclier_actif = false;
     }
 }*/
