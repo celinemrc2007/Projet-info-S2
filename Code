@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <allegro.h>
-//#include <windows.h>
+
 
 #include "gestionGraphique.h"
 #include "gestionListes.h"
@@ -9,8 +9,6 @@
 #include "logiqueJeu.h"
 #include "sauvegarde.h"
 #include "principal.h"
-
-int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -26,31 +24,25 @@ int recupererNiveau() {
 /* ================= LANCEMENT NIVEAU ================= */
 
 void lancerNiveau() {
-    printf("init_obstacles");
-    srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
+    afficherFondEcran();
 
     switch (niveau) {
         case 1:
-            afficherFondEcran(1);
             temps_restant = 120; // 2 min
             break;
 
         case 2:
-            afficherFondEcran(2);
             temps_restant = 105; // 1 min 45
             break;
 
         case 3:
-            afficherFondEcran(3);
             temps_restant = 90; // 1 min 30
             break;
         case 4:
-            afficherFondEcran(4);
             temps_restant = 75; // 1 min 15
             break;
 
           case 5:
-            afficherFondEcran(5);
             temps_restant = 60; // 1 min
             break;
     }
@@ -73,7 +65,7 @@ void finNiveau() {
     int choix = 0;
     int choix_realise = 0;
 
-    
+    afficherFondEcran();
     int x = LARGEUR_ECRAN/2 - 100;
     int y = HAUTEUR_ECRAN/2 - 100;
     int blanc = makecol(255, 255, 255);
