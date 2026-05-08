@@ -128,8 +128,8 @@ void chargerSprites () {
 		images[98]=load_bitmap("../images/boule_de_feu_moyenne_pleine.bmp",NULL);
 		images[99]=load_bitmap("../images/boule_de_feu_grande_pleine.bmp",NULL);
 		images[100]=load_bitmap("../images/eclair.bmp",NULL);
-		images[101]=load_bitmap("../images/bonus.bmp",NULL);
-		images[102]=load_bitmap("../images/malus.bmp",NULL);
+		images[101]=load_bitmap("../images/bonus_bouclier.bmp",NULL);
+		images[102]=load_bitmap("../images/malus_multiplication.bmp",NULL);
 		images[103]=load_bitmap("../images/victoire_partie1.bmp",NULL);
 		images[104]=load_bitmap("../images/victoire_partie2.bmp",NULL);
 		images[105]=load_bitmap("../images/victoire_partie3.bmp",NULL);
@@ -146,6 +146,14 @@ void chargerSprites () {
 		images[116]=load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
 		images[117]=load_bitmap("../images/fond_ecran_boss.bmp",NULL);
 		images[118]=load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
+		images[119]=load_bitmap("../images/fond_ecran_menu.bmp",NULL);
+		images[120]=load_bitmap("../images/cadre_bouclier.bmp",NULL);
+
+		for (int i = 1; i <= 119; i++) {
+			if (images[i] == NULL) {
+				printf("image %d non charge\n", i);
+			}
+		}
 }
 
 void afficherDecompte(void)
@@ -189,22 +197,22 @@ void afficherFondEcran(int niveau)
 	BITMAP *buffer = create_bitmap(LARGEUR_ECRAN,HAUTEUR_ECRAN); // buffer pour afficher les fond d'écran de niveaux sans clignotemment
 	switch (niveau)
 	{
-	case 1:
-		BITMAP *fond1 = load_bitmap("../images/fond_ecran_niveau1.bmp",NULL);
-		// on efface le buffer et on copie le fond dans le buffer, on affiche le buffer, normalement pas besoin de clear bitmap
-		blit(fond1, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-	case 2 :
-		BITMAP *fond2 = load_bitmap("../images/fond_ecran_niveau2.bmp",NULL);
-		blit(fond2, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-	case 3 :
-		BITMAP *fond3 = load_bitmap("../images/fond_ecran_niveau3.bmp",NULL);
-		blit(fond3, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-	case 4 :
-		BITMAP *fond4 = load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
-		blit(fond4, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
-	case 5 :
-		BITMAP *fond5 = load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
-		blit(fond5, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		case 1:
+			BITMAP *fond1 = load_bitmap("../images/fond_ecran_niveau1.bmp",NULL);
+			// on efface le buffer et on copie le fond dans le buffer, on affiche le buffer, normalement pas besoin de clear bitmap
+			blit(fond1, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		case 2 :
+			BITMAP *fond2 = load_bitmap("../images/fond_ecran_niveau2.bmp",NULL);
+			blit(fond2, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		case 3 :
+			BITMAP *fond3 = load_bitmap("../images/fond_ecran_niveau3.bmp",NULL);
+			blit(fond3, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		case 4 :
+			BITMAP *fond4 = load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
+			blit(fond4, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		case 5 :
+			BITMAP *fond5 = load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
+			blit(fond5, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
 	}
 }
 
@@ -354,6 +362,29 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 	}
 }
 
+void afficherTirJoueur(Joueur *joueur) {
+	switch (joueur->arme) {
+		case ARME1: afficherSprite(joueur->position.x, joueur->position.y, 11);
+			break;
+		case ARME2: afficherSprite(joueur->position.x, joueur->position.y, 23);
+			break;
+		case ARME3: afficherSprite(joueur->position.x, joueur->position.y, 35);
+			break;
+		case ARME4: afficherSprite(joueur->position.x, joueur->position.y, 47);
+			break;
+		case ARME5: afficherSprite(joueur->position.x, joueur->position.y, 59);
+			break;
+	}
+}
+
+void afficherJoueur(Joueur *joueur) {
+	if (key[KEY_LEFT] || key[KEY_RIGHT]) {
+		afficherDeplacementsJoueur(joueur);
+	} else if (key[KEY_UP]) {
+		afficherTirJoueur(joueur);
+	}
+}
+
 
 void afficherVictoireNiveau(Joueur *joueur) {
 
@@ -408,17 +439,14 @@ void afficherVictoirePartie()
 
     } */
 
-
-
-
 void detruireSprites() {
 
-    for (int i = 1; i <= 118; i++) {
+	for (int i = 1; i <= 118; i++) {
 
-        if (images[i] != NULL) {
+		if (images[i] != NULL) {
 
-            destroy_bitmap(images[i]);
-            images[i] = NULL;
-        }
-    }
+			destroy_bitmap(images[i]);
+			images[i] = NULL;
+		}
+	}
 }
