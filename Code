@@ -12,11 +12,11 @@
 
 int menu()
 {
+
     int choix = 0;
 
     while (choix < 1 || choix > 4)
     {
-        clear_bitmap(screen);
 
         textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 150, makecol(255,255,0), -1, "SUPER BULLES");
         textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 250, makecol(255,255,255), -1, "1. Regles");
@@ -30,7 +30,7 @@ int menu()
         /* Conversion caractère en nombre */
         choix = touche - '0';
     }
-
+    clear_bitmap(screen);
     return choix;
 }
 
@@ -84,7 +84,8 @@ int main()
 
     initialisation_allegro();
     chargerSprites();
-
+    BITMAP *fond_menu = load_bitmap("../images/fond_ecran_menu.bmp",NULL); // chargement du fond ecran menu
+    blit(fond_menu, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN); // affichage à l'écran
     do
     {
         choix = menu();
