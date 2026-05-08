@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include <allegro.h>
+#include <allegro/timer.h>
 
 #include "gestionListes.h"
 #include "gestionGraphique.h"
@@ -364,7 +364,8 @@ void initialiserListeBulle(int niveau) {
     }
 }
 
-void initialiserArmes () {
+void initialiserArmes ()
+{
     armes[ARME1].nb_tirs = 1;
     armes[ARME1].vitesse = VITESSE_BALLE_BASE;
     armes[ARME1].vertical = true;
@@ -458,7 +459,8 @@ void init() {
     printf("Init terminee\n");
 }
 
-bool jeu(Bulle *bulle) {
+bool jeu()
+{
     init();
     afficherElements();
     afficherDecompte();
