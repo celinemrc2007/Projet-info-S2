@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <allegro.h>
-
 #include "gestionListes.h"
 #include "gestionGraphique.h"
 
@@ -9,6 +8,7 @@ void initialisation_allegro();
 // Tableaux de sprites
 // Pas de sprites bulles aplaties finalement pour faire un effet plus fluide lors du rebond
 BITMAP *images[125];
+BITMAP *buffer; // initialisation du buffer
 
 void initialisation_allegro() {
 	allegro_init(); // appel obligatoire (var.globales, recup. infos syst me ...)
@@ -28,6 +28,8 @@ void initialisation_allegro() {
 }
 
 void chargerSprites () {
+		buffer = create_bitmap(LARGEUR_ECRAN,HAUTEUR_ECRAN); // buffer pour afficher les fond d'écran de niveaux sans clignotemment
+
 		images[1]=load_bitmap("../images/lara_debout_arme1.bmp",NULL);
 		images[2]=load_bitmap("../images/lara_court_a_gauche_arme1_1.bmp",NULL);
 		images[3]=load_bitmap("../images/lara_court_a_gauche_arme1_2.bmp",NULL);
@@ -192,28 +194,30 @@ void afficherDecompte(void)
     rest(700);
 }
 
-void afficherFondEcran(int niveau)
+void afficherFondEcran(BITMAP *buffer, int niveau)
 {
-	BITMAP *buffer = create_bitmap(LARGEUR_ECRAN,HAUTEUR_ECRAN); // buffer pour afficher les fond d'écran de niveaux sans clignotemment
+
 	switch (niveau)
 	{
 		case 1:
-			BITMAP *fond1 = load_bitmap("../images/fond_ecran_niveau1.bmp",NULL);
-			// on efface le buffer et on copie le fond dans le buffer, on affiche le buffer, normalement pas besoin de clear bitmap
-			blit(fond1, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		// on copie le sprite dans le buffer
+			blit(images[113], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		break;
 		case 2 :
-			BITMAP *fond2 = load_bitmap("../images/fond_ecran_niveau2.bmp",NULL);
-			blit(fond2, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+			blit(images[114], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		break;
 		case 3 :
-			BITMAP *fond3 = load_bitmap("../images/fond_ecran_niveau3.bmp",NULL);
-			blit(fond3, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+			blit(images[115], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		break;
 		case 4 :
-			BITMAP *fond4 = load_bitmap("../images/fond_ecran_niveau4.bmp",NULL);
-			blit(fond4, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+			blit(images[116], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		break;
 		case 5 :
-			BITMAP *fond5 = load_bitmap("../images/fond_ecran_niveau5.bmp",NULL);
-			blit(fond5, buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+			blit(images[118], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		break;
 	}
+	// on affiche le buffer à l'écran
+	blit(buffer, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
 }
 
 //Pour afficher un sprite, nous appelons cette fct avec le numéro du sprite à afficher et sa position passé en paramètre.
@@ -232,7 +236,8 @@ void afficherNiveau(int niveau) {
 	textprintf_ex(screen,font,200,HAUTEUR_ECRAN - 50,makecol(255,255,255),-1,"NIVEAU : %d", niveau); // en bas à gauche
 }
 
-void afficherPseudo(char pseudo[50]) {
+void afficherPseudo(char pseudo[50])
+{
     textprintf_ex(screen, font, LARGEUR_ECRAN - 300, HAUTEUR_ECRAN - 50, makecol(255, 255, 255), -1, "JOUEUR : %s", pseudo); // en bas au milieur droite
 }
 
@@ -272,7 +277,8 @@ void afficherRegles() {
 }
 
 
-void afficherExplosionBazuka(Joueur *joueur) {
+void afficherExplosionBazuka(Joueur *joueur)
+{
     afficherSprite(joueur->position.x, joueur->position.y, 58);
     rest(80);
     afficherSprite(joueur->position.x, joueur->position.y, 59);
@@ -362,7 +368,8 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 	}
 }
 
-void afficherTirJoueur(Joueur *joueur) {
+void afficherTirJoueur(Joueur *joueur)
+{
 	switch (joueur->arme) {
 		case ARME1: afficherSprite(joueur->position.x, joueur->position.y, 11);
 			break;
@@ -377,7 +384,8 @@ void afficherTirJoueur(Joueur *joueur) {
 	}
 }
 
-void afficherJoueur(Joueur *joueur) {
+void afficherJoueur(Joueur *joueur)
+{
 	if (key[KEY_LEFT] || key[KEY_RIGHT]) {
 		afficherDeplacementsJoueur(joueur);
 	} else if (key[KEY_UP]) {
@@ -389,7 +397,6 @@ void afficherJoueur(Joueur *joueur) {
 void afficherVictoireNiveau(Joueur *joueur) {
 
     for (int i = 67; i <= 73; i++) {
-    	afficherFondEcran();
         afficherSprite(joueur->position.x, joueur->position.y, i);
         rest(100);
     }
@@ -404,7 +411,6 @@ void afficherVictoireNiveau(Joueur *joueur) {
 
 void afficherEchecNiveau(Joueur *joueur) {
     for (int i = 61; i <= 66; i++) {
-    	afficherFondEcran();
         afficherSprite(joueur->position.x, joueur->position.y, i);
         rest(100);
     }
@@ -422,7 +428,6 @@ void afficherVictoirePartie()
 	// animation sprite trophée tourne sur lui-meme
 	// affichage au milieu un peu en haut
 	for (int i = 103; i <= 112; i++) {
-		afficherFondEcran();
 		afficherSprite(600, 300, i);
 		rest(100);
 	}
@@ -439,7 +444,8 @@ void afficherVictoirePartie()
 
     } */
 
-void detruireSprites() {
+void detruireSprites()
+{
 
 	for (int i = 1; i <= 118; i++) {
 
