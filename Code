@@ -1,19 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <math.h>
 #include <windows.h>
 
 #include "gestionListes.h"
-
-#include <math.h>
 #include "gestionGraphique.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <allegro.h>
-
-#define VITESSE_OBJET 50
+#define VITESSE_OBJET 150
+#define VITESSE_BULLE_BASE 100
 
 Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
 {
@@ -27,25 +20,25 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
     switch (niveau)
     {
         case 1: bulle->objet = rand () % 6;  // Toutes les bulles sont vides.
-            bulle->position.vx = VITESSE_OBJET* cos(angle);
-            bulle->position.vy = VITESSE_OBJET* sin(angle);
+            bulle->position.vx = VITESSE_BULLE_BASE* cos(angle);
+            bulle->position.vy = VITESSE_BULLE_BASE* sin(angle);
             break;
         case 2: bulle->objet = rand () % 2; // Ajout d'une nouvelle arme
             //plus le niveau augmente, plus la vitesse augmente
-            bulle->position.vx = 1,5*VITESSE_OBJET* cos(angle);
-            bulle->position.vy = 1,5*VITESSE_OBJET* sin(angle);
+            bulle->position.vx = 1,5*VITESSE_BULLE_BASE* cos(angle);
+            bulle->position.vy = 1,5*VITESSE_BULLE_BASE* sin(angle);
             break;
         case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
-            bulle->position.vx = 1,75*VITESSE_OBJET* cos(angle);
-            bulle->position.vy = 1,75*VITESSE_OBJET* sin(angle);
+            bulle->position.vx = 1,75*VITESSE_BULLE_BASE* cos(angle);
+            bulle->position.vy = 1,75*VITESSE_BULLE_BASE* sin(angle);
             break;
         case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme
-            bulle->position.vx = 2*VITESSE_OBJET* cos(angle);
-            bulle->position.vy = 2*VITESSE_OBJET* sin(angle);
+            bulle->position.vx = 2*VITESSE_BULLE_BASE* cos(angle);
+            bulle->position.vy = 2*VITESSE_BULLE_BASE* sin(angle);
             break;
         case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
-            bulle->position.vx = 2,25*VITESSE_OBJET* cos(angle);
-            bulle->position.vx = 2,25*VITESSE_OBJET* sin(angle);
+            bulle->position.vx = 2,25*VITESSE_BULLE_BASE* cos(angle);
+            bulle->position.vx = 2,25*VITESSE_BULLE_BASE* sin(angle);
             break;
     }
 
@@ -67,20 +60,17 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
         break;
     }
 
-    switch (ApparitionDebutJeu)
-    {
-        case TRUE: // bulles apparaissent partout dans le jeu
-            bulle->position.x = bulle->rayon + rand()%((LARGEUR_ECRAN-bulle->rayon)-bulle->rayon + 1); // position x entre 0+rayon (min) et 1200-rayon (max)
-            bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
-        break;
-
-        case FALSE: // bulles apparaissent que sur les bords
+    if (ApparitionDebutJeu == true) {
+        // bulles apparaissent partout dans le jeu
+        bulle->position.x = bulle->rayon + rand()%((LARGEUR_ECRAN-bulle->rayon)-bulle->rayon + 1); // position x entre 0+rayon (min) et 1200-rayon (max)
+        bulle->position.y = bulle->rayon + rand()%((400-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+    } else {
+        // bulles apparaissent que sur les bords
         if (rand() % 2 == 0) // creer choix aléatoire
             bulle->position.x = bulle->rayon; // sur les bors à gauche
         else
             bulle->position.x = LARGEUR_ECRAN - bulle->rayon; // ou à droite
         bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
-        break;
     }
     bulle->boule_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
     bulle->suivant = NULL;
@@ -120,7 +110,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 void ajouterBulleAleatoirement(Bulle **tete, int niveau)
 {
     // on cherche à calculer une probabilité d'apparition par fréquence d'images (FPS)
-    int proba = rand()%100; // variable aléatoire entre 0 et 100
+    int proba = rand()%1000; // variable aléatoire entre 0 et 100
     int seuil;
     switch (niveau)
     {
@@ -186,7 +176,7 @@ int supprimerListeBulle(Bulle **tete) // supression de la derniere bulle à la p
 }
 
 
-Balle *creerBalle(float x, float y, float vx, float vy) // on prend l'arme grise par défault ?
+Balle *creerBalle(float x, float y, float vx, float vy, bool balle_bazuka, int angle) // on prend l'arme grise par défault ?
 {
     Balle *balle = malloc(sizeof(Balle)); // allocation dynamique
     if (balle == NULL)
@@ -194,6 +184,8 @@ Balle *creerBalle(float x, float y, float vx, float vy) // on prend l'arme grise
         printf("Erreur allocation memoire.");
         exit(1);
     }
+    balle->angle = angle;
+    balle->bazuka = balle_bazuka;
     balle->position.x = x;
     balle->position.y = y;
     balle->position.vx = vx;
@@ -287,7 +279,7 @@ Objet *creerObjet(Bulle *bulle_contenant_objet)
     objet->position.largeur = (5/100)*HAUTEUR_ECRAN; // taille arme
     objet->position.vx = 0;
     objet->position.vy = VITESSE_OBJET; // objet descend verticalement
-    objet->duree_restante = TEMPS_OBJET; // ils ne restent que 10 sec à l'ecran
+    objet->duree_restante = TEMPS_OBJET_AU_SOL; // ils ne restent que 10 sec à l'ecran
     objet->suivant = NULL;
     return objet; // on retourne l'adresse de l'objet créé
 }
