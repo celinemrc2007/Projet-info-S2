@@ -8,7 +8,8 @@
 #define GRANDE_BULLE 80 // RAYON
 #define LARGEUR_ECRAN 1200
 #define HAUTEUR_ECRAN 800
-#define TEMPS_OBJET 10 // temps pour lequel l'objet est actif
+#define TEMPS_OBJET_SUR_JOUEUR 10 // temps pour lequel l'objet est sur le joueur
+#define TEMPS_OBJET_AU_SOL 2 // temps pour lequel l'objet peut être récupéré au sol
 
 // Type d'objets
 #define ARME1 0
@@ -75,6 +76,8 @@ typedef struct objet
 typedef struct balle
 {
     Position position; // position de la balle
+    int angle; //256 = 360 degrés
+    bool bazuka;
     struct balle *suivant; // pointeur vers la structure balle suivante
 }Balle;
 
@@ -93,7 +96,7 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
 void ajouterBulleAleatoirement(Bulle **tete, int niveau);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
-Balle *creerBalle(float x, float y, float vx, float vy);
+Balle *creerBalle(float x, float y, float vx, float vy, bool balle_bazuka, int angle);
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
 void supprimerBalle(Balle **tete, Balle *balle);
 void supprimerBallesHorsZone(Balle **tete);
