@@ -2,6 +2,8 @@
 #ifndef PROGRAMMES_LOGIQUEJEU_H
 #define PROGRAMMES_LOGIQUEJEU_H
 
+#include "gestionListes.h"
+
 #define N_ARMES 5 //Nombre d'armes
 #define CYCLE 0.02f // unité : seconde
 
@@ -9,6 +11,7 @@ extern Arme armes[N_ARMES];
 extern float temps_restant;
 extern Joueur *joueur;
 extern Bulle *tete_bulle;
+extern int LISTE_SRAND_OBSTACLES[5];
 
 //******************************* FONCTIONS **************************//
 bool verifierInitialisationSansCollision(Bulle *tete);
@@ -18,7 +21,7 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
 void afficherBoss (Boss *boss);
 void afficherElements();
 void animerElements(float cycle);
-Arme *initialiserArmes (Arme *arme);
+void initialiserArmes ();
 void init();
 bool jeu();
 void collisionJoueurObjet(Objet *objet, Joueur *joueur);
@@ -31,6 +34,5 @@ void initialiserListeBulle(int niveau);
 void divisionBulleEnDeux(Bulle *bulle);
 void divisionBulleEnTrois(Bulle *bulle);
 void collisionBulleBord(Bulle *bulle);
-
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
