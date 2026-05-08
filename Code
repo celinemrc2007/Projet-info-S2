@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <allegro.h>
-
 
 #include "gestionGraphique.h"
 #include "gestionListes.h"
 #include "gestionNiveaux.h"
 #include "logiqueJeu.h"
 #include "sauvegarde.h"
-#include "principal.h"
+
 
 /* ================= VARIABLES GLOBALES ================= */
 
@@ -24,25 +24,31 @@ int recupererNiveau() {
 /* ================= LANCEMENT NIVEAU ================= */
 
 void lancerNiveau() {
-    afficherFondEcran();
+    printf("init_obstacles");
+    srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
 
     switch (niveau) {
         case 1:
+            afficherFondEcran(buffer,1);
             temps_restant = 120; // 2 min
             break;
 
         case 2:
+            afficherFondEcran(buffer,2);
             temps_restant = 105; // 1 min 45
             break;
 
         case 3:
+            afficherFondEcran(buffer,3);
             temps_restant = 90; // 1 min 30
             break;
         case 4:
+            afficherFondEcran(buffer,4);
             temps_restant = 75; // 1 min 15
             break;
 
           case 5:
+            afficherFondEcran(buffer,5);
             temps_restant = 60; // 1 min
             break;
     }
@@ -65,7 +71,7 @@ void finNiveau() {
     int choix = 0;
     int choix_realise = 0;
 
-    afficherFondEcran();
+
     int x = LARGEUR_ECRAN/2 - 100;
     int y = HAUTEUR_ECRAN/2 - 100;
     int blanc = makecol(255, 255, 255);
@@ -94,7 +100,7 @@ void finNiveau() {
             break;
         case 2:
             sauvegarderPartie(pseudo, niveau);
-            menu();
+            // menu();
             break;
         case 3:
             sauvegarderPartie(pseudo, niveau);
@@ -129,7 +135,7 @@ void gererEchecNiveau() {
 
 void gererVictoirePartie() {
     afficherVictoirePartie();
-    menu();
+    // menu();
 }
 
 void gererBoss (Boss *boss, Joueur *joueur) {
