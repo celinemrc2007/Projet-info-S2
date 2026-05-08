@@ -387,3 +387,18 @@ void afficherVictoirePartie()
 {
 
     } */
+
+
+
+
+void detruireSprites() {
+
+    for (int i = 1; i <= 118; i++) {
+
+        if (images[i] != NULL) {
+
+            destroy_bitmap(images[i]);
+            images[i] = NULL;
+        }
+    }
+}
