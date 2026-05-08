@@ -23,5 +23,6 @@ void afficherVictoirePartie();
 void afficherDecompte(void);
 void afficherScore(int score);
 void afficherBalle(Balle *liste);
+void detruireSprites();
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
