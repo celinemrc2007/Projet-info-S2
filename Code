@@ -495,26 +495,26 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
     //supprimerObjet(tete_objet, objet);
 }
 
+
 void collisionBulleBalle(Bulle *bulle, Balle *balle)
 {
  // test de collision
-    if ((balle->position.y - bulle->position.y) == (balle->position.hauteur)/2 + (bulle->position.largeur)/2) // on regarde l'écart entre centre balle et bulle
+    if ((balle->position.y - bulle->position.y) == (balle->position.hauteur)/2 + bulle->rayon) // on regarde l'écart entre centre balle et bulle
     {
-        if(bulle->rayon == 1) // petite bulle
+        if(bulle->rayon == PETITE_BULLE) // petite bulle
         {
             eclaterBulle(bulle, &tete_bulle, &tete_objet);
         }
-        if(bulle->rayon == 2) // moyenne bulle
+        if(bulle->rayon == MOYENNE_BULLE) // moyenne bulle
         {
             divisionBulleEnTrois(bulle);
         }
-        if(bulle->rayon == 3) // grande bulle
+        if(bulle->rayon == GRANDE_BULLE) // grande bulle
         {
             divisionBulleEnDeux(bulle);
         }
     }
 }
-
 
 // Collision entre rectangle
 bool detecterCollision(Position *pos1, Position *pos2)
