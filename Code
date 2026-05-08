@@ -84,7 +84,8 @@ int main()
     initialisation_allegro();
     chargerSprites();
     BITMAP *fond_menu = load_bitmap("../images/fond_ecran_menu.bmp",NULL); // chargement du fond ecran menu
-    draw_sprite(screen, fond_menu, 50,120); // le fond d'ecran s'affiche au milieu de l'écran
+    draw_sprite(buffer, fond_menu, 50,120); // le fond d'ecran s'affiche au milieu du buffer
+    blit(buffer, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN); // on affiche  le buffer à l'écran
     do
     {
         choix = menu();
@@ -126,6 +127,7 @@ int main()
 
     } while (choix != 4);
 
+    clear_bitmap(buffer);
     // detruireSprites();
 
     allegro_exit();
