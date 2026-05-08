@@ -1,8 +1,6 @@
 #ifndef PROGRAMMES_GESTIONLISTES_H
 #define PROGRAMMES_GESTIONLISTES_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 #define PETITE_BULLE 40
@@ -29,8 +27,8 @@ typedef struct position
 {
     float x; // centre de l'objet ( axe x vers la droite)
     float y; // centre de l'objet (attention axe y est vers le bas!)
-    int vx; //vitesse
-    int vy;
+    float vx; //vitesse
+    float vy;
     int largeur;
     int hauteur;
 }Position;
@@ -97,9 +95,10 @@ void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
 Balle *creerBalle(float x, float y, float vx, float vy);
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
-void supprimerBallesHorsZone(Balle **tete, Balle *balle);
+void supprimerBalle(Balle **tete, Balle *balle);
+void supprimerBallesHorsZone(Balle **tete);
 int supprimerListeBalle(Balle **tete);
-Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet );
+Objet *creerObjet(Bulle *bulle_contenant_objet);
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
