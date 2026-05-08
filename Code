@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <windows.h>
 
 #include "gestionListes.h"
@@ -16,30 +17,30 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    double angle = rand()%1000 + 1; // angle compris entre 1 et 1000 
+    double angle = rand()%1000 + 1; // angle compris entre 1 et 1000
     switch (niveau)
     {
         case 1: bulle->objet = rand () % 1;  // Toutes les bulles sont vides.
-        bulle->position.vx = VITESSE_OBJET* cos(angle);
-        bulle->position.vy = VITESSE_OBJET* sin(angle);
-        break;
+            bulle->position.vx = VITESSE_OBJET* cos(angle);
+            bulle->position.vy = VITESSE_OBJET* sin(angle);
+            break;
         case 2: bulle->objet = rand () % 2; // Ajout d'une nouvelle arme
-        //plus le niveau augmente, plus la vitesse augmente
-        bulle->position.vx = 1,5*VITESSE_OBJET* cos(angle);
-        bulle->position.vy = 1,5*VITESSE_OBJET* sin(angle);
-        break;
+            //plus le niveau augmente, plus la vitesse augmente
+            bulle->position.vx = 1,5*VITESSE_OBJET* cos(angle);
+            bulle->position.vy = 1,5*VITESSE_OBJET* sin(angle);
+            break;
         case 3: bulle->objet = rand () % 4; // Ajout d'une nouvelle arme et de l'éclair
-        bulle->position.vx = 1,75*VITESSE_OBJET* cos(angle);
-        bulle->position.vy = 1,75*VITESSE_OBJET* sin(angle);
-        break;
+            bulle->position.vx = 1,75*VITESSE_OBJET* cos(angle);
+            bulle->position.vy = 1,75*VITESSE_OBJET* sin(angle);
+            break;
         case 4: bulle->objet = rand () % 5; // Ajout d'une nouvelle arme
-        bulle->position.vx = 2*VITESSE_OBJET* cos(angle);
-        bulle->position.vy = 2*VITESSE_OBJET* sin(angle);
-        break;
+            bulle->position.vx = 2*VITESSE_OBJET* cos(angle);
+            bulle->position.vy = 2*VITESSE_OBJET* sin(angle);
+            break;
         case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
-        bulle->position.vx = 2,25*VITESSE_OBJET* cos(angle);
-        bulle->position.vx = 2,25*VITESSE_OBJET* sin(angle);
-        break;
+            bulle->position.vx = 2,25*VITESSE_OBJET* cos(angle);
+            bulle->position.vx = 2,25*VITESSE_OBJET* sin(angle);
+            break;
     }
 
     int rayon; // variable pour un choix aléatoire de rayon
@@ -63,8 +64,8 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
     switch (ApparitionDebutJeu)
     {
         case TRUE: // bulles apparaissent partout dans le jeu
-        bulle->position.x = bulle->rayon + rand()%((LARGEUR_ECRAN-bulle->rayon)-bulle->rayon + 1); // position x entre 0+rayon (min) et 1200-rayon (max)
-        bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+            bulle->position.x = bulle->rayon + rand()%((LARGEUR_ECRAN-bulle->rayon)-bulle->rayon + 1); // position x entre 0+rayon (min) et 1200-rayon (max)
+            bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité) 
         break;
 
         case FALSE: // bulles apparaissent que sur les bords
@@ -80,7 +81,6 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
     return bulle; // on retourne l'adresse de la bulle créée
 }
 
-
 Bulle *creerBulleClone(Bulle *original) {
     Bulle *bulle = malloc(sizeof(Bulle)); // allocation dynamique
     if (bulle == NULL)
@@ -90,6 +90,8 @@ Bulle *creerBulleClone(Bulle *original) {
     }
     bulle->position = original->position;
     bulle->objet = 0;
+    bulle->suivant = NULL;
+    return bulle;
 }
 
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
@@ -136,6 +138,7 @@ void ajouterBulleAleatoirement(Bulle **tete, int niveau)
         ajouterBulle(tete,nouvelle);
     }
 }
+
 
 void supprimerBulle( Bulle **tete, Bulle *bulle) // n'importe laquelle dans la liste
 {
@@ -189,6 +192,7 @@ Balle *creerBalle(float x, float y, float vx, float vy) // on prend l'arme grise
     balle->position.vy = vy; // tir horizontal
     balle->position.hauteur = HAUTEUR_ECRAN*4/100;
     balle->position.largeur = LARGEUR_ECRAN*2/100;
+    balle->suivant = NULL;
     return balle; // on retourne l'adresse de la balle créée
 }
 
@@ -280,6 +284,7 @@ Objet *creerObjet(int niveau, Bulle *bulle_contenant_objet )
         case 5: objet->type = rand()%7;
         objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
         objet->position.largeur = (5/100)*LARGEUR_ECRAN; // bouclier et malus font la meme taille que le reste des objets
+
         break;
     }
     objet->position.vx = 0;
