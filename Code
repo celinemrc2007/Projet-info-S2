@@ -2,20 +2,17 @@
 #ifndef PROGRAMMES_LOGIQUEJEU_H
 #define PROGRAMMES_LOGIQUEJEU_H
 
-#include "gestionListes.h"
-
-#define N_ARMES 5 //Nombre d'armes
-#define CYCLE 0.02f // unité : seconde
+#define N_ARMES 6 //Nombre d'armes
+#define CYCLE 0.04f // unité : seconde
 
 extern Arme armes[N_ARMES];
 extern float temps_restant;
 extern Joueur *joueur;
 extern Bulle *tete_bulle;
-extern int LISTE_SRAND_OBSTACLES[5];
 
 //******************************* FONCTIONS **************************//
-bool verifierInitialisationSansCollision(Bulle *tete);
-void gererBulle(Bulle *bulle, Balle *tete_balle, Joueur *joueur, float cycle);
+bool verifierInitialisationSansCollision(Bulle *bulle);
+void gererBulle(Bulle *bulle, Joueur *joueur, float cycle);
 void gererBalle(Balle *tete, float cycle);
 void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
 void afficherBoss (Boss *boss);
@@ -25,14 +22,15 @@ void initialiserArmes ();
 void init();
 bool jeu();
 void collisionJoueurObjet(Objet *objet, Joueur *joueur);
-void collisionBulleBalle(Bulle *bulle, Balle *balle);
+void collisionBulleBalle(Bulle *bulle);
 bool detecterCollision(Position *pos1, Position *pos2);
 bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
-void eclaterBulle(Bulle *bulle, Bulle **tete_bulle, Objet **tete_objet);
+void eclaterBulle(Bulle *bulle);
 void reinitialiserArme(Joueur *joueur);
 void initialiserListeBulle(int niveau);
 void divisionBulleEnDeux(Bulle *bulle);
 void divisionBulleEnTrois(Bulle *bulle);
 void collisionBulleBord(Bulle *bulle);
+
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
