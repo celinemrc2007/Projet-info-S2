@@ -1,10 +1,12 @@
 #include <allegro.h>
-#include "gestionListe.h"
+#include "gestionListes.h"
 #include "logiqueJeu.h"
 #include "gestionClavier.h"
 
 
 #define ECART_BALLES_ARME3 HAUTEUR_ECRAN/20
+
+float temps_recharge_arme;
 
 void deplacementJoueur(Joueur *joueur)
 {
@@ -23,39 +25,44 @@ void deplacementJoueur(Joueur *joueur)
 
 void tirerBallesBombes(Balle **listeBalle, Joueur *joueur)
 {
-    if (!key[KEY_UP]){
+    temps_recharge_arme -= CYCLE;
+    if ((!key[KEY_UP]) || (temps_recharge_arme > 0)) {
         return;
     }
-    float ox = joueur->position.x;
-    float oy = joueur->position.y - joueur->position.hauteur / 2.0f;
+    float ox = joueur->position.x ;
+    float oy = joueur->position.y - 80;
 
     float v  = armes[joueur->arme].vitesse;
-    float v3 = v * 3.0f;
     float d  = 0.7071f;
 
     switch (joueur->arme) {
 
-        case 1:
-            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
+        case ARME1:
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v, false, 0));
             break;
-        case 2:
-            ajouterBalle(listeBalle, creerBalle( ox, oy, 0.0f, -v3));
+        case ARME2:
+            ajouterBalle(listeBalle, creerBalle( ox, oy, 0.0f, -v, false, 0));
             break;
-        case 3:
-            ajouterBalle(listeBalle, creerBalle(ox - ECART_BALLES_ARME3, oy, 0.0f, -v));
-            ajouterBalle(listeBalle, creerBalle(ox,                       oy, 0.0f, -v));
-            ajouterBalle(listeBalle, creerBalle(ox + ECART_BALLES_ARME3, oy, 0.0f, -v));
+        case ARME3:
+            ajouterBalle(listeBalle, creerBalle(ox - ECART_BALLES_ARME3, oy, 0.0f, -v, false, 0));
+            ajouterBalle(listeBalle, creerBalle(ox,                       oy, 0.0f, -v, false, 0));
+            ajouterBalle(listeBalle, creerBalle(ox + ECART_BALLES_ARME3, oy, 0.0f, -v, false, 0));
             break;
-        case 4:
-            ajouterBalle(listeBalle, creerBalle(ox, oy,  0.0f,    -v));
-            ajouterBalle(listeBalle, creerBalle(ox, oy, -v * d,   -v * d));
-            ajouterBalle(listeBalle, creerBalle(ox, oy,  v * d,   -v * d));
+        case ARME4:
+            ajouterBalle(listeBalle, creerBalle(ox, oy,  0.0f,    -v, false, 0));
+            ajouterBalle(listeBalle, creerBalle(ox, oy, -v * d,   -v * d, false, -32));
+            ajouterBalle(listeBalle, creerBalle(ox, oy,  v * d,   -v * d, false, 32));
             break;
-        case 5:
-            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
+        case ARME5:
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v, true, 0));
             break;
         default:
-            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v));
+            ajouterBalle(listeBalle, creerBalle(ox, oy, 0.0f, -v, false, 0));
             break;
+    }
+    if (armes[joueur->arme].bazuka == true) {
+        temps_recharge_arme = 1;
+    } else {
+        temps_recharge_arme = 0.2f;
     }
 }
