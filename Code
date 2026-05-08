@@ -5,7 +5,13 @@
 #include <windows.h>
 
 #include "gestionListes.h"
+
+#include <math.h>
 #include "gestionGraphique.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <allegro.h>
 
 #define VITESSE_OBJET 50
 
