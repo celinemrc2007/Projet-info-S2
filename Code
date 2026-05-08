@@ -84,7 +84,6 @@ int main()
     initialisation_allegro();
     chargerSprites();
     BITMAP *fond_menu = load_bitmap("../images/fond_ecran_menu.bmp",NULL); // chargement du fond ecran menu
-    //blit(fond_menu, screen, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN); // affichage à l'écran
     draw_sprite(screen, fond_menu, 50,120); // le fond d'ecran s'affiche au milieu de l'écran
     do
     {
