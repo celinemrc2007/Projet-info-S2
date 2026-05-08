@@ -2,40 +2,37 @@
 #define PROGRAMMES_GESTIONGRAPHIQUE_H
 
 #include "gestionListes.h"
-#include <allegro.h>
 
 #define LARGEUR_ECRAN 1200
 #define HAUTEUR_ECRAN 800
 #define ZONE_JEU_LARGEUR 1200
-#define ZONE_JEU_HAUTEUR 600
+#define ZONE_JEU_HAUTEUR 650
 #define ZONE_INFO_LARGEUR 1200
-#define ZONE_INFO_HAUTEUR 200
+#define ZONE_INFO_HAUTEUR 150
 #define DUREE_DECOMPTE 3
-
-//*************************** VARIABLES *********************//
-
-extern BITMAP *buffer; // pour pouvoir l'utiliser dans gestionNiveau
 
 //************************** FONCTIONS ************************//
 void initialisation_allegro();
 void chargerSprites ();
-void afficherFondEcran(BITMAP *buffer, int niveau);
+void afficherFondEcran(int niveau);
+void afficherBuffer();
 void afficherSprite (float x, float y, int numero_sprite);
 void afficherSpriteRedimensionne (Position *position, int numero_sprite);
+void afficherSpriteIncline (Position *position, int numero_sprite, int angle);
 void afficherNiveau(int niveau);
 void afficherPseudo(char pseudo[50]);
 void afficherRegles();
 void afficherExplosionBazuka();
 void afficherDeplacementsJoueur(Joueur *joueur);
+void afficherTirJoueur(Joueur *joueur);
+void afficherJoueur(Joueur *joueur);
 void afficherEchecNiveau(Joueur *joueur);
 void afficherVictoireNiveau(Joueur *joueur);
 void afficherVictoirePartie();
-void afficherDecompte(void);
-void afficherTempsRestant(int temps_restant);
+void afficherDecompte();
 void afficherScore(int score);
 void afficherBalle(Balle *liste);
+void afficherTempsRestant(int temps_restant);
 void detruireSprites();
-void afficherTirJoueur(Joueur *joueur);
-void afficherJoueur(Joueur *joueur);
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
