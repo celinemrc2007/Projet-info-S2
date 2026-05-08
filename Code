@@ -26,27 +26,31 @@ int recupererNiveau() {
 /* ================= LANCEMENT NIVEAU ================= */
 
 void lancerNiveau() {
-    afficherFondEcran();
     printf("init_obstacles");
     srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
 
     switch (niveau) {
         case 1:
+            afficherFondEcran(1);
             temps_restant = 120; // 2 min
             break;
 
         case 2:
+            afficherFondEcran(2);
             temps_restant = 105; // 1 min 45
             break;
 
         case 3:
+            afficherFondEcran(3);
             temps_restant = 90; // 1 min 30
             break;
         case 4:
+            afficherFondEcran(4);
             temps_restant = 75; // 1 min 15
             break;
 
           case 5:
+            afficherFondEcran(5);
             temps_restant = 60; // 1 min
             break;
     }
