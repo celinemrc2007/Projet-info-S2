@@ -14,6 +14,8 @@
 //************************** FONCTIONS ************************//
 void initialisation_allegro();
 void chargerSprites ();
+void afficherTexte(BITMAP *bmp_dest, FONT *font, int x, int y, int couleur, int ratio_zoom, const char *texte);
+void afficherTexteCentre(BITMAP *bmp_dest, FONT *font, int x, int y, int couleur, int ratio_zoom, const char *texte);
 void afficherFondEcran(int niveau);
 void afficherBuffer();
 void afficherSprite (float x, float y, int numero_sprite);
