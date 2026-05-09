@@ -135,31 +135,7 @@ void gererVictoirePartie() {
     menu();
 }
 
-void gererBoss (Boss *boss, Joueur *joueur) {
-    while (boss->nb_tirs_recus == (boss->nb_tirs_recus)++) {
-        Bulle *ajouterBulle (Bulle **tete, Bulle *nouveau);
-    }
-        // à ajouter : si collision entre le joueur et le boss, appeler gererEchecNiveau
-    int direction = rand() % 4;
-
-    switch(direction) {
-        case 0: // à droite
-            boss->position.x += 10;
-            break;
-
-        case 1: // à gauche
-            boss->position.x -= 10;
-            break;
-
-        case 2: // en bas
-            boss->position.y += 10;
-            break;
-
-        case 3: // en haut
-            boss->position.y -= 10;
-            break;
-    }
-}
+/* ====================== EXTENSIONS ================= */
 
 void activerBouclier() {
     compteur_bouclier = TEMPS_OBJET_SUR_JOUEUR;
