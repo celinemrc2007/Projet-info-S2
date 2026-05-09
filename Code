@@ -87,7 +87,9 @@ int main()
 
     initialisation_allegro();
     chargerSprites();
-
+    BITMAP *fond_menu = load_bitmap("../images/fond_ecran_menu.bmp",NULL); // chargement du fond ecran menu
+    draw_sprite(buffer, fond_menu, 50,120); // le fond d'ecran s'affiche au milieu du buffer
+    afficherBuffer();
     do
     {
         choix = menu();
@@ -101,8 +103,12 @@ int main()
 
             case 2:
                 /* Nouvelle partie */
-                //saisirPseudo();
+                // saisirPseudo();
+                clear_bitmap(screen);
+                textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(255,255,255), -1, "Entrez votre pseudo :");
+                scanf("%s", pseudo);
                 niveau = 1;
+                sauvegarderPartie(pseudo, niveau);
                 lancerNiveau();
                 break;
 
@@ -112,6 +118,7 @@ int main()
 
                 if (chargerPartie(pseudo, &niveau))
                 {
+                    textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 300, makecol(255,0,0), -1, "Sauvegarde trouvée ! ");
                     lancerNiveau();
                 }
                 else
@@ -124,10 +131,14 @@ int main()
 
             case 4:
                 /* Quitter le programme */
+                textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 300, makecol(255,0,0), -1, "A bientot !");
                 break;
         }
 
     } while (choix != 4);
+
+    clear_bitmap(buffer);
+    // detruireSprites();
 
     allegro_exit();
     return 0;
