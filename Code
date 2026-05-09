@@ -4,10 +4,12 @@
 
 #define N_ARMES 6 //Nombre d'armes
 #define CYCLE 0.04f // unité : seconde
+#define HORS_ZONE_JEU -500 // // unité : pixels
 
 extern Arme armes[N_ARMES];
 extern float temps_restant;
 extern Joueur *joueur;
+extern Boss *boss;
 extern Bulle *tete_bulle;
 
 //******************************* FONCTIONS **************************//
@@ -16,6 +18,8 @@ void gererBulle(Bulle *bulle, Joueur *joueur, float cycle);
 void gererBalle(Balle *tete, float cycle);
 void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
 void afficherBoss (Boss *boss);
+void supprimerBoss();
+void afficherObjet(Position *position, int type);
 void afficherElements();
 void animerElements(float cycle);
 void initialiserArmes ();
