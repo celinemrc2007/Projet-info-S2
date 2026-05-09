@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 #include <allegro.h>
 
@@ -10,6 +11,14 @@
 #include "sauvegarde.h"
 #include "principal.h"
 
+ /* ================= Constantes pour le boss ================= */
+#define TEMPS_INITIAL_CHANGEMENT_VITESSE 4.0f // en secondes
+#define TEMPS_FINAL_CHANGEMENT_VITESSE 1.5f   // en secondes
+#define VITESSE_INITIALE 300.0f
+#define VITESSE_FINALE 800.0f
+#define TEMPS_MOYEN_EJECTION_FLAMME 8.0f
+
+
 /* ================= VARIABLES GLOBALES ================= */
 
 int niveau = 1;                 // niveau courant
@@ -17,6 +26,7 @@ char pseudo[MAX_PSEUDO];
 float compteur_bouclier;
 float compteur_malus;
 int facteur_apparition_bulle;
+bool joueur_touche_par_boss;
 
 /* ================= PERMET DE PASSER LE PARAMETRE NIVEAU A CERTAINES SOUS-PROGRAMMES ================= */
 
@@ -55,8 +65,14 @@ void lancerNiveau() {
         if (niveau != 4) {
             gererVictoireNiveau ();
         } else {
-          jeu();
-          //gererBoss();
+            boss = creerBoss();
+            temps_restant = 75;
+            resultat_jeu = jeu();
+            if (resultat_jeu==true) {
+                gererVictoirePartie();
+            }  else {
+                gererEchecNiveau();
+            }
         }
     } else {
         gererEchecNiveau();
@@ -101,10 +117,10 @@ void finNiveau() {
             break;
         case 3:
             sauvegarderPartie(pseudo, niveau);
-            exit(0);
+            menu();
             break;
         case 4:
-            exit(0);
+            menu();
             break;
     }
 }
@@ -113,10 +129,11 @@ void finNiveau() {
 
 void gererVictoireNiveau() {
     if (niveau == 5) {
-        gererVictoirePartie();
+        menu();
     } else {
-        niveau++;
+        afficherBoss(boss);
         afficherVictoireNiveau(joueur);
+        niveau++;
         finNiveau();
     }
 }
@@ -132,10 +149,70 @@ void gererEchecNiveau() {
 
 void gererVictoirePartie() {
     afficherVictoirePartie();
-    menu();
+    finNiveau();
 }
 
-/* ====================== EXTENSIONS ================= */
+void changerVitesseBoss (Boss *boss) {
+    float vitesse = VITESSE_INITIALE + (VITESSE_FINALE - VITESSE_INITIALE) *
+            boss->nb_tirs_recus/NB_MAX_TIRS_RECUS;
+    float angle = rand()%1000 + 1; // angle compris entre 1 et 1000
+    boss->position.vx = vitesse * cosf(angle);
+    boss->position.vy = vitesse * sinf(angle);
+    float temps_changement_vitesse = TEMPS_INITIAL_CHANGEMENT_VITESSE +
+        (TEMPS_FINAL_CHANGEMENT_VITESSE - TEMPS_INITIAL_CHANGEMENT_VITESSE) *
+            boss->nb_tirs_recus/NB_MAX_TIRS_RECUS;
+    boss->compteur_changement_vitesse = (rand() % 40 + 80) / 100.0f * temps_changement_vitesse;
+}
+
+void gererBoss (Boss *boss, Joueur *joueur, Balle *tete_balle, float cycle) {
+    if (boss == NULL) return;
+
+    // Changement de vitesse aléatoire
+    boss->compteur_changement_vitesse -= cycle;
+    if (boss->compteur_changement_vitesse < 0) {
+        changerVitesseBoss(boss);
+    }
+
+    //Cinematique
+    boss->position.x += boss->position.vx * cycle;
+    boss->position.y += boss->position.vy * cycle;
+    if ((boss->position.x - boss->position.largeur/2 < 50) && (boss->position.vx < 0)) {
+        boss->position.vx = - boss->position.vx;
+    }
+    if ((boss->position.x + boss->position.largeur/2 > LARGEUR_ECRAN - 50) && (boss->position.vx > 0)) {
+        boss->position.vx = - boss->position.vx;
+    }
+    if ((boss->position.y - boss->position.hauteur/2 < 50) && (boss->position.vy < 0)) {
+        boss->position.vy = - boss->position.vy;
+    }
+    if ((boss->position.y - boss->position.hauteur/2 > ZONE_JEU_HAUTEUR - 150) && (boss->position.vy > 0)) {
+        boss->position.vy = - boss->position.vy;
+    }
+
+    // Creation de flammes par le boss
+    boss->compteur_apparition_flamme -= cycle;
+    if (boss->compteur_apparition_flamme < 0) {
+        boss->compteur_apparition_flamme = (rand() % 40 + 80) / 100.0f * TEMPS_MOYEN_EJECTION_FLAMME;
+        Bulle *bulle = creerBulle(false, 4);
+        bulle->position.x = boss->position.x + 200;
+        bulle->position.y = boss->position.y;
+        bulle->boule_de_feu = true;
+        ajouterBulle(&tete_bulle, bulle);
+    }
+
+    // Detection avec le boss
+    Balle *balle = tete_balle;
+    while (balle != NULL) {
+        if (detecterCollision(&boss->position, &balle->position) == true) {
+            balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
+            boss->nb_tirs_recus++;
+        }
+        balle = balle->suivant;
+    }
+    if (detecterCollision(&joueur->position, &boss->position) == true) {
+        joueur_touche_par_boss = true;
+    }
+}
 
 void activerBouclier() {
     compteur_bouclier = TEMPS_OBJET_SUR_JOUEUR;
