@@ -1,2 +1,8 @@
-// Pas de code ici pour pas qu'on s'embrouille et qu'on crée un module main au lieu du module principal.c
-// C une branche crée par défaut
+#ifndef PROGRAMMES_PRINCIPAL_H
+#define PROGRAMMES_PRINCIPAL_H
+
+int menu();
+void saisirPseudo();
+
+#endif //PROGRAMMES_PRINCIPAL_H
+
