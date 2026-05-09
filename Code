@@ -3,6 +3,8 @@
 
 #include "sauvegarde.h"
 
+#define NB_MAX_TIRS_RECUS 30
+
 /* ===== VARIABLES ===== */
 
 extern char pseudo[MAX_PSEUDO];
@@ -10,6 +12,7 @@ extern int niveau;
 extern float compteur_bouclier;
 extern float compteur_malus;
 extern int facteur_apparition_bulle;
+extern bool joueur_touche_par_boss;
 
 /* ===== FONCTIONS ===== */
 
@@ -31,7 +34,8 @@ void gererEchecNiveau();
 void gererVictoirePartie();
 
 /* Gère les fonctionnalités supplémentaires liées à l'arrivée du boss à la fin du niveau 4 */
-void gererBoss (Boss *boss, Joueur *joueur);
+void changerVitesseBoss (Boss *boss);
+void gererBoss (Boss *boss, Joueur *joueur, Balle *tete_balle, float cycle);
 
 /* Gère le bonus au niveau 5 */
 void activerBouclier();
