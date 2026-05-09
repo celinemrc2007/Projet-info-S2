@@ -10,8 +10,7 @@
 
 #define GRAVITE 75.0  // unité : pixel/s²
 #define FROTTEMENT 0.01
-#define HORS_ZONE_JEU -500 // // unité : pixels
-#define TEMPS_JEU_MINIMUM 20 // unité : seconde
+#define TEMPS_JEU_MINIMUM 5 // unité : seconde
 #define SQRT2_DIV_2 0.7071
 #define DIST_REBOND_RATIO 0.6  // Déformation limitée à 40 % en hauteur ou en largeur
 #define TEMPS_REBOND_2 (0.002)    // En s² A ajuster
@@ -107,7 +106,7 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
             compteur_objet = TEMPS_OBJET_SUR_JOUEUR;
             break;
         case ECLAIR:
-            joueur_touche_par_eclair = true;
+            if (compteur_bouclier <= 0) joueur_touche_par_eclair = true;
             break;
         case BONUS:
             activerBouclier();
@@ -274,7 +273,7 @@ void gererBalle(Balle *tete, float cycle) {
         // Cinématique
         balle->position.x += balle->position.vx * cycle;
         balle->position.y += balle->position.vy * cycle;
-        for (int i = 0; i < N_OBSTACLES; i++) {
+        for (int i = 0; i < 8; i++) {
             if (detecterCollision(&obstacles[i].position, &balle->position) == true) {
                 balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
             }
@@ -396,22 +395,11 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
     }
 }
 
-void afficherBoss (Boss *boss) {
-    if (boss==NULL) return;
-    // Animation de battement des ailes
-    afficherSprite(boss->position.x, boss->position.y, 87);
-    afficherSprite(boss->position.x, boss->position.y, 88);
-    afficherSprite(boss->position.x, boss->position.y, 89);
-    afficherSprite(boss->position.x, boss->position.y, 90);
-    afficherSprite(boss->position.x, boss->position.y, 91);
-    afficherSprite(boss->position.x, boss->position.y, 92);
-    if (boss->nb_tirs_recus >= 30) {
-        afficherSprite(boss->position.x, boss->position.y, 93);
-        afficherSprite(boss->position.x, boss->position.y, 94);
-        afficherSprite(boss->position.x, boss->position.y, 95);
-        afficherSprite(boss->position.x, boss->position.y, 96);
-        //afficherVictoireNiveau;
-    }
+void supprimerBoss() {
+    detruireSprites();
+    if (boss == NULL) return;
+    free(boss);
+    boss = NULL;
 }
 
 void afficherObjet(Position *position, int type) {
@@ -521,11 +509,14 @@ void animerElements(float cycle) {
         balle = balle->suivant;
     }
     Bulle *bulle = tete_bulle;
+    //int compteur = 0;
     while (bulle != NULL) {
         Bulle *bulle_suivant = bulle->suivant;
         gererBulle(bulle, joueur, cycle);
         bulle = bulle_suivant;
+        //compteur++;
     }
+    //printf("nb bulles = %d\n", compteur);
     Objet *objet = tete_objet;
     while (objet != NULL) {
         Objet *objet_suivant = objet->suivant;
@@ -543,8 +534,9 @@ void animerElements(float cycle) {
         }
         objet = objet_suivant;
     }
-    ajouterBulleAleatoirement(&tete_bulle, niveau, cycle * facteur_apparition_bulle);
+    if (boss == NULL) ajouterBulleAleatoirement(&tete_bulle, niveau, cycle * facteur_apparition_bulle);
     gererBouclier();
+    gererBoss(boss, joueur, tete_balle, cycle);
     reinitialiserArme(joueur);
     supprimerBallesHorsZone(&tete_balle);
 }
@@ -601,6 +593,7 @@ void init() {
     score = 0;
     compteur_bouclier = 0;
     compteur_malus = 0;
+    compteur_creation_bulle = 1.0f;
     initialiserArmes();
     tete_bulle = NULL; //Initialisation de la liste de bulle (vide)
     tete_balle = NULL; // Initialisation de la liste de balle (vide)
@@ -673,12 +666,12 @@ void init() {
 bool jeu(Bulle *bulle) {
     init();
     afficherElements();
-    afficherDecompte();
+    if (boss == NULL) afficherDecompte();
     float temps_depart = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
     clock_t t;
-    compteur_bouclier = 100;
+    //compteur_bouclier = 100;
 
     while (temps_restant > 0) {
         t = clock();
@@ -686,12 +679,21 @@ bool jeu(Bulle *bulle) {
         animerElements(CYCLE);
         afficherElements();
         tirerBallesBombes(&tete_balle, joueur);
-        if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide((void **)&tete_bulle) == true)) {
+        if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide((void **)&tete_bulle) == true) && (boss == NULL)) {
             return true;
-        } else if (joueur_touche_par_bulle == true) { // Si la bulle touche le joueur, le joueur perd.
+        } else if ((boss != NULL) && (boss->nb_tirs_recus >= NB_MAX_TIRS_RECUS)) {
+            defaiteBoss(boss);
+            supprimerBoss();
+            return true;
+        } else if (joueur_touche_par_bulle == true) {
             rest(500);
+            supprimerBoss();
             return false;
-        } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
+        } else if (joueur_touche_par_eclair == true) {
+            supprimerBoss();
+            return false;
+        } else if (joueur_touche_par_boss == true) {
+            supprimerBoss();
             return false;
         }
         temps_restant -= CYCLE;
