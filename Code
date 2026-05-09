@@ -45,13 +45,14 @@ void saisirPseudo()
 
     memset(pseudo, 0, MAX_PSEUDO);
 
-    clear_bitmap(screen);
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(255,255,255), -1, "Entrez votre pseudo :");
+    afficherFondEcran(0);
+    afficherBuffer();
+    textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(50,220,50), -1, "Entrez votre pseudo :");
 
     while (1)
     {
         /* Affichage du pseudo */
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 260, makecol(255,220,0), -1, "%s_", pseudo);
+        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 260, makecol(0,0,0), -1, "%s_", pseudo);
 
         touche = readkey() & 0xff;
 
@@ -65,8 +66,9 @@ void saisirPseudo()
             longueur--;
             pseudo[longueur] = '\0';
 
-            clear_bitmap(screen);
-            textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(255,255,255), -1, "Entrez votre pseudo :");
+            afficherFondEcran(0);
+            afficherBuffer();
+            textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(150,0,0), -1, "Entrez votre pseudo :");
         }
         /* Caractère normal */
         else if (longueur < MAX_PSEUDO - 1 && touche >= 32 && touche <= 126)
