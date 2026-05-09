@@ -3,7 +3,7 @@
 
 #include "sauvegarde.h"
 
-#define NB_MAX_TIRS_RECUS 30
+#define NB_MAX_TIRS_RECUS 25
 
 /* ===== VARIABLES ===== */
 
