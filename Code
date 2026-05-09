@@ -26,6 +26,8 @@ void afficherExplosionBazuka();
 void afficherDeplacementsJoueur(Joueur *joueur);
 void afficherTirJoueur(Joueur *joueur);
 void afficherJoueur(Joueur *joueur);
+void afficherBoss (Boss *boss);
+void defaiteBoss (Boss *boss);
 void afficherEchecNiveau(Joueur *joueur);
 void afficherVictoireNiveau(Joueur *joueur);
 void afficherVictoirePartie();
