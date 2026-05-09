@@ -473,7 +473,7 @@ void afficherVictoireNiveau(Joueur *joueur) {
     	afficherFondEcran(niveau);
         afficherSprite(joueur->position.x, joueur->position.y, i);
     	afficherBuffer();
-        rest(100);
+        rest(150);
     }
 	// animation lara gagne
     afficherTexteCentre(buffer, font, LARGEUR_ECRAN / 2, HAUTEUR_ECRAN / 4 - 20, makecol(128, 0, 128), -1, "BRAVO, NIVEAU REUSSI !");
@@ -489,7 +489,7 @@ void afficherEchecNiveau(Joueur *joueur) {
     	afficherFondEcran(niveau);
         afficherSprite(joueur->position.x, joueur->position.y, i);
     	afficherBuffer();
-        rest(100);
+        rest(150);
     }
 	// animation lara perd
 
