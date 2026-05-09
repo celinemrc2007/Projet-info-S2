@@ -10,6 +10,7 @@
 BITMAP *images[150];
 BITMAP *buffer; // initialisation du buffer
 int sprite_joueur;
+int sprite_boss;
 
 void initialisation_allegro() {
 	allegro_init(); // appel obligatoire (var.globales, recup. infos syst me ...)
@@ -201,6 +202,10 @@ void afficherFondEcran(int niveau)
 
 	switch (niveau)
 	{
+		case 0: //pour afficher le menu
+			// on copie le sprite dans le buffer
+			draw_sprite(buffer, images[119], (LARGEUR_ECRAN - images[119]->w)/2, (HAUTEUR_ECRAN - images[119]->h)/2);
+			break;
 		case 1:
 			// on copie le sprite dans le buffer
 			blit(images[113], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
@@ -359,6 +364,7 @@ void afficherDeplacementsJoueur(Joueur *joueur)
 	}
 }
 
+
 void afficherTirJoueur(Joueur *joueur) {
 	switch (joueur->arme) {
 		case ARME1: sprite_joueur = 11;
@@ -394,6 +400,24 @@ void afficherJoueur(Joueur *joueur) {
 		}
 	}
 	afficherSprite(joueur->position.x, joueur->position.y, sprite_joueur);
+}
+
+void afficherBoss (Boss *boss) {
+	if (boss==NULL) return;
+	// Animation de battement des ailes
+	sprite_boss++;
+	if ((sprite_boss < 87) || (sprite_boss > 92)) sprite_boss = 87;
+	afficherSprite(boss->position.x, boss->position.y, sprite_boss);
+}
+
+void defaiteBoss (Boss *boss) {
+	if (boss == NULL) return;
+	for (int i = 93; i <= 96; i++) {
+		afficherFondEcran(niveau);
+		afficherSprite(boss->position.x, boss->position.y, i);
+		afficherBuffer();
+		rest(500);
+	}
 }
 
 
@@ -434,11 +458,13 @@ void afficherVictoirePartie()
 {
 	// animation sprite trophée tourne sur lui-meme
 	// affichage au milieu un peu en haut
-	for (int i = 103; i <= 112; i++) {
-		afficherFondEcran(niveau);
-		afficherSprite(600, 300, i);
-		afficherBuffer();
-		rest(100);
+	for (int repetition = 1; repetition <= 3; repetition++) {
+		for (int i = 103; i <= 112; i++) {
+			afficherFondEcran(niveau);
+			afficherSprite(600, 300, i);
+			afficherBuffer();
+			rest(100);
+		}
 	}
 	// affichage du texte en dessous du trophé
 	textprintf_centre_ex(buffer, font, LARGEUR_ECRAN/2, HAUTEUR_ECRAN/4 + 20, makecol(243,187,27), -1, "BRAVO !! VICTOIRE PARTIE"); // même couleur que le trophée
@@ -460,7 +486,7 @@ void afficherBalle(Balle *balle) {
 
 void detruireSprites()
 {
-	for (int i = 1; i <= 118; i++) {
+	for (int i = 1; i <= 112; i++) {
 
 		if (images[i] != NULL) {
 
@@ -469,4 +495,3 @@ void detruireSprites()
 		}
 	}
 }
-
