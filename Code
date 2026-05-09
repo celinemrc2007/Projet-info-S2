@@ -93,7 +93,7 @@ typedef struct boss
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
 Bulle *creerBulleClone(Bulle *original);
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
-void ajouterBulleAleatoirement(Bulle **tete, int niveau);
+void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus);
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 int supprimerListeBulle(Bulle **tete);
 Balle *creerBalle(float x, float y, float vx, float vy, bool balle_bazuka, int angle);
