@@ -18,15 +18,17 @@
 #define NB_SOUS_CYCLE 5
 #define VITESSE_BULLE_MAX 500 // unité : pixel/s
 #define VITESSE_BALLE_BASE 500 // unité : pixel/s
-#define N_OBSTACLES 8 // Nombre d'obstacles (dont 4 obstacles fixes de bord d'écran)
-#define HAUTEUR_JOUEUR 156 // pixels
-#define LARGEUR_JOUEUR 100 // pixels
+#define N_OBSTACLES 9 // Nombre d'obstacles (dont 4 obstacles fixes de bord d'écran et un bouclier considéré comme un obstacle)
+#define HAUTEUR_JOUEUR 150 // pixels
+#define LARGEUR_JOUEUR 80 // pixels
+#define HAUTEUR_BOUCLIER 160
+#define LARGEUR_BOUCLIER 160
 
-int score = 0
+
 int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
+int score;
 float temps_restant;
 float compteur_objet;
-float compteur_bouclier;
 bool joueur_touche_par_bulle;
 bool joueur_touche_par_eclair;
 Bulle *tete_bulle;
@@ -104,21 +106,16 @@ void collisionJoueurObjet(Objet *objet, Joueur *joueur) {
             joueur->arme = objet->type;   // Le joueur change d’arme
             compteur_objet = TEMPS_OBJET_SUR_JOUEUR;
             break;
-
         case ECLAIR:
             joueur_touche_par_eclair = true;
             break;
-
         case BONUS:
-            //bonusBouclier();
-            compteur_bouclier = TEMPS_OBJET_SUR_JOUEUR;
+            activerBouclier();
             break;
-
         case MALUS:
-            //malusMultiplication();
+            activerMalus();
             break;
     }
-
     supprimerObjet(&tete_objet, objet);
 }
 
@@ -148,8 +145,6 @@ void reinitialiserArme(Joueur *joueur)
     }
 }
 
-
-
 void eclaterBulle(Bulle *bulle)
 {
     if (bulle == NULL) return;
@@ -170,14 +165,13 @@ void eclaterBulle(Bulle *bulle)
             break;
     }
 
-    if (bulle->objet != 0) {
+    /* Si la bulle contient un objet, on le crée */
+    if (bulle->objet != 0)
+    {
         ajouterObjet(&tete_objet, creerObjet(bulle));
     }
-
     supprimerBulle(&tete_bulle, bulle);
 }
-
-
 
 void divisionBulleEnDeux(Bulle *bulle) {
     Bulle *bulle_1 = creerBulleClone(bulle);
@@ -225,6 +219,9 @@ void gererBulle(Bulle *bulle, Joueur *joueur, float cycle) {
     // Boucle d'animation pour plus de precision
     cycle /= NB_SOUS_CYCLE;
     for (int j=0 ; j<NB_SOUS_CYCLE ; j++) {
+        if (compteur_bouclier > 0) {
+            obstacles[8].position.x += obstacles[8].position.vx * cycle;
+        }
         // Effet de gravité sur les bulles
         bulle->position.vy += GRAVITE*cycle;
         // Frottement
@@ -260,19 +257,15 @@ void gererBulle(Bulle *bulle, Joueur *joueur, float cycle) {
             balle->position.y = HORS_ZONE_JEU; //Supprime la balle grâce à la fonction supprimerBallesHorsZone
             return; // car la bulle a été supprimée
         }
-    balle = balle->suivant;
+        balle = balle->suivant;
     }
-    if (detecterCollisionBulle(bulle, &joueur->position) == true) { // Si la bulle touche le joueur, le joueur perd.
+    if ((detecterCollisionBulle(bulle, &joueur->position) == true) && (compteur_bouclier <= 0)) { // Si la bulle touche le joueur, le joueur perd.
         joueur_touche_par_bulle =true;
     }
-    /*if (detecterCollisionBulle(bulle, &joueur->position) == true) {
-               if (bouclier_actif) {
-                   bouclier_actif = false;   // le bouclier absorbe le coup
-                   bouclier_timer = 0.0f;
-               } else {
-                   joueur_touche_par_bulle = true;
-               }
-           }*/
+    // Suppression des bulles sur le côté de l'écran (repoussé par le bouclier)
+    if ((bulle->position.x < 0) || (bulle->position.x > LARGEUR_ECRAN)) {
+        supprimerBulle(&tete_bulle, bulle);
+    }
 }
 
 void gererBalle(Balle *tete, float cycle) {
@@ -452,7 +445,7 @@ void afficherElements() {
     // Affichage du joueur
     if (joueur != NULL) {
         afficherJoueur(joueur);
-        //    afficherBouclier();
+        afficherBouclier();
     }
 
     Bulle *bulle = tete_bulle;
@@ -510,11 +503,18 @@ void afficherElements() {
     afficherPseudo(pseudo);
     afficherNiveau(niveau);
     afficherTempsRestant(temps_restant);
-    afficherScore(1);
+    afficherScore(score);
     afficherBuffer();
 }
 
 void animerElements(float cycle) {
+    gererMalus();
+    if (compteur_bouclier > 0) {
+        obstacles[8].position.x = joueur->position.x;
+        obstacles[8].position.vx = joueur->position.vx;
+    } else {
+        obstacles[8].position.x = HORS_ZONE_JEU;
+    }
     Balle *balle = tete_balle;
     while (balle != NULL) {
         gererBalle(balle, cycle);
@@ -543,8 +543,8 @@ void animerElements(float cycle) {
         }
         objet = objet_suivant;
     }
-    ajouterBulleAleatoirement(&tete_bulle, niveau);
-//    mettreAJourBouclier();
+    ajouterBulleAleatoirement(&tete_bulle, niveau, cycle * facteur_apparition_bulle);
+    gererBouclier();
     reinitialiserArme(joueur);
     supprimerBallesHorsZone(&tete_balle);
 }
@@ -553,8 +553,8 @@ void initialiserListeBulle(int niveau) {
     srand((unsigned int)time(NULL));
     int nb_bulles;
     switch (niveau) {
-        case 1: nb_bulles = 5; break;
-        case 2: nb_bulles = 5; break;
+        case 1: nb_bulles = 3; break;
+        case 2: nb_bulles = 3; break;
         case 3: nb_bulles = 0; break;
         case 4: nb_bulles = 0; break;
         default: nb_bulles = 0; break;
@@ -562,6 +562,7 @@ void initialiserListeBulle(int niveau) {
 
     for (int i = 0; i < nb_bulles; i++) {
         Bulle *bulle = creerBulle(true, niveau);
+        //La partie est lancée dès qu'aucune bulle n'est en collision avec un obstacle.
         while (verifierInitialisationSansCollision(bulle) == false) {
            bulle = creerBulle(true, niveau);
         }
@@ -597,7 +598,9 @@ void initialiserArmes () {
 }
 
 void init() {
-    printf("Debut init\n");
+    score = 0;
+    compteur_bouclier = 0;
+    compteur_malus = 0;
     initialiserArmes();
     tete_bulle = NULL; //Initialisation de la liste de bulle (vide)
     tete_balle = NULL; // Initialisation de la liste de balle (vide)
@@ -655,33 +658,38 @@ void init() {
 
     srand(LISTE_SRAND_OBSTACLES[niveau - 1]); // A chaque niveau la disposition des obstacles dans la zone de jeu varie
     // Initialisation des quatre types d'obstacles différents à des positions aléatoires dans la zone de jeu
-    for (int i = 4; i < N_OBSTACLES; i++) {
+    for (int i = 4; i < 8; i++) {
         obstacles[i].position.x = 2*GRANDE_BULLE + rand() % (LARGEUR_ECRAN - obstacles[i].position.largeur - 4*GRANDE_BULLE); // permet que les obstacles soient éloignés du bord
         obstacles[i].position.y = rand() % 400; // permet que les obstacles soient éloignés du bord
     }
+    obstacles[8].position.x = (float)HORS_ZONE_JEU;
+    obstacles[8].position.y = (float)(ZONE_JEU_HAUTEUR - HAUTEUR_JOUEUR/2);
+    obstacles[8].position.largeur = LARGEUR_BOUCLIER;
+    obstacles[8].position.hauteur = HAUTEUR_BOUCLIER;
+
     initialiserListeBulle(niveau);
-    printf("Init terminee\n");
 }
 
 bool jeu(Bulle *bulle) {
     init();
-    //La partie est lancée dès qu'aucune bulle n'est en collision avec un obstacle.
     afficherElements();
     afficherDecompte();
     float temps_depart = temps_restant;
     joueur_touche_par_bulle = false;
     joueur_touche_par_eclair = false;
     clock_t t;
+    compteur_bouclier = 100;
 
     while (temps_restant > 0) {
         t = clock();
-        afficherElements();
-        animerElements(CYCLE);
         deplacementJoueur(joueur);
+        animerElements(CYCLE);
+        afficherElements();
         tirerBallesBombes(&tete_balle, joueur);
         if ((temps_restant <= temps_depart -TEMPS_JEU_MINIMUM) && (listeVide((void **)&tete_bulle) == true)) {
             return true;
         } else if (joueur_touche_par_bulle == true) { // Si la bulle touche le joueur, le joueur perd.
+            rest(500);
             return false;
         } else if (joueur_touche_par_eclair == true) { //Si le joueur touche un éclair, il perd.
             return false;
