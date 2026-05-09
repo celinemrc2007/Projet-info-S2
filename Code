@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <windows.h>
+//#include <windows.h>
+#include <allegro.h>
 
 #include "gestionListes.h"
 #include "gestionGraphique.h"
@@ -41,9 +42,10 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
             break;
         case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
             bulle->position.vx = 2,25*VITESSE_BULLE_BASE* cos(angle);
-            bulle->position.vx = 2,25*VITESSE_BULLE_BASE* sin(angle);
+            bulle->position.vy = 2,25*VITESSE_BULLE_BASE* sin(angle);
             break;
     }
+    if (bulle->position.vy > 0) bulle->position.vy = -bulle->position.vy;
 
     int rayon; // variable pour un choix aléatoire de rayon
     rayon = 1 + rand()%3;
@@ -73,7 +75,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
             bulle->position.x = bulle->rayon; // sur les bors à gauche
         else
             bulle->position.x = LARGEUR_ECRAN - bulle->rayon; // ou à droite
-        bulle->position.y = bulle->rayon + rand()%((600-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
+        bulle->position.y = bulle->rayon + rand()%((400-bulle->rayon)-bulle->rayon + 1); // position y entre 0+rayon (min) et 600-rayon (max)(elles n'apparaissent pas jusqu'en bas de l'écran pour des raisons de jouabilité)
     }
     bulle->boule_de_feu = false; // Par défaut, les bulles ne sont pas des boules de feu puisque cela n'arrive que lors du combat avec le boss.
     bulle->suivant = NULL;
@@ -125,7 +127,7 @@ void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus)
         break;
         case 3: temps = 6.0f;
         break;
-        case 4: temps = 5.0f*10;
+        case 4: temps = 5.0f;
         break;
         case 5: temps = 4.0f;
         break;
