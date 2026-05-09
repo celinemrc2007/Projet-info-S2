@@ -32,7 +32,7 @@ typedef struct position
     float vy;
     int largeur;
     int hauteur;
-}Position;
+} Position;
 
 typedef struct {
     Position position;
@@ -79,14 +79,17 @@ typedef struct balle
     int angle; //256 = 360 degrés
     bool bazuka;
     struct balle *suivant; // pointeur vers la structure balle suivante
-}Balle;
+} Balle;
 
 typedef struct boss
 {
     Position position; // position du boss
     int nb_tirs_recus; // nb_de_tirs_recus par le joueur
-}Boss;
+    float compteur_changement_vitesse;
+    float compteur_apparition_flamme;
+} Boss;
 
+extern float compteur_creation_bulle;
 
 //***************************** FONCTIONS *************************//
 
@@ -105,6 +108,7 @@ Objet *creerObjet(Bulle *bulle_contenant_objet);
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
 void supprimerObjet(Objet **tete, Objet *objet);
 int supprimerListeObjet(Objet **tete);
+Boss *creerBoss();
 bool listeVide(void **tete);
 
 #endif
