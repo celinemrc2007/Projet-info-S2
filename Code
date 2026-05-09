@@ -3,6 +3,8 @@
 
 #include "gestionListes.h"
 
+#define VITESSE_JOUEUR 500 // en pixels par seconde
+
 void deplacementJoueur(Joueur *joueur);
 void tirerBallesBombes(Balle **listeBalle, Joueur *joueur);
 
