@@ -469,3 +469,12 @@ void detruireSprites()
 		}
 	}
 }
+
+
+
+void afficherTexteGrand(int x, int y, int couleur, const char *texte)
+{
+    textprintf_centre_ex(screen, font, x,   y,   couleur, -1, "%s", texte);
+    textprintf_centre_ex(screen, font, x+1, y,   couleur, -1, "%s", texte);
+    textprintf_centre_ex(screen, font, x,   y+1, couleur, -1, "%s", texte);
+}
