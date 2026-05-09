@@ -199,6 +199,10 @@ void afficherDecompte(void)
 
 void afficherFondEcran(int niveau)
 {
+if (boss != NULL) {
+		blit(images[117], buffer, 0, 0, 0, 0, LARGEUR_ECRAN, HAUTEUR_ECRAN);
+		return;
+	}
 
 	switch (niveau)
 	{
