@@ -1,4 +1,5 @@
-// les ifndef et endif sont propres à vos fichiers dans CLion, donc on les met pas ici
+#ifndef PROGRAMMES_SAUVEGARDE_H
+#define PROGRAMMES_SAUVEGARDE_H
 
 
 #define FICHIER_SAUVEGARDE "sauvegarde.txt"
@@ -8,3 +9,4 @@
 void sauvegarderPartie(const char *pseudo, int niveau);
 int chargerPartie(const char *pseudo, int *niveau);
 int pseudoExiste(const char *pseudo);
+#endif //PROGRAMMES_SAUVEGARDE_H
