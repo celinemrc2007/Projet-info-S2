@@ -339,23 +339,6 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     return 1; // la liste est vide
 }
 
-Boss *creerBoss()
-{
-    Boss *boss = malloc(sizeof(Boss));
-    if (boss == NULL)
-    {
-        printf("Erreur allocation memoire.");
-        exit(1);
-    }
-    boss->position.x = LARGEUR_ECRAN/2; // au mileu de l'écran
-    boss->position.y = boss->position.hauteur/2; // en hait de l'écran
-    boss->position.largeur = (60/100)* LARGEUR_ECRAN;
-    boss->position.hauteur = (60/100)* HAUTEUR_ECRAN;
-    boss->position.vx = 0;
-    boss->position.vy = 0; // pas de vitesse initiale
-    boss->nb_tirs_recus = 0;
-    return boss;
-}
 
 bool listeVide(void **tete) {
     if (*tete == NULL) {
