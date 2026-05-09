@@ -19,13 +19,13 @@ int menu()
         afficherFondEcran(0);
         afficherBuffer();
         int noir = makecol(0,0,0);
-        int vert = makecol(0,255,150);
+        int vert = makecol(50,220,50);
 
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 150, noir, -1, "SUPER BULLES");
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 250, vert, -1, "1. REGLES");
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 300, vert, -1, "2. Nouvelle partie");
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 350, vert, -1, "3. Reprendre");
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 400, vert, -1, "4. Quitter");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 150, noir, -1, "SUPER BULLES");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 250, vert, -1, "1. Regles");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 300, vert, -1, "2. Nouvelle partie");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 350, vert, -1, "3. Reprendre");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 400, vert, -1, "4. Quitter");
 
         /* Lecture de la touche */
         int touche = readkey() & 0xff;
@@ -45,14 +45,16 @@ void saisirPseudo()
 
     memset(pseudo, 0, MAX_PSEUDO);
 
-    afficherFondEcran(0);
-    afficherBuffer();
-    textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(50,220,50), -1, "Entrez votre pseudo :");
-
     while (1)
     {
+        afficherFondEcran(0);
+        afficherBuffer();
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 200, makecol(50,220,50), -1, "Entrez votre pseudo :");
+
         /* Affichage du pseudo */
-        textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 260, makecol(0,0,0), -1, "%s_", pseudo);
+        char txt[51];
+        sprintf(txt, "%s_", pseudo);
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 260, makecol(0,0,0), -1, txt);
 
         touche = readkey() & 0xff;
 
@@ -60,15 +62,10 @@ void saisirPseudo()
         {
             break;
         }
-
-        else if (touche == 8 && longueur > 0) // Touche Effacer = 8 en ASCII
+        if (touche == 8 && longueur > 0) // Touche Effacer = 8 en ASCII
         {
             longueur--;
             pseudo[longueur] = '\0';
-
-            afficherFondEcran(0);
-            afficherBuffer();
-            textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 200, makecol(150,0,0), -1, "Entrez votre pseudo :");
         }
         /* Caractère normal */
         else if (longueur < MAX_PSEUDO - 1 && touche >= 32 && touche <= 126)
@@ -118,7 +115,7 @@ int main()
                 else
                 {
                 	clear_bitmap(screen);
-                    textprintf_centre_ex(screen, font, LARGEUR_ECRAN/2, 300, makecol(255,0,0), -1, "Aucune sauvegarde ");
+                    afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 300, makecol(255,0,0), -1, "Aucune sauvegarde ");
                     readkey();
                 }
                 break;
