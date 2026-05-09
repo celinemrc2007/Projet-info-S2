@@ -10,11 +10,11 @@
 
 #define GRAVITE 75.0  // unité : pixel/s²
 #define FROTTEMENT 0.01
-#define TEMPS_JEU_MINIMUM 5 // unité : seconde
+#define TEMPS_JEU_MINIMUM 30 // unité : seconde
 #define SQRT2_DIV_2 0.7071
 #define DIST_REBOND_RATIO 0.6  // Déformation limitée à 40 % en hauteur ou en largeur
 #define TEMPS_REBOND_2 (0.002)    // En s² A ajuster
-#define NB_SOUS_CYCLE 5
+#define NB_SOUS_CYCLE 5       // sans unité
 #define VITESSE_BULLE_MAX 500 // unité : pixel/s
 #define VITESSE_BALLE_BASE 500 // unité : pixel/s
 #define N_OBSTACLES 9 // Nombre d'obstacles (dont 4 obstacles fixes de bord d'écran et un bouclier considéré comme un obstacle)
@@ -175,11 +175,11 @@ void eclaterBulle(Bulle *bulle)
 void divisionBulleEnDeux(Bulle *bulle) {
     Bulle *bulle_1 = creerBulleClone(bulle);
     Bulle *bulle_2 = creerBulleClone(bulle);
-    bulle_1->position.vx += 200;
-    bulle_1->position.vy -= 200;
+    bulle_1->position.vx += 100;
+    bulle_1->position.vy -= 100;
     bulle_1->rayon = MOYENNE_BULLE;
-    bulle_2->position.vx -= 200;
-    bulle_2->position.vy -= 200;
+    bulle_2->position.vx -= 100;
+    bulle_2->position.vy -= 100;
     bulle_2->rayon = MOYENNE_BULLE;
     ajouterBulle(&tete_bulle, bulle_1);
     ajouterBulle(&tete_bulle, bulle_2);
@@ -189,14 +189,14 @@ void divisionBulleEnTrois(Bulle *bulle) {
     Bulle *bulle_1 = creerBulleClone(bulle);
     Bulle *bulle_2 = creerBulleClone(bulle);
     Bulle *bulle_3 = creerBulleClone(bulle);
-    bulle_1->position.vx += 200;
-    bulle_1->position.vy -= 200;
+    bulle_1->position.vx += 100;
+    bulle_1->position.vy -= 100;
     bulle_1->rayon = PETITE_BULLE;
-    bulle_2->position.vx -= 200;
-    bulle_2->position.vy -= 200;
+    bulle_2->position.vx -= 100;
+    bulle_2->position.vy -= 100;
     bulle_2->rayon = PETITE_BULLE;
     bulle_3->position.vx += 0;
-    bulle_3->position.vy -= 300;
+    bulle_3->position.vy -= 150;
     bulle_3->rayon = PETITE_BULLE;
 
     ajouterBulle(&tete_bulle, bulle_1);
@@ -223,6 +223,21 @@ void gererBulle(Bulle *bulle, Joueur *joueur, float cycle) {
         }
         // Effet de gravité sur les bulles
         bulle->position.vy += GRAVITE*cycle;
+
+        // Envol de la bulle si pres du sol
+        if ((bulle->position.y + bulle->rayon > ZONE_JEU_HAUTEUR - 200) &&
+            (bulle->position.vy < 30)) {
+            float dvx = bulle->position.vy;
+            float dvy = -bulle->position.vx;
+            if (bulle->position.vx > 10) {
+                bulle->position.vx += dvx * cycle / 2;
+                bulle->position.vy += dvy * cycle / 2;
+            }
+            if (bulle->position.vx < -10) {
+                bulle->position.vx += dvx * cycle / 2;
+                bulle->position.vy -= dvy * cycle / 2;
+            }
+        }
         // Frottement
        // bulle->position.vx -= FROTTEMENT * cycle * bulle->position.vx;
         //bulle->position.vy -= FROTTEMENT * cycle * bulle->position.vy;
@@ -396,7 +411,6 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
 }
 
 void supprimerBoss() {
-    detruireSprites();
     if (boss == NULL) return;
     free(boss);
     boss = NULL;
