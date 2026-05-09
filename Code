@@ -7,8 +7,9 @@
 
 extern char pseudo[MAX_PSEUDO];
 extern int niveau;
-/*extern bool bouclier_actif;
-extern float bouclier_timer;*/
+extern float compteur_bouclier;
+extern float compteur_malus;
+extern int facteur_apparition_bulle;
 
 /* ===== FONCTIONS ===== */
 
@@ -33,13 +34,12 @@ void gererVictoirePartie();
 void gererBoss (Boss *boss, Joueur *joueur);
 
 /* Gère le bonus au niveau 5 */
-void bonusBouclier ();
+void activerBouclier();
+void gererBouclier ();
 void afficherBouclier();
-void mettreAJourBouclier();
 
 /* Gère le malus au niveau 5 */
-void malusMultiplication ();
-
-
+void activerMalus();
+void gererMalus ();
 
 #endif
