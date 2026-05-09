@@ -152,6 +152,9 @@ void gererVictoirePartie() {
     finNiveau();
 }
 
+
+/* ============== GESTION DU BOSS =========== */
+
 void changerVitesseBoss (Boss *boss) {
     float vitesse = VITESSE_INITIALE + (VITESSE_FINALE - VITESSE_INITIALE) *
             boss->nb_tirs_recus/NB_MAX_TIRS_RECUS;
@@ -213,6 +216,8 @@ void gererBoss (Boss *boss, Joueur *joueur, Balle *tete_balle, float cycle) {
         joueur_touche_par_boss = true;
     }
 }
+
+/* ==================== EXTENSIONS ==================== */
 
 void activerBouclier() {
     compteur_bouclier = TEMPS_OBJET_SUR_JOUEUR;
