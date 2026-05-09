@@ -5,8 +5,11 @@
 
 #include "gestionListes.h"
 #include "gestionGraphique.h"
+#include "gestionNiveaux.h"
 #define VITESSE_OBJET 150
 #define VITESSE_BULLE_BASE 100
+
+float compteur_creation_bulle;
 
 Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
 {
@@ -19,7 +22,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
     double angle = rand()%1000 + 1; // angle compris entre 1 et 1000
     switch (niveau)
     {
-        case 1: bulle->objet = rand () % 3 + 5;  // Toutes les bulles sont vides.
+        case 1: bulle->objet = rand () % 1;  // Toutes les bulles sont vides.
             bulle->position.vx = VITESSE_BULLE_BASE* cos(angle);
             bulle->position.vy = VITESSE_BULLE_BASE* sin(angle);
             break;
@@ -86,6 +89,7 @@ Bulle *creerBulleClone(Bulle *original) {
     }
     bulle->position = original->position;
     bulle->objet = 0;
+    bulle->boule_de_feu = original->boule_de_feu;
     bulle->suivant = NULL;
     return bulle;
 }
@@ -109,30 +113,29 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 
 void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus)
 {
-    // on cherche à calculer une probabilité d'apparition par fréquence d'images (FPS)
-    int probabilite = rand()%((int)(4000/cycle_avec_malus)); // variable aléatoire entre 0 et 100
-    int seuil;
+    compteur_creation_bulle -= cycle_avec_malus;
+    if (compteur_creation_bulle > 0) return;
+
+    float temps; // temps moyen pour nouvell bulle
     switch (niveau)
     {
-        case 1: seuil = 300;
+        case 1: temps = 10.0f;
         break;
-        case 2: seuil = 500;
+        case 2: temps = 8.0f;
         break;
-        case 3: seuil = 800;
+        case 3: temps = 6.0f;
         break;
-        case 4: seuil = 1100;
+        case 4: temps = 5.0f*10;
         break;
-        case 5: seuil = 1500;
+        case 5: temps = 4.0f;
         break;
-        default: seuil = 300;
+        default: temps = 10.0f;
     }
-    if (probabilite < seuil) // on ne depasse pas le seuil de chaque niveau
-    {
-        // creation bulle
-        Bulle *nouvelle = creerBulle(false, niveau);
-        // insertion en tête de liste
-        ajouterBulle(tete,nouvelle);
-    }
+    compteur_creation_bulle = temps * (rand () % 400 + 800) / 1000;
+    // creation bulle
+    Bulle *nouvelle = creerBulle(false, niveau);
+    // insertion en tête de liste
+    ajouterBulle(tete,nouvelle);
 }
 
 
@@ -339,6 +342,23 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     return 1; // la liste est vide
 }
 
+Boss *creerBoss()
+{
+    Boss *boss = malloc(sizeof(Boss));
+    if (boss == NULL)
+    {
+        printf("Erreur allocation memoire.");
+        exit(1);
+    }
+    boss->position.largeur = (40/100)* LARGEUR_ECRAN;
+    boss->position.hauteur = (25/100)* HAUTEUR_ECRAN;
+    boss->position.x = LARGEUR_ECRAN/2; // au mileu de l'écran
+    boss->position.y = boss->position.hauteur/2; // en hait de l'écran
+    boss->nb_tirs_recus = 0;
+    boss->compteur_apparition_flamme = 3.0f;
+    changerVitesseBoss(boss);
+    return boss;
+}
 
 bool listeVide(void **tete) {
     if (*tete == NULL) {
