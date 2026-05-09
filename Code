@@ -148,17 +148,36 @@ void reinitialiserArme(Joueur *joueur)
     }
 }
 
+
+
 void eclaterBulle(Bulle *bulle)
 {
     if (bulle == NULL) return;
 
-    /* Si la bulle contient un objet, on le crée */
-    if (bulle->objet != 0)
+    /* Score selon la taille */
+    switch (bulle->rayon)
     {
+        case PETITE_BULLE:
+            score += 300;
+            break;
+
+        case MOYENNE_BULLE:
+            score += 200;
+            break;
+
+        case GRANDE_BULLE:
+            score += 100;
+            break;
+    }
+
+    if (bulle->objet != 0) {
         ajouterObjet(&tete_objet, creerObjet(bulle));
     }
+
     supprimerBulle(&tete_bulle, bulle);
 }
+
+
 
 void divisionBulleEnDeux(Bulle *bulle) {
     Bulle *bulle_1 = creerBulleClone(bulle);
