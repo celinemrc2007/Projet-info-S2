@@ -9,7 +9,6 @@ extern Arme armes[N_ARMES];
 extern float temps_restant;
 extern Joueur *joueur;
 extern Bulle *tete_bulle;
-extern int score;
 
 //******************************* FONCTIONS **************************//
 bool verifierInitialisationSansCollision(Bulle *bulle);
