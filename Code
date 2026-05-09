@@ -34,5 +34,6 @@ void afficherScore(int score);
 void afficherBalle(Balle *liste);
 void afficherTempsRestant(int temps_restant);
 void detruireSprites();
+void afficherTexteGrand(int x, int y, int couleur, const char *texte);
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
