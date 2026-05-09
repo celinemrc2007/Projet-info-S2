@@ -6,18 +6,21 @@
 
 #define ECART_BALLES_ARME3 HAUTEUR_ECRAN/20
 
+
 float temps_recharge_arme;
 
 void deplacementJoueur(Joueur *joueur)
 {
+    joueur->position.vx = 0;
     if (key[KEY_LEFT])
     {
-        joueur->position.x -= 20; // à chaque clic sur flèche, le perso se deplace de 10 pixels
+        joueur->position.vx = -VITESSE_JOUEUR;
     }
     if (key[KEY_RIGHT])
     {
-        joueur->position.x += 20;
+        joueur->position.vx = VITESSE_JOUEUR;
     }
+    joueur->position.x += joueur->position.vx * CYCLE;
     // limites de deplacement du joueur, le joueur ne dépasse pas les bords
     if (joueur->position.x < joueur->position.largeur/2) joueur->position.x = joueur->position.largeur/2;
     if (joueur->position.x > LARGEUR_ECRAN - joueur->position.largeur/2) joueur->position.x = LARGEUR_ECRAN - (joueur->position.largeur)/2;
