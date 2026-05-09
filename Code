@@ -19,7 +19,7 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
     double angle = rand()%1000 + 1; // angle compris entre 1 et 1000
     switch (niveau)
     {
-        case 1: bulle->objet = rand () % 6;  // Toutes les bulles sont vides.
+        case 1: bulle->objet = rand () % 3 + 5;  // Toutes les bulles sont vides.
             bulle->position.vx = VITESSE_BULLE_BASE* cos(angle);
             bulle->position.vy = VITESSE_BULLE_BASE* sin(angle);
             break;
@@ -107,26 +107,26 @@ Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau) // ajout en début de liste
 }
 
 
-void ajouterBulleAleatoirement(Bulle **tete, int niveau)
+void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus)
 {
     // on cherche à calculer une probabilité d'apparition par fréquence d'images (FPS)
-    int proba = rand()%1000; // variable aléatoire entre 0 et 100
+    int probabilite = rand()%((int)(4000/cycle_avec_malus)); // variable aléatoire entre 0 et 100
     int seuil;
     switch (niveau)
     {
-        case 1: seuil = 3; // 3% de chance d'apparition par image
+        case 1: seuil = 300;
         break;
-        case 2: seuil = 5;
+        case 2: seuil = 500;
         break;
-        case 3: seuil = 8;
+        case 3: seuil = 800;
         break;
-        case 4: seuil = 11;
+        case 4: seuil = 1100;
         break;
-        case 5: seuil = 15;
+        case 5: seuil = 1500;
         break;
-        default: seuil = 3;
+        default: seuil = 300;
     }
-    if (proba < seuil) // on ne depasse pas le seuil de chaque niveau
+    if (probabilite < seuil) // on ne depasse pas le seuil de chaque niveau
     {
         // creation bulle
         Bulle *nouvelle = creerBulle(false, niveau);
@@ -275,11 +275,11 @@ Objet *creerObjet(Bulle *bulle_contenant_objet)
     }
     objet->type = bulle_contenant_objet->objet;
     objet->position = bulle_contenant_objet->position; // l'objet est crée au meme endroit où il tombe de la bulle
-    objet->position.hauteur = (5/100)*HAUTEUR_ECRAN;
-    objet->position.largeur = (5/100)*HAUTEUR_ECRAN; // taille arme
+    objet->position.hauteur = HAUTEUR_ECRAN*5/100;
+    objet->position.largeur = LARGEUR_ECRAN*5/100; // taille arme
     objet->position.vx = 0;
     objet->position.vy = VITESSE_OBJET; // objet descend verticalement
-    objet->duree_restante = TEMPS_OBJET_AU_SOL; // ils ne restent que 10 sec à l'ecran
+    objet->duree_restante = TEMPS_OBJET_AU_SOL;
     objet->suivant = NULL;
     return objet; // on retourne l'adresse de l'objet créé
 }
@@ -339,14 +339,6 @@ int supprimerListeObjet(Objet **tete) // supression du dernier objet au premier
     return 1; // la liste est vide
 }
 
-bool listeVide(void **tete) {
-    if (*tete == NULL) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 Boss *creerBoss()
 {
     Boss *boss = malloc(sizeof(Boss));
@@ -363,4 +355,12 @@ Boss *creerBoss()
     boss->position.vy = 0; // pas de vitesse initiale
     boss->nb_tirs_recus = 0;
     return boss;
+}
+
+bool listeVide(void **tete) {
+    if (*tete == NULL) {
+        return true;
+    } else {
+        return false;
+    }
 }
