@@ -22,6 +22,7 @@
 #define HAUTEUR_JOUEUR 156 // pixels
 #define LARGEUR_JOUEUR 100 // pixels
 
+int score = 0
 int LISTE_SRAND_OBSTACLES[5] = {0, 2, 5, 8, 12};
 float temps_restant;
 float compteur_objet;
