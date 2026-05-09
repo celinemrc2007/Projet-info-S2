@@ -132,13 +132,26 @@ void gererVictoirePartie() {
     menu();
 }
 
-void gererBoss (Boss *boss, Joueur *joueur) {
+void gererBoss (Joueur *joueur)
+{
+    Boss *boss = creerBoss();
+    Bulle *feu = creerBulle(false, 4); // creation d'une boule de feu
+    feu->boule_de_feu = true; // la bulle devient une boule de feu
+
     while (boss->nb_tirs_recus == (boss->nb_tirs_recus)++) {
+        afficherBoss(joueur);
         Bulle *ajouterBulle (Bulle **tete, Bulle *nouveau);
     }
-        // à ajouter : si collision entre le joueur et le boss, appeler gererEchecNiveau
-    int direction = rand() % 4;
+    if (boss->nb_tirs_recus >= 30) {
+        // animation boss meurt
+        afficherSprite(boss->position.x, boss->position.y, 93);
+        afficherSprite(boss->position.x, boss->position.y, 94);
+        afficherSprite(boss->position.x, boss->position.y, 95);
+        afficherSprite(boss->position.x, boss->position.y, 96);
+        //afficherVictoireNiveau;
+    }
 
+    int direction = rand() % 2; // son deplacement est aléatoire horizontalement
     switch(direction) {
         case 0: // à droite
             boss->position.x += 10;
@@ -148,13 +161,13 @@ void gererBoss (Boss *boss, Joueur *joueur) {
             boss->position.x -= 10;
             break;
 
-        case 2: // en bas
-            boss->position.y += 10;
-            break;
+        //case 2: // en bas
+            //boss->position.y += 10;
+            //break;
 
-        case 3: // en haut
-            boss->position.y -= 10;
-            break;
+        //case 3: // en haut
+            //boss->position.y -= 10;
+            //break;
     }
 }
 
