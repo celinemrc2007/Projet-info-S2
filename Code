@@ -57,7 +57,8 @@ typedef struct bulle
     struct bulle *suivant; // pointeur vers la structure bulle suivante
 } Bulle;
 
-//Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie.
+//Les obstacles présents dans la zone de jeu ne seront pas alloués dynamiquement 
+//mais seront stockés dans un tableau statique puisque leurs positions ne varient pas durant la partie.
 // Structure Obstacle
 typedef struct obstacle {
     Position position;
@@ -91,24 +92,58 @@ typedef struct boss
 
 extern float compteur_creation_bulle;
 
-//***************************** FONCTIONS *************************//
+/* ======= FONCTIONS =======*/
 
+/* Allocatiion dynamique d'une structure bulle et initialisation de ses paramètres */
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
+
+/* A quoi ça sert */
 Bulle *creerBulleClone(Bulle *original);
+
+/* Insertion d'une bulle en tête de liste */
 Bulle *ajouterBulle(Bulle **tete, Bulle *nouveau);
+
+/* Définition d'une probabilité d'apparition des bulles de plus en plus élévée en fonction du niveau */
 void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus);
+
+/* Supression de n'importe quelle bulle dans la liste */
 void supprimerBulle( Bulle **tete, Bulle *bulle);
+
+/* Supression de la liste de bulles */ 
 int supprimerListeBulle(Bulle **tete);
+
+/* Allocation dynamique d'une structure balle et initialisation de ses paramètres */
 Balle *creerBalle(float x, float y, float vx, float vy, bool balle_bazuka, int angle);
+
+/* Insertion d'une balle en tête de liste */
 Balle *ajouterBalle(Balle **tete, Balle *nouveau);
+
+/* Supression de n'importe quelle balle dans la liste */
 void supprimerBalle(Balle **tete, Balle *balle);
+
+/* Supression des balles sortant de la zone de jeu */
 void supprimerBallesHorsZone(Balle **tete);
+
+/* Supression de la liste de balles */
 int supprimerListeBalle(Balle **tete);
+
+/* Allocation dynamique d'une structure objet et initialisation de ses parapètres */
 Objet *creerObjet(Bulle *bulle_contenant_objet);
+
+/* Insertion d'un objet en tête de liste */
 Objet *ajouterObjet(Objet **tete, Objet *nouveau);
+
+/* Supression de n'importe quel objet dans la liste */
 void supprimerObjet(Objet **tete, Objet *objet);
+
+/* Supression de la liste d'objets */
 int supprimerListeObjet(Objet **tete);
+
+/* Allocation dynamique d'une structure boss et initialisatiion de ses paramètres */
 Boss *creerBoss();
+
+/* Vérification qu'une liste est vide ou non */
 bool listeVide(void **tete);
+
 
 #endif
