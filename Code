@@ -49,12 +49,12 @@ void saisirPseudo()
     {
         afficherFondEcran(0);
         afficherBuffer();
-        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 200, makecol(50,220,50), -1, "Entrez votre pseudo :");
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 300, makecol(50,220,50), -1, "Entrez votre pseudo :");
 
         /* Affichage du pseudo */
         char txt[51];
         sprintf(txt, "%s_", pseudo);
-        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 260, makecol(0,0,0), -1, txt);
+        afficherTexteCentre(screen, font, LARGEUR_ECRAN/2, 360, makecol(0,0,0), -1, txt);
 
         touche = readkey() & 0xff;
 
