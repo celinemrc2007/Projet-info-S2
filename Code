@@ -5,8 +5,21 @@
 #define FICHIER_SAUVEGARDE "sauvegarde.txt"
 #define MAX_PSEUDO 50
 
-//********************************** FONCTIONS *****************************//
+/*
+Format du fichier texte (1 sauvegarde par ligne)
+pseudo;niveau
+ex: Alice;3
+*/
+
+/* ======== FONCTIONS =======*/
+
+/* Enregistrement des données d'une partie dans un fichier texte */
 void sauvegarderPartie(const char *pseudo, int niveau);
+
+/* Récupération des données dans le fichier texte */
 int chargerPartie(const char *pseudo, int *niveau);
+
+/* Vérification de la validité du pseudonyme */
 int pseudoExiste(const char *pseudo);
+
 #endif //PROGRAMMES_SAUVEGARDE_H
