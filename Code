@@ -1,7 +1,12 @@
 #ifndef PROGRAMMES_PRINCIPAL_H
 #define PROGRAMMES_PRINCIPAL_H
 
+/* ======= FONCTIONS ======= */
+
+/* Affichage du menu et lecture choix utilisateur */
 int menu();
+
+/* Affichage de la saisi pseudo et lecteur clavier */
 void saisirPseudo();
 
 #endif //PROGRAMMES_PRINCIPAL_H
