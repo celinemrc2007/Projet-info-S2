@@ -97,7 +97,7 @@ extern float compteur_creation_bulle;
 /* Allocatiion dynamique d'une structure bulle et initialisation de ses paramètres */
 Bulle *creerBulle(bool ApparitionDebutJeu, int niveau);
 
-/* A quoi ça sert */
+/* Garder en mémoire les paramètres de la bulle avant division */
 Bulle *creerBulleClone(Bulle *original);
 
 /* Insertion d'une bulle en tête de liste */
@@ -109,7 +109,7 @@ void ajouterBulleAleatoirement(Bulle **tete, int niveau, float cycle_avec_malus)
 /* Supression de n'importe quelle bulle dans la liste */
 void supprimerBulle( Bulle **tete, Bulle *bulle);
 
-/* Supression de la liste de bulles */ 
+/* Supression de la liste de bulles */
 int supprimerListeBulle(Bulle **tete);
 
 /* Allocation dynamique d'une structure balle et initialisation de ses paramètres */
@@ -144,6 +144,5 @@ Boss *creerBoss();
 
 /* Vérification qu'une liste est vide ou non */
 bool listeVide(void **tete);
-
 
 #endif
