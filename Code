@@ -13,28 +13,28 @@ extern Boss *boss;
 extern Bulle *tete_bulle;
 
 //******************************* FONCTIONS **************************//
-bool verifierInitialisationSansCollision(Bulle *bulle);
-void gererBulle(Bulle *bulle, Joueur *joueur, float cycle);
-void gererBalle(Balle *tete, float cycle);
-void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle);
-void afficherBoss (Boss *boss);
-void supprimerBoss();
-void afficherObjet(Position *position, int type);
-void afficherElements();
-void animerElements(float cycle);
-void initialiserArmes ();
-void init();
-bool jeu();
-void collisionJoueurObjet(Objet *objet, Joueur *joueur);
-void collisionBulleBalle(Bulle *bulle);
-bool detecterCollision(Position *pos1, Position *pos2);
-bool detecterCollisionBulle(Bulle *bulle, Position *pos2);
-void eclaterBulle(Bulle *bulle);
-void reinitialiserArme(Joueur *joueur);
-void initialiserListeBulle(int niveau);
-void divisionBulleEnDeux(Bulle *bulle);
-void divisionBulleEnTrois(Bulle *bulle);
-void collisionBulleBord(Bulle *bulle);
+bool verifierInitialisationSansCollision(Bulle *bulle); //vérifie qu'une bulle venant d'être créée ne chevauche pas d'obstacles
+void gererBulle(Bulle *bulle, Joueur *joueur, float cycle); // met à jour une bulle pour un frame : gère la gravité, le déplacement, les rebonds et les collisions
+void gererBalle(Balle *tete, float cycle); // met à jour la position des balles de la liste et les envoie hors zones si elles touchent un obstacle
+void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle); // gère le rebond d'une bulle contre un obstacle 
+void afficherBoss (Boss *boss); // affiche les sprites du boss 
+void supprimerBoss(); // libère la mémoire du boss : supprime les sprites du boss à l'écran
+void afficherObjet(Position *position, int type); //affiche les sprites correspondant à l'objet demandé et fais le lien entre le int et le num du sprite
+void afficherElements(); // dessine un frame complet : fond d'écran, joueur, bouclier, bulles, balles etc
+void animerElements(float cycle); // met à jour tous les éléments du jeu pour un frame 
+void initialiserArmes (); // remplit le tableau global armes[] avec toutes les caractéristiques de chaque arme
+void init(); // initialise tout le jeu pour un niveau
+bool jeu(); // boucle principal, appelle init() puis tourne jusqu'a ce que le temps soit écoulé
+void collisionJoueurObjet(Objet *objet, Joueur *joueur); // applique l'effet de l'objet que le joueur ramasse
+void collisionBulleBalle(Bulle *bulle); // appelle selon le type de bulle et d'armes : divisionBulleEnDeux, divisionBulleEnTrois et eclaterBulle
+bool detecterCollision(Position *pos1, Position *pos2); // detecte la collision entre deux rectangles en comparant les bords des deux
+bool detecterCollisionBulle(Bulle *bulle, Position *pos2); // detecte la collision entre une bulle et un rectangle
+void eclaterBulle(Bulle *bulle); // supprime la bulle de la liste et ajoute les points au score selon sa taille
+void reinitialiserArme(Joueur *joueur); // décrémente le compteur de durée de l'arme active
+void initialiserListeBulle(int niveau); // crée les bulles de départ d'un niveau 
+void divisionBulleEnDeux(Bulle *bulle); // divise une grande bulle en deux moyennes (clones) avec un rayon MOYENNE_BULLE et des vitesses différentes 
+void divisionBulleEnTrois(Bulle *bulle); // divise une moyenne bulle en trois petites avec un rayon PETITE_BULLE et des vitesses différentes
+void collisionBulleBord(Bulle *bulle); 
 
 
 #endif //PROGRAMMES_LOGIQUEJEU_H
