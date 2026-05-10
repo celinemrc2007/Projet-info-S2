@@ -10,7 +10,7 @@
 
 #define GRAVITE 75.0  // unité : pixel/s²
 #define FROTTEMENT 0.01
-#define TEMPS_JEU_MINIMUM 30 // unité : seconde
+#define TEMPS_JEU_MINIMUM 25 // unité : seconde
 #define SQRT2_DIV_2 0.7071
 #define DIST_REBOND_RATIO 0.6  // Déformation limitée à 40 % en hauteur ou en largeur
 #define TEMPS_REBOND_2 (0.002)    // En s² A ajuster
@@ -67,6 +67,7 @@ bool detecterCollision(Position *pos1, Position *pos2)
 }
 
 bool detecterCollisionBulle(Bulle *bulle, Position *pos2) {
+    // Différence de position rectangle/bulle
     float dx = bulle->position.x - pos2->x;
     float dy = bulle->position.y - pos2->y;
     float coin_x = (float)pos2->largeur/2;
@@ -78,10 +79,11 @@ bool detecterCollisionBulle(Bulle *bulle, Position *pos2) {
     if (dy >  coin_y + (float)bulle->rayon) return false; // pas de contact
     if (dy < -coin_y - (float)bulle->rayon) return false; // pas de contact
 
+    // Collision certaine sur bord horizontal ou vertical
     if ((dx >= -coin_x) && (dx <= coin_x)) return true;
     if ((dy >= -coin_y) && (dy <= coin_y)) return true;
 
-    // Décalage vers le coin
+    // Décalage vers le coin pour tester la collision en coin
     dx1 = dx;
     dy1 = dy;
     if (dx1 > 0) dx1 -=  coin_x;
@@ -298,47 +300,51 @@ void gererBalle(Balle *tete, float cycle) {
 }
 
 void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
-        float dx = bulle->position.x - obstacle->position.x;
-        float dy = bulle->position.y - obstacle->position.y;
-        float coin_x = (float)obstacle->position.largeur/2;
-        float coin_y = (float)obstacle->position.hauteur/2;
-        float rayon = (float)bulle->rayon;
-        float c, s; // Cosinus et sinus de l'accélération vers l'extérieur de l'obstacle
-        float dx1, dy1, r;
+    // Différence de position obstacle/bulle
+    float dx = bulle->position.x - obstacle->position.x;
+    float dy = bulle->position.y - obstacle->position.y;
+    // Position du coin (inférieur, droit)
+    float coin_x = (float)obstacle->position.largeur/2;
+    float coin_y = (float)obstacle->position.hauteur/2;
+    float rayon = (float)bulle->rayon;
+    float c, s; // Cosinus et sinus de l'accélération vers l'extérieur de l'obstacle
+    float dx1, dy1, r;
 
-        if (dx >  coin_x + rayon) return; // pas de contact
-        if (dx < -coin_x - rayon) return; // pas de contact
-        if (dy >  coin_y + rayon) return; // pas de contact
-        if (dy < -coin_y - rayon) return; // pas de contact
+    if (dx >  coin_x + rayon) return; // pas de contact
+    if (dx < -coin_x - rayon) return; // pas de contact
+    if (dy >  coin_y + rayon) return; // pas de contact
+    if (dy < -coin_y - rayon) return; // pas de contact
 
-        if ((dx >= -coin_x) && (dx <= coin_x)) {
-            c = 0;
-            if (dy >= 0) {
-                s = 1; // Accélération vers le bas
-            } else {
-                s = -1; // Accélération vers le haut
-            }
-        } else if ((dy >= -coin_y) && (dy <= coin_y)) {
-            s = 0;
-            if (dx >= 0) {
-                c = 1; // Accélération vers la droite
-                //printf("c=1 dx=%f\n", dx);
-            } else {
-                c = -1; // Accélération vers la gauche
-            }
-        } else { // Cas du contact en coin
-            // Décalage vers le coin
-            dx1 = dx;
-            dy1 = dy;
-            if (dx1 > 0) dx1 -=  coin_x;
-            if (dx1 < 0) dx1 -= -coin_x;
-            if (dy1 > 0) dy1 -=  coin_y;
-            if (dy1 < 0) dy1 -= -coin_y;
-            r = sqrtf(dx1*dx1 + dy1*dy1);
-            if (r >= rayon) return; // pas de contact
-            c = dx1/r;
-            s = dy1/r;
+    if ((dx >= -coin_x) && (dx <= coin_x)) {
+        // Cas du contact horizontal
+        c = 0;
+        if (dy >= 0) { // Cas du contact horizontal bas de l'obstacle
+            s = 1; // Accélération vers le bas
+        } else {  // Cas du contact horizontal haut de l'obstacle
+            s = -1; // Accélération vers le haut
         }
+    } else if ((dy >= -coin_y) && (dy <= coin_y)) {
+        // Cas du contact vertical
+        s = 0;
+        if (dx >= 0) { // Cas du contact horizontal droit de l'obstacle
+            c = 1; // Accélération vers la droite
+        } else {  // Cas du contact horizontal gauche de l'obstacle
+            c = -1; // Accélération vers la gauche
+        }
+    } else { // Cas du contact en coin
+        // Décalage vers le coin
+        dx1 = dx;
+        dy1 = dy;
+        if (dx1 > 0) dx1 -=  coin_x;
+        if (dx1 < 0) dx1 -= -coin_x;
+        if (dy1 > 0) dy1 -=  coin_y;
+        if (dy1 < 0) dy1 -= -coin_y;
+        r = sqrtf(dx1*dx1 + dy1*dy1);
+        if (r >= rayon) return; // pas de contact
+        // Direction d'accélération en biais : vecteur (dx1, dy1). Calcul du cosinus et du sinus:
+        c = dx1/r;
+        s = dy1/r;
+    }
 
     // Rebond pour éviter une déformation trop grande
     float c2 = c*c;
@@ -346,16 +352,16 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
     float rebond_x = coin_x + rayon * DIST_REBOND_RATIO;
     float rebond_y = coin_y + rayon * DIST_REBOND_RATIO;
     if ((dx > -rebond_x) && (dx < rebond_x) && (dy > -rebond_y) && (dy < rebond_y)) {
-        //printf("Rebond vx=%f vy=%f\n", bulle->position.vx, bulle->position.vy);
+        // Calcul de l'abscisse et l'ordonnée de la ligne de rebond
         if (dx < 0) rebond_x = -rebond_x;
         if (dy < 0) rebond_y = -rebond_y;
         if ((c2 >= s2) && (bulle->position.vx * c < 0)) { // Rebond en x
-            dx = 2 * rebond_x - dx;
+            dx = 2 * rebond_x - dx; // Position symétrique par rapport à la droite x = rebond_x
             bulle->position.x = obstacle->position.x + dx;
             bulle->position.vx = -bulle->position.vx;
         }
         if ((s2 > c2) && (bulle->position.vy * s < 0)) { // Rebond en y
-            dy = 2 * rebond_y - dy;
+            dy = 2 * rebond_y - dy; // Position symétrique par rapport à la droite y = rebond_y
             bulle->position.y = obstacle->position.y + dy;
             bulle->position.vy = -bulle->position.vy;
         }
@@ -386,19 +392,19 @@ void rebondBulleObstacle(Bulle *bulle, const Obstacle *obstacle, float cycle) {
         s = dy1/r;
         c2 = c*c;
         s2 = s*s;
-        if (c2 >= s2) {
+        if (c2 >= s2) { // Déformation en largeur
             h = rayon + (fabsf(c) - 1) * (rayon - r) / (1 - SQRT2_DIV_2);
             l = r * fabsf(c) / sqrtf(1 - s2 * r * r / h / h);
             deformation = rayon - h;
-        } else {
+        } else {  // Déformation en hauteur
             l = rayon + (fabsf(s) - 1) * (rayon - r) / (1 - SQRT2_DIV_2);
             h = r * fabsf(s) / sqrtf(1 - c2 * r * r / l / l);
             deformation = rayon - l;
         }
-        //printf("c=%f s=%f r=%f l=%f h=%f\n",c,s,r,l,h);
         bulle->position.largeur = (int) (2*l);
         bulle->position.hauteur = (int) (2*h);
     }
+    // Accélération due à la déformation de la bulle
     bulle->position.vx += deformation * c * cycle / TEMPS_REBOND_2;
     bulle->position.vy += deformation * s * cycle / TEMPS_REBOND_2;
 
@@ -688,6 +694,9 @@ bool jeu() {
     //compteur_bouclier = 100;
 
     while (temps_restant > 0) {
+        if (boss != NULL) {
+            printf("tirs : %d\n", boss->nb_tirs_recus);
+        }
         t = clock();
         deplacementJoueur(joueur);
         animerElements(CYCLE);
