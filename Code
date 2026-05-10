@@ -161,42 +161,40 @@ void chargerSprites () {
 		}
 }
 
-
-
 void afficherTexte(BITMAP *bmp_dest, FONT *f, int x, int y, int couleur, int ratio_zoom, const char *texte) {
 	int largeur_normale = text_length(f, texte);
 	int hauteur_normale = text_height(f);
 
-	if (largeur_normale <= 0) return; // Sécurité si texte vide
+	if (largeur_normale <= 0) return; // Si le texte est vide, on sort.
 
 	BITMAP *temp_buffer = create_bitmap(largeur_normale, hauteur_normale);
 	clear_to_color(temp_buffer, makecol(255, 0, 255));
-	textout_ex(temp_buffer, f, texte, 0, 0, couleur, -1);
+	textout_ex(temp_buffer, f, texte, 0, 0, couleur, -1); // On écrit le texte dans un buffer temporaire.
 	int nouvelle_largeur = largeur_normale * 2;
 	int nouvelle_hauteur = hauteur_normale * 2;
 	masked_stretch_blit(temp_buffer, bmp_dest,
-						0, 0, largeur_normale, hauteur_normale, // Source (tout le buffer)
-						x, y, nouvelle_largeur, nouvelle_hauteur // Dest (position x,y, taille zoomée)
+						0, 0, largeur_normale, hauteur_normale, // On copie le buffer dans une nouvelle bitmap deux fois plus grande.
+						x, y, nouvelle_largeur, nouvelle_hauteur 
 					   );
-	destroy_bitmap(temp_buffer);
+	destroy_bitmap(temp_buffer); // On détruit le buffer temporaire.
 }
 
 void afficherTexteCentre(BITMAP *bmp_dest, FONT *f, int x, int y, int couleur, int ratio_zoom, const char *texte) {
-	if (ratio_zoom == -1) ratio_zoom = 3;  // par défaut
+	if (ratio_zoom == -1) ratio_zoom = 3;  // Le texte sera trois fois plus grand.
 	int largeur_normale = text_length(f, texte);
 	int hauteur_normale = text_height(f);
 
 	if (largeur_normale <= 0) return;
 	BITMAP *temp_buffer = create_bitmap(largeur_normale, hauteur_normale);
 	clear_to_color(temp_buffer, makecol(255, 0, 255));
-	textout_ex(temp_buffer, f, texte, 0, 0, couleur, -1);
+	textout_ex(temp_buffer, f, texte, 0, 0, couleur, -1); // On écrit le texte dans un buffer temporaire.
 	int nouvelle_largeur = largeur_normale * ratio_zoom;
 	int nouvelle_hauteur = hauteur_normale * ratio_zoom;
 	masked_stretch_blit(temp_buffer, bmp_dest,
-						0, 0, largeur_normale, hauteur_normale, // Source (tout le buffer)
-						x-nouvelle_largeur/2, y, nouvelle_largeur, nouvelle_hauteur // Dest (position x,y, taille zoomée)
-					   );
-	destroy_bitmap(temp_buffer);
+						0, 0, largeur_normale, hauteur_normale, 
+						x-nouvelle_largeur/2, y, nouvelle_largeur, nouvelle_hauteur 
+					   ); // On copie le buffer dans une nouvelle bitmap deux fois plus grande.
+	destroy_bitmap(temp_buffer); // On détruit le buffer temporaire.
 }
 
 void afficherDecompte(void)
@@ -507,7 +505,7 @@ void afficherVictoirePartie()
 	for (int repetition = 1; repetition <= 3; repetition++) {
 		for (int i = 103; i <= 112; i++) {
 			afficherFondEcran(niveau);
-			afficherSprite(600, 300, i);
+			afficherSprite(600, 550, i);
 			afficherBuffer();
 			rest(100);
 		}
