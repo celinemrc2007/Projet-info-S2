@@ -11,32 +11,84 @@
 #define ZONE_INFO_HAUTEUR 150
 #define DUREE_DECOMPTE 3
 
-//************************** FONCTIONS ************************//
+/* ======= FONCTIONS =======*/
+
+/* Inialisation des paramètres d'allégro */
 void initialisation_allegro();
+
+/* Chargement de tous les sprites utilisés dans un bitmap tableau, chargement du buffer */
 void chargerSprites ();
+
+/* Affichage de texte sur le buffer */
 void afficherTexte(BITMAP *bmp_dest, FONT *font, int x, int y, int couleur, int ratio_zoom, const char *texte);
+
+/* Affichage de texte aligné au centre sur le buffer */
 void afficherTexteCentre(BITMAP *bmp_dest, FONT *font, int x, int y, int couleur, int ratio_zoom, const char *texte);
+
+/* Affichage du fond d'écran de chaque niveau sur le buffer */
 void afficherFondEcran(int niveau);
+
+/* Récuperatiion du buffer si besoin */
 void afficherBuffer();
+
+/* Affichage de n'importe quel sprite chargé au préalablement */
 void afficherSprite (float x, float y, int numero_sprite);
+
+/* Redimentionnement et affichage du sprite si besoin */
 void afficherSpriteRedimensionne (Position *position, int numero_sprite);
+
+/* Affichage sprite incliné (utilse pour les balles) */
 void afficherSpriteIncline (Position *position, int numero_sprite, int angle);
+
+/* Affichage du niveau courant dans la zone d'information */
 void afficherNiveau(int niveau);
+
+/* Affichage du pseudo courant dans la zone d'information */
 void afficherPseudo(char pseudo[50]);
-void afficherRegles();
-void afficherExplosionBazuka();
-void afficherDeplacementsJoueur(Joueur *joueur);
-void afficherTirJoueur(Joueur *joueur);
-void afficherJoueur(Joueur *joueur);
-void afficherBoss (Boss *boss);
-void defaiteBoss (Boss *boss);
-void afficherEchecNiveau(Joueur *joueur);
-void afficherVictoireNiveau(Joueur *joueur);
-void afficherVictoirePartie();
-void afficherDecompte();
+
+/* Affichage du score courant dans la zone d'information */
 void afficherScore(int score);
-void afficherBalle(Balle *liste);
+
+/* Affichage du temps restant dans la zone d'information */ 
 void afficherTempsRestant(int temps_restant);
+
+/* Affichage des règles du jeu */
+void afficherRegles();
+
+/* Affichage animation pour l'utilisation du bazuka */
+void afficherExplosionBazuka(Joueur *joueur);
+
+/* Affichage sprites du déplacement du joueur en fonction de son arme */
+void afficherDeplacementsJoueur(Joueur *joueur);
+
+/* Affichage sprite du joueur en position de tir selon l'arme */
+void afficherTirJoueur(Joueur *joueur);
+
+/* Affichage du joueur debout */
+void afficherJoueur(Joueur *joueur);
+
+/* Affichage sprite du boss (battement d'ailes) */
+void afficherBoss (Boss *boss);
+
+/* Affichage sprites défaites du boss */
+void defaiteBoss (Boss *boss);
+
+/* Affichage texte echec du niveau */
+void afficherEchecNiveau(Joueur *joueur);
+
+/* Affichage texte victoire du niveau */
+void afficherVictoireNiveau(Joueur *joueur);
+
+/* Affichage texte et sprites trophée victoire de la partie */
+void afficherVictoirePartie();
+
+/* Affichage decompte commencement du niveau */
+void afficherDecompte();
+
+/* Affichage sprites balle classique ou balle de bazuka */
+void afficherBalle(Balle *liste);
+
+/* Destruction des sprites */ 
 void detruireSprites();
 
 #endif //PROGRAMMES_GESTIONGRAPHIQUE_H
