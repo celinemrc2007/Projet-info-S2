@@ -21,7 +21,7 @@
 #define BONUS 6
 #define MALUS 7
 
-//************************ STRUCTURES ************************//
+/* ======= STRUCTURES ======= */
 
 // Structure générale
 typedef struct position
