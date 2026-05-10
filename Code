@@ -5,7 +5,12 @@
 
 #define VITESSE_JOUEUR 500 // en pixels par seconde
 
+/* ======== FONCTIONS ======== */
+
+/* Déplace le joueur en fonction des touches du clavier et délimite son déplacement */
 void deplacementJoueur(Joueur *joueur);
+
+/* Ajout de balles ou de bombes à la liste des balles quand le joueur doit tirer */
 void tirerBallesBombes(Balle **listeBalle, Joueur *joueur);
 
 #endif //PROGRAMMES_GESTIONCLAVIER_H
