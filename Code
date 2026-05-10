@@ -117,10 +117,11 @@ void finNiveau() {
             break;
         case 3:
             sauvegarderPartie(pseudo, niveau);
-            menu();
+            rest(1000);
+            exit(0);
             break;
         case 4:
-            menu();
+            exit(0);
             break;
     }
 }
@@ -151,7 +152,6 @@ void gererVictoirePartie() {
     afficherVictoirePartie();
     finNiveau();
 }
-
 
 /* ============== GESTION DU BOSS =========== */
 
@@ -218,7 +218,6 @@ void gererBoss (Boss *boss, Joueur *joueur, Balle *tete_balle, float cycle) {
 }
 
 /* ==================== EXTENSIONS ==================== */
-
 void activerBouclier() {
     compteur_bouclier = TEMPS_OBJET_SUR_JOUEUR;
 }
@@ -240,7 +239,7 @@ void activerMalus() {
 void gererMalus() {
     compteur_malus -= CYCLE;
     if (compteur_malus > 0) {
-        facteur_apparition_bulle = 5;
+        facteur_apparition_bulle = 5; //Il y a cinq fois plus de bulles qui apparaissent au cours du jeu qu'avant seulement pendant les 10 secondes d'activation du malus.
     } else {
         facteur_apparition_bulle = 1;
     }
