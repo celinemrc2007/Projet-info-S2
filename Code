@@ -677,7 +677,7 @@ void init() {
     initialiserListeBulle(niveau);
 }
 
-bool jeu(Bulle *bulle) {
+bool jeu() {
     init();
     afficherElements();
     if (boss == NULL) afficherDecompte();
