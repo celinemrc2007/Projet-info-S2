@@ -40,7 +40,8 @@ Bulle *creerBulle(bool ApparitionDebutJeu, const int niveau)
             bulle->position.vx = 2*VITESSE_BULLE_BASE* cos(angle);
             bulle->position.vy = 2*VITESSE_BULLE_BASE* sin(angle);
             break;
-        case 5: bulle->objet = rand () % 8; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
+        case 5: bulle->objet = rand () % 10; // Ajout d'une nouvelle arme, d'un bonus et d'un malus (8 cas posibles dont 7 objets diférents)
+            if (bulle->objet >= 8) bulle->objet -=2;
             bulle->position.vx = 2,25*VITESSE_BULLE_BASE* cos(angle);
             bulle->position.vy = 2,25*VITESSE_BULLE_BASE* sin(angle);
             break;
@@ -352,8 +353,8 @@ Boss *creerBoss()
         printf("Erreur allocation memoire.");
         exit(1);
     }
-    boss->position.largeur = (40/100)* LARGEUR_ECRAN;
-    boss->position.hauteur = (25/100)* HAUTEUR_ECRAN;
+    boss->position.largeur = LARGEUR_ECRAN*40/100;
+    boss->position.hauteur = HAUTEUR_ECRAN*25/100;
     boss->position.x = LARGEUR_ECRAN/2; // au mileu de l'écran
     boss->position.y = boss->position.hauteur/2; // en hait de l'écran
     boss->nb_tirs_recus = 0;
